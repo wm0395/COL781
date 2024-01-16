@@ -1,101 +1,65 @@
 #include <vector>
 #include <utility>
 #include <iostream>
+#include "util.cpp"
+
+#include "triangle_raster.h"
 
 using namespace std;
 
-// UTILITY FUNCTIONS
-// method to overload for pair<T,U>
-template <typename T,typename U>                                                   
-std::pair<T,U> operator+(const std::pair<T,U> & l,const std::pair<T,U> & r) {   
-    return {l.first+r.first,l.second+r.second};                                    
-}
-template <typename T,typename U>
-std::pair<T,U> operator-(const std::pair<T,U> & l,const std::pair<T,U> & r) {   
-    return {l.first-r.first,l.second-r.second};                                    
-}
-template <typename T,typename U>
-std::ostream& operator << ( std::ostream& outs, const pair <T,U> & p )
-{
-  return outs << "(" << p.first << "," << p.second << ")";
-}
-template <typename T>
-T dot(pair<T,T> &a, pair<T,T> &b){
-    return a.first*b.first + a.second*b.second;
-}
-template<typename T>
-void swap(T &a, T &b){
-    T temp = a;
-    a = b;
-    b = temp;
-}
-template<typename T>
-void cycle_cw(T &a, T &b, T &c){
-    T temp = a;
-    a = b;
-    b = c;
-    c = temp;
-}
-template<typename T>
-void cycle_aw(T &a, T &b, T &c){
-    T temp = c;
-    c = b;
-    b = a;
-    a = temp;
-}
-
-
 // MAIN FUNCTIONS
-const int N = 10;
-template<typename T>
-bool isLeft(pair<T,T> &a, pair<T,T> &b, pair<T,T> &p){
-    pair<int,int> n = make_pair(a.second-b.second, b.first - a.first), d = p - a;
-    return (dot(n, d) >= 0);
-}
+// const int N = 10;
+// template<typename T>
 
-void make_anti_clockwise(vector<pair<int,int>> &points){
-    if(!isLeft(points[0], points[1], points[2])){
-        swap(points[0], points[1]);
-    }
-}
+// bool isLeft(pair<T,T> &a, pair<T,T> &b, pair<T,T> &p){
+//     pair<int,int> n = make_pair(a.second-b.second, b.first - a.first), d = p - a;
+//     return (dot(n, d) >= 0);
+// }
 
-void make_ordered(vector<pair<int,int>> &points){
-    pair<int,int> a = points[0];
-    pair<int,int> b = points[1];
-    pair<int,int> c = points[2];
+// void make_anti_clockwise(vector<pair<int,int>> &points){
+//     if(!isLeft(points[0], points[1], points[2])){
+//         swap(points[0], points[1]);
+//     }
+// }
 
-    if(c.second>= a.second && c.second >= b.second){
-        return;
-    }
-    else if(b.second >= a.second){
-        cycle_aw(points[0], points[1], points[2]);
-    }
-    else{
-        cycle_cw(points[0], points[1], points[2]);
-    }
-}
+// void make_ordered(vector<pair<int,int>> &points){
+//     pair<int,int> a = points[0];
+//     pair<int,int> b = points[1];
+//     pair<int,int> c = points[2];
 
-bool isInside(pair<int,int> &a, pair<int,int> &b, pair<int,int> &c, pair<int,int> p){
-    // cout<<"(" << isLeft(a, b, p) << isLeft(b, c, p) << isLeft(c, a, p)<<")";
-    return isLeft(a, b, p) && isLeft(b, c, p) && isLeft(c, a, p);
-}
+//     if(c.second>= a.second && c.second >= b.second){
+//         return;
+//     }
+//     else if(b.second >= a.second){
+//         cycle_aw(points[0], points[1], points[2]);
+//     }
+//     else{
+//         cycle_cw(points[0], points[1], points[2]);
+//     }
+// }
 
-void print_inline(vector<pair<int,int>> &points){
-    for(int j = 0; j<N; j++){
-        for(int i = 0; i<N; i++){
-            pair<int,int> p = make_pair(i,j);
-            if(isInside(points[0], points[1], points[2], p)){
-                cout << "[]";
-            }
-            else{
-                cout << "..";
-            }
-        }
-        cout << endl;
-    }
-}
+// bool isInside(pair<int,int> &a, pair<int,int> &b, pair<int,int> &c, pair<int,int> p){
+//     // cout<<"(" << isLeft(a, b, p) << isLeft(b, c, p) << isLeft(c, a, p)<<")";
+//     return isLeft(a, b, p) && isLeft(b, c, p) && isLeft(c, a, p);
+// }
+
+// void print_inline(vector<pair<int,int>> &points){
+//     for(int j = 0; j<N; j++){
+//         for(int i = 0; i<N; i++){
+//             pair<int,int> p = make_pair(i,j);
+//             if(isInside(points[0], points[1], points[2], p)){
+//                 cout << "[]";
+//             }
+//             else{
+//                 cout << "..";
+//             }
+//         }
+//         cout << endl;
+//     }
+// }
 
 // TRIANGLE RASTERIZATION
+
 class line{
     public:
     pair<float,float> a, b;
@@ -213,13 +177,13 @@ class screen{
     }
     void rasterize(triangle &T, string cmp = "inline", float color = 1, int sr = 1){
         if(cmp == "inline"){
-            rasterize_inline(T);
+            rasterize_inline(T, color);
         }
         else if(cmp == "tile"){
-            rasterize_tile(T);
+            rasterize_tile(T, color);
         }
         else if(cmp == "incremental"){
-            rasterize_incremental(T);
+            rasterize_incremental(T, color);
         }
         else if(cmp == "anti_alias"){
             rasterize_aa(T, sr, color);
