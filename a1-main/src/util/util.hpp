@@ -1,6 +1,6 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include "window.hpp"
+#include "line.hpp"
 
 #endif
