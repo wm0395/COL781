@@ -4,7 +4,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../util/util.hpp"
+#include "./util/util.hpp"
  
 namespace COL781 {
 	namespace Software {
@@ -140,7 +140,7 @@ namespace COL781 {
 		// Creates a window with the given title, size, and samples per pixel.
 		
 		
-		bool Rasterizer::initialize(const std::string &title, int width, int height, int spp=1){
+		bool Rasterizer::initialize(const std::string &title, int width, int height, int spp){
 			bool success = true;
                 if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
                     printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
@@ -175,17 +175,109 @@ namespace COL781 {
 			return quit;
 		}
 
+		ShaderProgram Rasterizer::createShaderProgram(const VertexShader &vs, const FragmentShader &fs){
+			ShaderProgram program;
+			program.fs = fs;
+			program.vs = vs;
+			return program;
+		}
+
+		Object Rasterizer::createObject(){
+			Object object;
+			return object;
+		}
+
+		// struct Object {
+		// 	using Buffer = std::vector<float>;
+		// 	std::vector<Buffer> attributeValues;
+		// 	std::vector<int> attributeDims;
+		// 	std::vector<glm::ivec3> indices;
+		// };
+
+
+		void setAttribs(Object& object, int attribIndex, int n, int d, const float* data){
+			std::cout << "Inside the setAttribs\n";
+			
+			for (int i = 0; i<n; i++){
+				object.attributeValues.push_back({});
+				object.attributeDims.push_back({});
+			}
+
+			for (int i = 0; i<n; i++){
+				for (int j = 0; j<d; j++){
+					object.attributeValues[attribIndex+j].push_back(data[i*d + j]);
+				}
+			}
+			
+			for (int j = 0; j<d; j++){
+				object.attributeDims[attribIndex + j] = 1;
+			}
+		}
+
+
+		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const float* data) {
+			setAttribs(object, attribIndex, n, 1, data);
+		}
+
+		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const glm::vec2* data) {
+			setAttribs(object, attribIndex, n, 2, (float*)data);
+		}
+
+		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const glm::vec3* data) {
+			setAttribs(object, attribIndex, n, 3, (float*)data);
+		}
+
+		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const glm::vec4* data) {
+			std::cout << "Inside the setVertexAttribs fxn\n";
+			setAttribs(object, attribIndex, n, 4, (float*)data);
+		}
+
+		void Rasterizer::setTriangleIndices(Object &object, int n, glm::ivec3* indices){
+			object.indices.assign(indices, indices + n);
+		}
+
 		void Rasterizer::clear(glm::vec4 color){
-			SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], color[3]);
+			SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
 			SDL_RenderClear(renderer);
 			// SDL_FreeSurface(framebuffer);
 			// framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, color[0], color[1], color[2], color[3]);
 		}
 
+		// void Rasterizer::useShaderProgram(const ShaderProgram &program){
+			
+		// }
+
 		void Rasterizer::show(){
 			SDL_RenderPresent(renderer);
 			// SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
             // SDL_UpdateWindowSurface(window);
+		}		
+
+		// Print the contents of the Object
+		void Rasterizer::printObject(const Object& object) {
+			// Print attributeValues
+			std::cout << "attributeValues:" << std::endl;
+			for (const auto& buffer : object.attributeValues) {
+				for (float value : buffer) {
+					std::cout << value << " ";
+				}
+				std::cout << std::endl;
+			}
+
+			// Print attributeDims
+			std::cout << "attributeDims:" << std::endl;
+			for (int dim : object.attributeDims) {
+				std::cout << dim << " ";
+			}
+			std::cout << std::endl;
+
+			// Print indices
+			std::cout << "indices:" << std::endl;
+			for (const auto& idx : object.indices) {
+				std::cout << "(" << idx.x << ", " << idx.y << ", " << idx.z << ") ";
+			}
+			std::cout << std::endl;
 		}
+
 	}
 }

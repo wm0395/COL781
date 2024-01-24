@@ -76,6 +76,8 @@ public:
 	// A fragment shader that uses the 0th attribute as the color.
 	FragmentShader fsIdentity(); 
 
+	void printObject(const Object &object);
+
 private:
 	SDL_Window *window;
 	SDL_Surface* framebuffer = NULL;
