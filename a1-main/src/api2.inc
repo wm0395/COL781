@@ -78,5 +78,12 @@ public:
 
 private:
 	SDL_Window *window;
+	SDL_Surface* framebuffer = NULL;
+	SDL_Surface *windowSurface = NULL;
+	SDL_Renderer *renderer;
+	int frameWidth;
+	int frameHeight;
+	int displayScale;
+	int spp; // Samples-per-pixel
 	bool quit;
 };
