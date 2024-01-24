@@ -139,15 +139,6 @@ namespace COL781 {
 		// Implementation of Windows class
 		// Creates a window with the given title, size, and samples per pixel.
 		
-		// int frameWidth = 20;
-		// int frameHeight = 20;
-
-		// int displayScale = 1;
-
-		// int spp = 1;
-
-		// SDL_Surface* framebuffer = NULL;
-		// SDL_Surface *windowSurface = NULL;
 		
 		bool Rasterizer::initialize(const std::string &title, int width, int height, int spp=1){
 			bool success = true;
@@ -155,11 +146,11 @@ namespace COL781 {
                     printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
                     success = false;
                 } else {
-                    // frameHeight = height;
-                    // frameWidth = width;
-                    // displayScale = 1;
-                    // int screenWidth = frameWidth * displayScale;
-                    // int screenHeight = frameHeight * displayScale;
+                    frameHeight = height;
+                    frameWidth = width;
+                    displayScale = 1;
+                    int screenWidth = frameWidth * displayScale;
+                    int screenHeight = frameHeight * displayScale;
                     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
                     if (window == NULL) {
                         printf("Window could not be created! SDL_Error: %s", SDL_GetError());
@@ -167,7 +158,8 @@ namespace COL781 {
                     } else {
                         // windowSurface = SDL_GetWindowSurface(window);
                         // framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
-                    }
+						renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+					}
                 }
                 return success;
 		}
@@ -184,9 +176,16 @@ namespace COL781 {
 		}
 
 		void Rasterizer::clear(glm::vec4 color){
-			SDL_Renderer* renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
-			SDL_RenderClear(renderer);
 			SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], color[3]);
+			SDL_RenderClear(renderer);
+			// SDL_FreeSurface(framebuffer);
+			// framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, color[0], color[1], color[2], color[3]);
+		}
+
+		void Rasterizer::show(){
+			SDL_RenderPresent(renderer);
+			// SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
+            // SDL_UpdateWindowSurface(window);
 		}
 	}
 }
