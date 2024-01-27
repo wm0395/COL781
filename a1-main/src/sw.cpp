@@ -198,19 +198,23 @@ namespace COL781 {
 		void setAttribs(Object& object, int attribIndex, int n, int d, const float* data){
 			std::cout << "Inside the setAttribs\n";
 			
-			for (int i = 0; i<n; i++){
-				object.attributeValues.push_back({});
-				object.attributeDims.push_back({});
+			if (object.attributeValues.empty()){
+				for (int i = 0; i<n; i++){
+					object.attributeValues.push_back({});
+					object.attributeDims.push_back(0);
+				}
 			}
 
 			for (int i = 0; i<n; i++){
 				for (int j = 0; j<d; j++){
-					object.attributeValues[attribIndex+j].push_back(data[i*d + j]);
+					// object.attributeValues[attribIndex+j].push_back(data[i*d + j]);
+					object.attributeValues[i].push_back(data[i*d + j]);
+
 				}
 			}
 			
-			for (int j = 0; j<d; j++){
-				object.attributeDims[attribIndex + j] = 1;
+			for (int j = 0; j<n; j++){
+				object.attributeDims[j] = attribIndex+1;
 			}
 		}
 
@@ -244,7 +248,7 @@ namespace COL781 {
 		}
 
 		// void Rasterizer::useShaderProgram(const ShaderProgram &program){
-			
+		// 	program.fs
 		// }
 
 		void Rasterizer::show(){
@@ -264,11 +268,14 @@ namespace COL781 {
 				std::cout << std::endl;
 			}
 
+			std::cout << std::endl;
+
 			// Print attributeDims
 			std::cout << "attributeDims:" << std::endl;
 			for (int dim : object.attributeDims) {
 				std::cout << dim << " ";
 			}
+			std::cout << std::endl;
 			std::cout << std::endl;
 
 			// Print indices
@@ -276,6 +283,7 @@ namespace COL781 {
 			for (const auto& idx : object.indices) {
 				std::cout << "(" << idx.x << ", " << idx.y << ", " << idx.z << ") ";
 			}
+			std::cout << std::endl;
 			std::cout << std::endl;
 		}
 
