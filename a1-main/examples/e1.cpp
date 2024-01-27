@@ -6,7 +6,7 @@ namespace R = COL781::Software;
 using namespace glm;
 
 int main() {
-    std::cout << "hello\n";
+    std::cout << "hello\n\n";
 	R::Rasterizer r;
     if (!r.initialize("Example 1", 640, 480)){
         std::cout << "failure to initialise\n";
@@ -18,7 +18,7 @@ int main() {
         r.fsConstant()
     );
 
-    std::cout << "ShaderProgram works well\n";
+    std::cout << "ShaderProgram works well\n\n";
 
     vec4 vertices[] = {
 		vec4(-0.8,  0.0, 0.0, 1.0),
@@ -31,21 +31,21 @@ int main() {
 		ivec3(1, 2, 3)
 	};
 
-    std::cout << "About to create the object\n";
+    std::cout << "About to create the object\n\n";
 
 	R::Object tickmark = r.createObject();
 
-    std::cout << "Empty object creation succesful\n";
+    std::cout << "Empty object creation succesful\n\n";
     
 	r.setVertexAttribs(tickmark, 0, 4, vertices);
-    std::cout << "Vertices assigned correctly\n";
+    std::cout << "Vertices assigned correctly\n\n";
 
 	r.setTriangleIndices(tickmark, 2, triangles);
 
-    std::cout << "About to print the object after assigning correctly\n";
-    // r.printObject(tickmark);
+    std::cout << "About to print the object after assigning correctly\n\n";
+    r.printObject(tickmark);
 
-    std::cout << "i have created my object\n";
+    std::cout << "i have created my object\n\n";
 
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
