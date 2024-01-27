@@ -7,7 +7,7 @@ find_package(glm REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 
-add_library(a1 src/hw.cpp src/sw.cpp deps/src/gl.c)
+add_library(a1 src/hw.cpp src/util/helper.cpp src/util/line.cpp src/util/triangle.cpp src/util/raster.cpp src/sw.cpp deps/src/gl.c)
 target_include_directories(a1 PUBLIC deps/include)
 target_link_libraries(a1 glm::glm OpenGL::GL SDL2::SDL2)
 

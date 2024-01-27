@@ -1,9 +1,8 @@
 #include <vector>
 #include <utility>
 #include <iostream>
-#include "util.cpp"
 
-#include "triangle_raster.h"
+#include "triangle_raster.hpp"
 
 using namespace std;
 

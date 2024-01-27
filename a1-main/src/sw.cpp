@@ -4,7 +4,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "./util/util.hpp"
+#include "util/util.hpp"
  
 namespace COL781 {
 	namespace Software {
@@ -237,15 +237,36 @@ namespace COL781 {
 		}
 
 		void Rasterizer::clear(glm::vec4 color){
-			SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
-			SDL_RenderClear(renderer);
-			// SDL_FreeSurface(framebuffer);
-			// framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, color[0], color[1], color[2], color[3]);
+			// SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
+			// SDL_RenderClear(renderer);
+			SDL_FreeSurface(framebuffer);
+			framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
 		}
 
 		// void Rasterizer::useShaderProgram(const ShaderProgram &program){
 			
 		// }
+
+		void Rasterizer::drawObject(const Object &object){
+			// Assuming atributeValues and Dims are vertices in-order
+			auto vertices = object.attributeValues;
+			helper::frameData* frame;
+			frame->framebuffer = framebuffer;
+			frame->frameWidth = frameWidth;
+			frame->frameHeight = frameHeight;
+
+			if(!depth){
+				for(auto index: object.indices){
+					glm::vec2 a = glm::vec2(vertices[index[0]][0], vertices[index[0]][1]);
+					glm::vec2 b = glm::vec2(vertices[index[1]][0], vertices[index[1]][1]);
+					glm::vec2 c = glm::vec2(vertices[index[2]][0], vertices[index[2]][1]);
+
+					Geometric::triangle T = Geometric::triangle( a, b, c);
+
+					raster::anti_alias( T, spp, 0.5f, frame);
+				}
+			}
+		}
 
 		void Rasterizer::show(){
 			SDL_RenderPresent(renderer);

@@ -88,4 +88,5 @@ private:
 	int displayScale;
 	int spp; // Samples-per-pixel
 	bool quit;
+	bool depth;
 };

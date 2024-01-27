@@ -1,0 +1,115 @@
+util.hpp:
+#ifndef UTIL_HPP
+#define UTIL_HPP
+
+#include "helper.hpp"
+#include "geometric.hpp"
+#include "raster.hpp"
+
+#endif
+
+helper.hpp:
+#ifndef HELPER_HPP
+#define HELPER_HPP
+
+#include <SDL2/SDL.h>
+
+namespace helper{
+    template<typename T>void swap(T &a, T&b);
+
+    struct frameData{
+        SDL_Surface* framebuffer;
+        int frameHeight;
+        int frameWidth;
+    };
+
+}
+
+#endif
+
+helper.cpp:
+#include "helper.hpp"
+
+namespace helper{
+    template<typename T> void swap(T &a, T&b){
+        T c = a;
+        a = b;
+        b = c;
+    }
+}
+
+geometric.hpp:
+#ifndef GEOMETRIC_HPP
+#define GEOMETRIC_HPP
+
+#include <glm/glm.hpp>
+namespace Geometric{
+    class line {
+    public:
+        glm::vec2 a, b;
+        line();
+        line(glm::vec2 a, glm::vec2 b);
+
+        bool isLeft(glm::vec2 &p);
+
+        float intercept_x(float y);
+
+        float intercept_y(float x);
+    };
+    class triangle {
+    public:
+        glm::vec2 a, b, c;
+        line A, B, C;
+
+        triangle();
+        triangle(glm::vec2 a, glm::vec2 b, glm::vec2 c);
+
+        bool isInside(glm::vec2 p);
+
+    private:
+        void make_anti_clockwise();
+    };
+}
+
+#endif
+
+triangle.cpp:
+#include "helper.hpp"
+#include "geometric.hpp"
+
+namespace Geometric{
+    triangle::triangle(){
+        a = glm::vec2(0.0f);
+        b = glm::vec2(0.0f);
+        c = glm::vec2(0.0f);
+        A = line(a, b);
+        B = line(b, c);
+        C = line(c, a);
+    }
+    triangle::triangle(glm::vec2 a, glm::vec2 b, glm::vec2 c){
+        this->a = a;
+        this->b = b;
+        this->c = c;
+        make_anti_clockwise();
+        A = line(this->a, this->b);
+        B = line(this->b, this->c);
+        C = line(this->c, this->a);
+    }
+    
+    bool triangle::isInside(glm::vec2 p){
+        return A.isLeft(p) && B.isLeft(p) && C.isLeft(p);
+    }
+
+    void triangle::make_anti_clockwise(){
+        line A = line(this->a, this->b);
+        if(!A.isLeft(this->c)){
+            helper::swap(this->a, this->b);
+        }
+    }
+}
+
+
+error:
+liba1.a(triangle.cpp.o): in function `Geometric::triangle::make_anti_clockwise()':
+triangle.cpp:(.text+0x34c): undefined reference to `void helper::swap<glm::vec<2, float, (glm::qualifier)0> >(glm::vec<2, float, (glm::qualifier)0>&, glm::vec<2, float, (glm::qualifier)0>&)'
+collect2: error: ld returned 1 exit status
