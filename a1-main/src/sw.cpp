@@ -11,6 +11,15 @@ namespace COL781 {
 
 		// Forward declarations
 
+		SDL_Surface* framebuffer = NULL;
+		SDL_Surface *windowSurface = NULL;
+		std::vector<std::vector<std::vector<float>>> pointBuffer; 
+		bool depth;
+		int frameWidth;
+		int frameHeight;
+		int displayScale;
+		int spp; // Samples-per-pixel
+
 		template <> float Attribs::get(int index) const;
 		template <> glm::vec2 Attribs::get(int index) const;
 		template <> glm::vec3 Attribs::get(int index) const;
@@ -156,9 +165,10 @@ namespace COL781 {
                         printf("Window could not be created! SDL_Error: %s", SDL_GetError());
                         success = false;
                     } else {
-                        // windowSurface = SDL_GetWindowSurface(window);
-                        // framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
-						renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+                        windowSurface = SDL_GetWindowSurface(window);
+                        framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
+						pointBuffer = std::vector<std::vector<std::vector<float>>>(frameWidth, std::vector<std::vector<float>>(frameHeight, std::vector<float>(5, 0.0f)));
+						// renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
 					}
                 }
                 return success;
@@ -243,8 +253,13 @@ namespace COL781 {
 		void Rasterizer::clear(glm::vec4 color){
 			// SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
 			// SDL_RenderClear(renderer);
-			SDL_FreeSurface(framebuffer);
-			framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
+			// SDL_FreeSurface(framebuffer);
+			// framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
+			SDL_FillRect(framebuffer, nullptr, SDL_MapRGBA(framebuffer->format, 
+			static_cast<Uint8> (255*color.r), 
+			static_cast<Uint8> (255*color.g),
+			static_cast<Uint8> (255*color.b),
+			static_cast<Uint8> (255*color.a)));
 		}
 
 		// void Rasterizer::useShaderProgram(const ShaderProgram &program){
@@ -259,23 +274,48 @@ namespace COL781 {
 			frame->frameWidth = frameWidth;
 			frame->frameHeight = frameHeight;
 
-			if(!depth){
+			std::vector<float> color = {0,0,1,0,1};
+
+			glm::vec4 screenMat = glm::vec4(glm::vec4(0.0f));
+
+			if(!depth || depth){
+				std::vector<glm::vec3> a = std::vector<glm::vec3>();
 				for(auto index: object.indices){
-					glm::vec2 a = glm::vec2(vertices[index[0]][0], vertices[index[0]][1]);
-					glm::vec2 b = glm::vec2(vertices[index[1]][0], vertices[index[1]][1]);
-					glm::vec2 c = glm::vec2(vertices[index[2]][0], vertices[index[2]][1]);
 
-					Geometric::triangle T = Geometric::triangle( a, b, c);
+					for(int i = 0; i < 3; i++){
+						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], 0);
+					}
 
-					raster::anti_alias( T, spp, 0.5f, frame);
+					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
+
+					raster::anti_alias( T, spp, color, pointBuffer);
+				}
+			}
+			else{
+				std::vector<glm::vec3> a = std::vector<glm::vec3>();
+				for(auto index: object.indices){
+
+					for(int i = 0; i < 3; i++){
+						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX);
+					}
+
+					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
+
+					raster::anti_alias( T, spp, color, pointBuffer);
 				}
 			}
 		}
 
 		void Rasterizer::show(){
-			SDL_RenderPresent(renderer);
-			// SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
-            // SDL_UpdateWindowSurface(window);
+			// Uint32 *pixels = (Uint32*)framebuffer->pixels;
+			// SDL_PixelFormat *format = framebuffer->format;
+			// for(int j = 0; j < frameHeight; j++){
+			// 	for(int i = 0; i < frameWidth; i++){
+			// 		pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*pointBuffer[i][j][1], 255*pointBuffer[i][j][2], 255*pointBuffer[i][j][3], 255*pointBuffer[i][j][4]); 
+			// 	}
+			// }
+			SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
+            SDL_UpdateWindowSurface(window);
 		}		
 
 		// Print the contents of the Object

@@ -3,9 +3,10 @@
 
 #include "helper.hpp"
 #include "geometric.hpp"
-
+#include<vector>
+#include<iostream>
 namespace raster{
-    void anti_alias(Geometric::triangle& T, int spp, float color, helper::frameData* frame);
+    void anti_alias(Geometric::triangle& T, int spp, std::vector<float>& color, std::vector<std::vector<std::vector<float>>>& pointBuffer);
 }
 
 #endif
