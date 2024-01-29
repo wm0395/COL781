@@ -48,6 +48,13 @@ namespace COL781 {
 			Uniforms uniforms;
 		};
 
+		// struct Object {
+		// 	using Buffer = std::vector<float>;
+		// 	std::vector<Buffer> attributeValues;
+		// 	std::vector<int> attributeDims;
+		// 	std::vector<glm::ivec3> indices;
+		// };
+
 		struct Object {
 			using Buffer = std::vector<float>;
 			std::vector<Buffer> attributeValues;

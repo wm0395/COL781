@@ -9,6 +9,8 @@
 namespace COL781 {
 	namespace Software {
 
+		ShaderProgram current_program;
+
 		// Forward declarations
 
 		template <> float Attribs::get(int index) const;
@@ -130,9 +132,9 @@ namespace COL781 {
 
 		template <typename T> void Uniforms::set(const std::string &name, T value) {
 			auto it = values.find(name);
-			if (it != values.end()) {
-				delete it->second;
-			}
+			// if (it != values.end()) {
+			// 	delete it->second;
+			// }
 			values[name] = (void*)(new T(value));
 		}
 
@@ -156,9 +158,9 @@ namespace COL781 {
                         printf("Window could not be created! SDL_Error: %s", SDL_GetError());
                         success = false;
                     } else {
-                        // windowSurface = SDL_GetWindowSurface(window);
-                        // framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
-						renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+                        windowSurface = SDL_GetWindowSurface(window);
+                        framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
+						// renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
 					}
                 }
                 return success;
@@ -232,7 +234,7 @@ namespace COL781 {
 		}
 
 		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const glm::vec4* data) {
-			std::cout << "Inside the setVertexAttribs fxn\n";
+			// std::cout << "Inside the setVertexAttribs fxn\n";
 			setAttribs(object, attribIndex, n, 4, (float*)data);
 		}
 
@@ -243,12 +245,27 @@ namespace COL781 {
 		void Rasterizer::clear(glm::vec4 color){
 			// SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
 			// SDL_RenderClear(renderer);
-			SDL_FreeSurface(framebuffer);
-			framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
+			// SDL_FreeSurface(framebuffer);
+			// framebuffer = SDL_CreateRGBSurface(0, windowSurface->w, windowSurface->h, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
+			// SDL_FillRect(framebuffer, nullptr, SDL_MapRGB(framebuffer->format, 255 * color[0], 255 * color[1], 255 * color[2], 255*color[3]));
+			SDL_FillRect(framebuffer, nullptr, SDL_MapRGBA(framebuffer->format,
+				static_cast<Uint8>(255 * color.r),
+				static_cast<Uint8>(255 * color.g),
+				static_cast<Uint8>(255 * color.b),
+				static_cast<Uint8>(255 * color.a)));
 		}
 
-		// void Rasterizer::useShaderProgram(const ShaderProgram &program){
-		// 	program.fs
+		void Rasterizer::useShaderProgram(const ShaderProgram &program){
+			current_program = program;
+		}
+
+		void Rasterizer::deleteShaderProgram(ShaderProgram &program) {
+			current_program.fs = NULL;
+			current_program.vs = NULL;
+		}
+
+		// template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::vec4 value){
+		// 	current_program.uniforms.set(name, value);
 		// }
 
 		void Rasterizer::drawObject(const Object &object){
@@ -265,17 +282,17 @@ namespace COL781 {
 					glm::vec2 b = glm::vec2(vertices[index[1]][0], vertices[index[1]][1]);
 					glm::vec2 c = glm::vec2(vertices[index[2]][0], vertices[index[2]][1]);
 
-					Geometric::triangle T = Geometric::triangle( a, b, c);
+					// Geometric::triangle T = Geometric::triangle( a, b, c);
 
-					raster::anti_alias( T, spp, 0.5f, frame);
+					// raster::anti_alias( T, spp, 0.5f, frame);
 				}
 			}
 		}
 
 		void Rasterizer::show(){
-			SDL_RenderPresent(renderer);
-			// SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
-            // SDL_UpdateWindowSurface(window);
+			// SDL_RenderPresent(renderer);
+			SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
+            SDL_UpdateWindowSurface(window);
 		}		
 
 		// Print the contents of the Object
