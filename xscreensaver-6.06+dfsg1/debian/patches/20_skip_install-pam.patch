@@ -1,0 +1,16 @@
+#
+# We use dh_installpam so we don't need to run this target
+#
+Index: xscreensaver-git/driver/Makefile.in
+===================================================================
+--- xscreensaver-git.orig/driver/Makefile.in
++++ xscreensaver-git/driver/Makefile.in
+@@ -250,7 +250,7 @@ tests::   $(TEST_EXES)
+ ##############################################################################
+ 
+ install:   install-program   install-ad   install-man   install-xml    \
+-	   install-pam	install-gnome
++	   install-gnome
+ uninstall: uninstall-program uninstall-ad uninstall-man uninstall-xml  \
+ 	   uninstall-gnome
+ 

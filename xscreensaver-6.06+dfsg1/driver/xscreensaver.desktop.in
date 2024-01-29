@@ -1,0 +1,12 @@
+[Desktop Entry]
+Icon=xscreensaver
+_Name=XScreenSaver
+_Comment=XScreenSaver daemon: screen saver and locker
+Type=Application
+Categories=Security
+Terminal=false
+TryExec=xscreensaver
+Exec=/usr/share/xscreensaver/xscreensaver-wrapper.sh -nosplash
+NoDisplay=true
+X-KDE-StartupNotify=false
+# NotShowIn=KDE;GNOME;

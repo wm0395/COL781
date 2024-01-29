@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Gravity Well
+Exec=/usr/libexec/xscreensaver/gravitywell --root
+TryExec=/usr/libexec/xscreensaver/gravitywell
+Comment=Massive objects distort space in a two dimensional universe. Written by Jamie Zawinski.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

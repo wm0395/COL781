@@ -1,0 +1,36 @@
+Package: xscreensaver-data-extra
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 8584
+Depends: dictionaries-common, libjpeg-turbo-progs, netpbm, xscreensaver-data, libc6 (>= 2.34), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.16.0), libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: Extra screen saver modules for screensaver frontends
+ XScreenSaver is a modular screen saver and locker for X11,
+ containing more than 200 screen savers.
+ .
+ This package contains the rest of the 2D screen saver modules from
+ the xscreensaver collection. This package can be used by
+ xscreensaver and also some other screensaver engines.
+ .
+ This is the set of non-GL screensavers not shipped by default:
+ anemone, anemotaxis, apollonian, apple2, attraction, barcode,
+ blaster, blitspin, bouboule, boxfit, braid, bumps, ccurve, celtic,
+ cloudlife, compass, coral, crystal, cynosure, decayscreen, deluxe,
+ demon, discrete, drift, epicycle, eruption, euler2d, fadeplot,
+ filmleader, fireworkx, flame, flow, fluidballs, fontglide, glitchpeg,
+ goop, grav, greynetic, halftone, halo, helix, hopalong, ifs, imsmap,
+ interaggregate, interference, intermomentary, julia, kaleidescope,
+ kumppa, lcdscrub, loop, maze, memscroller, moire2, moire,
+ mountain, munch, nerverot, noseguy, pacman, pedal, penetrate, petri,
+ phosphor, piecewise, polyominoes, pong, pyro, qix, rd-bomb, rocks,
+ rorschach, rotzoomer, sierpinski, slip, speedmine, spotlight,
+ squiral, starfish, strange, substrate, triangle, truchet, twang,
+ vermiculate, vfeedback, vidwhacker, wander, whirlwindwarp, wormhole,
+ xanalogtv, xflame, xjack, xmatrix, xrayswarm, xspirograph, zoom.
+ .
+ More display modes can be found in the xscreensaver-data,
+ xscreensaver-gl and xscreensaver-gl-extra packages.

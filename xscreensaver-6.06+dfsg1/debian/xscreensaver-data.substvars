@@ -1,0 +1,4 @@
+perl:Depends=perl:any
+shlibs:Depends=libc6 (>= 2.34), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.16.0), libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+misc:Depends=
+misc:Pre-Depends=

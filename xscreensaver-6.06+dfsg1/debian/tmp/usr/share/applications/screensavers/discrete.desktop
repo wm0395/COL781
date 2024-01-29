@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Discrete
+Exec=/usr/libexec/xscreensaver/discrete --root
+TryExec=/usr/libexec/xscreensaver/discrete
+Comment=Discrete map fractal systems, including variants of Hopalong, Julia, and others. Written by Tim Auckland.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

@@ -1,0 +1,4 @@
+debian/tmp/usr/libexec/xscreensaver/webcollage-helper
+debian/tmp/usr/libexec/xscreensaver/webcollage
+debian/tmp/usr/share/xscreensaver/config/webcollage.xml
+debian/tmp/usr/share/applications/screensavers/webcollage.desktop

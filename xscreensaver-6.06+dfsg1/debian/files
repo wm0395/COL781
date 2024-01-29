@@ -1,0 +1,15 @@
+xscreensaver-data-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-data-extra-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-data-extra_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver-data_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-gl-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-gl-extra-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-gl-extra_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver-gl_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver-screensaver-bsod-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-screensaver-bsod_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver-screensaver-webcollage-dbgsym_6.06+dfsg1-3_amd64.deb debug optional automatic=yes
+xscreensaver-screensaver-webcollage_6.06+dfsg1-3_amd64.deb x11 optional
+xscreensaver_6.06+dfsg1-3_amd64.buildinfo x11 optional
+xscreensaver_6.06+dfsg1-3_amd64.deb x11 optional

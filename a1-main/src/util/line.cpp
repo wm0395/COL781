@@ -17,6 +17,13 @@ namespace Geometric{
         return (glm::dot(n, d) >= 0);
     }
 
+    bool line::isLeft(glm::vec3 &p){
+        glm::vec2 p_ = glm::vec2(p[0], p[1]);
+        glm::vec2 n = glm::vec2(a[1] - b[1], b[0] - a[0]);
+        glm::vec2 d = p_ - a;
+        return (glm::dot(n, d) >= 0);
+    }
+
     float line::intercept_x(float y){
         if(a[1] == b[1]){
             return std::min(a[0],b[0])-1;

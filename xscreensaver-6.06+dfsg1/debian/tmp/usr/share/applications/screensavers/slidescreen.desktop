@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Slide Screen
+Exec=/usr/libexec/xscreensaver/slidescreen --root
+TryExec=/usr/libexec/xscreensaver/slidescreen
+Comment=A "fifteen puzzle" variant, dividing the image into a grid and shuffling. https://en.wikipedia.org/wiki/Fifteen_puzzle Written by Jamie Zawinski.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Galaxy
+Exec=/usr/libexec/xscreensaver/galaxy --root
+TryExec=/usr/libexec/xscreensaver/galaxy
+Comment=Spinning galaxies collide. Written by Uli Siegmund, Harald Backert, and Hubert Feyrer.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

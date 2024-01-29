@@ -1,0 +1,27 @@
+Package: xscreensaver-data
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 2356
+Depends: libwww-perl, libc6 (>= 2.34), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.16.0), libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+Suggests: xscreensaver
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: Screen saver modules for screensaver frontends
+ XScreenSaver is a modular screen saver and locker for X11,
+ containing more than 200 screen savers.
+ .
+ This package contains a small selection of graphical screen saver
+ modules (listed below) from the xscreensaver collection. This package
+ can be used by xscreensaver and also some other screensaver engines.
+ .
+ This is the selected set of non-GL screensavers shipped by default:
+ abstractile, binaryhorizon, binaryring, cwaves, deco, distort,
+ fiberlamp, fuzzyflakes, galaxy, hexadrop, m6502, marbling, metaballs,
+ penrose, ripples, scooter, shadebobs, slidescreen, swirl,
+ tessellimage, xlyap.
+ .
+ More display modes can be found in xscreensaver-data-extra,
+ xscreensaver-gl and xscreensaver-gl-extra packages.

@@ -142,7 +142,7 @@ namespace COL781 {
 		
 		bool Rasterizer::initialize(const std::string &title, int width, int height, int spp){
 			bool success = true;
-                if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+                if (SDL_Init(SDL_INIT_VIDEO) < 0) {
                     printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
                     success = false;
                 } else {

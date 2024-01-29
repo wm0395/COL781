@@ -1,0 +1,8 @@
+# The original OCRA.sdf was downloaded from
+# https://sourceforge.net/projects/ocr-a-font/files/OCR-A/1.0/
+# and converted to a OpenType Font with python3-fontforge:
+#     import fontforge
+#     font = fontforge.open("OCRA.sdf")
+#     font.familyname = "OCR A Std"
+#     font.generate("OCRAStd.otf")
+debian/OCRAStd.otf

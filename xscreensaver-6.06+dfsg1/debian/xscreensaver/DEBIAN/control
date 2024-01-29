@@ -1,0 +1,24 @@
+Package: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 1739
+Depends: xscreensaver-data, init-system-helpers (>= 1.52), libatk1.0-0 (>= 1.12.4), libc6 (>= 2.34), libcrypt1 (>= 1:4.1.0), libglib2.0-0 (>= 2.49.3), libgtk-3-0 (>= 3.16.2), libpam0g (>= 0.99.7.1), libsystemd0 (>= 243), libx11-6 (>= 2:1.2.99.901), libxext6, libxft2 (>> 2.1.1), libxi6 (>= 2:1.2.99.4), libxinerama1 (>= 2:1.1.4), libxml2 (>= 2.7.4), libxrandr2 (>= 2:1.2.99.2), libxt6, libxxf86vm1
+Recommends: libjpeg-turbo-progs, miscfiles | wordlist, perl, fonts-urw-base35 | xfonts-100dpi
+Suggests: fortune, gdm3 | kdm-gdmcompat, qcam | streamer, www-browser, xdaliclock, xfishtank, xscreensaver-data-extra, xscreensaver-gl, xscreensaver-gl-extra
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: Screensaver daemon and frontend for X11
+ XScreenSaver is a modular screen saver and locker for X11,
+ containing more than 200 screen savers.
+ .
+ This package includes the bare minimum needed to blank and lock your
+ screen. Install this package if you want to use the xscreensaver engine
+ to control screen blanking and launching display modes ("hacks"). If
+ you only want to use other screensaver engines, you don't need to
+ install this package.
+ .
+ The graphical display modes are in the xscreensaver-data,
+ xscreensaver-data-extra, xscreensaver-gl and xscreensaver-gl-extra
+ packages.

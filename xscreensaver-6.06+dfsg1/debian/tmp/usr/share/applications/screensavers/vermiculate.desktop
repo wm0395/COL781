@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Vermiculate
+Exec=/usr/libexec/xscreensaver/vermiculate --root
+TryExec=/usr/libexec/xscreensaver/vermiculate
+Comment=Squiggly worm-like paths. Written by Tyler Pierce.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

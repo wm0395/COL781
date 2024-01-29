@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Surfaces
+Exec=/usr/libexec/xscreensaver/surfaces --root
+TryExec=/usr/libexec/xscreensaver/surfaces
+Comment=Parametric surfaces. https://mathworld.wolfram.com/DinisSurface.html https://en.wikipedia.org/wiki/Enneper_surface https://mathworld.wolfram.com/EnnepersMinimalSurface.html https://mathworld.wolfram.com/KuenSurface.html https://en.wikipedia.org/wiki/Moebius_strip https://mathworld.wolfram.com/Seashell.html https://mathworld.wolfram.com/SwallowtailCatastrophe.html https://mathworld.wolfram.com/BohemianDome.html https://en.wikipedia.org/wiki/Whitney_umbrella https://mathworld.wolfram.com/PlueckersConoid.html https://mathworld.wolfram.com/HennebergsMinimalSurface.html https://mathworld.wolfram.com/CatalansSurface.html https://mathworld.wolfram.com/CorkscrewSurface.html Written by Andrey Mirtchovski and Carsten Steger.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

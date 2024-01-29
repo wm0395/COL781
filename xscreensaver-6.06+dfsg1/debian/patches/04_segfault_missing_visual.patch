@@ -1,0 +1,29 @@
+#
+# Avoid segfault if xscreensaver-gl-visual is not installed
+# Reference bug #1030659
+#
+
+Index: xscreensaver-git/driver/demo-Gtk.c
+===================================================================
+--- xscreensaver-git.orig/driver/demo-Gtk.c
++++ xscreensaver-git/driver/demo-Gtk.c
+@@ -3295,7 +3295,9 @@ fix_preview_visual (state *s)
+   GdkWindow *gwindow = gtk_widget_get_window (GTK_WIDGET (win));
+   GdkScreen *gscreen = gdk_window_get_screen (gwindow);
+   GdkVisual *gvisual1 = gdk_screen_get_system_visual (gscreen);
+-  GdkVisual *gvisual2 = x_visual_to_gdk_visual (gwindow, xvisual);
++  GdkVisual *gvisual2 = (xvisual
++                         ? x_visual_to_gdk_visual (gwindow, xvisual)
++                         : 0);
+ 
+   if (! gvisual2)
+     {
+@@ -3303,7 +3305,7 @@ fix_preview_visual (state *s)
+       if (s->debug_p)
+         fprintf (stderr, "%s: couldn't convert X Visual 0x%lx to a GdkVisual;"
+                  " winging it.\n",
+-                 blurb(), (unsigned long) xvisual->visualid);
++                 blurb(), (xvisual ? (unsigned long) xvisual->visualid : 0L));
+     }
+ 
+   if (s->debug_p)

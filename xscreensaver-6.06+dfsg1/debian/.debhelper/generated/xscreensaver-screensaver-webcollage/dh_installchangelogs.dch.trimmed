@@ -1,0 +1,270 @@
+xscreensaver (6.06+dfsg1-3) unstable; urgency=medium
+
+  * Add 02_dpms_prefs_lost.patch from upstream:
+    - Fix DPMS settings being reset when opening preferences
+  * Add 04_segfault_missing_visual.patch:
+    - Avoid segfault if xscreensaver-gl is not installed
+  * Add 06_wm_focus_crash.patch:
+    - Avoid crash when opening preferences in some window managers
+  * debian/rules: Fix wrong Catalan translation file encoding
+  * debian/control: Add libwww-perl dependency for -gl package and
+    correct dependencies for -bsod and -webcollage packages
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Fri, 03 Mar 2023 14:18:50 +0100
+
+xscreensaver (6.06+dfsg1-2) unstable; urgency=medium
+
+  * Add debian/patches/100_configure_allow_warnings.patch:
+    - Fix building on various architectures that have
+      no keyboard interrupts info or don't have systemd
+  * Remove obsolete build dependency on dpkg-dev (thanks Janitor)
+  * Bump Standards-Version to 4.6.2 (no changes needed)
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Mon, 30 Jan 2023 09:35:10 +0100
+
+xscreensaver (6.06+dfsg1-1) unstable; urgency=medium
+
+  [ Tormod Volden ]
+  * New upstream release 6.06, changes since 6.02: (Closes: #1019516)
+    - New hacks: hextrail, nakagin, chompytower, squirtorus, mapscroller
+    - Retired `thornbird', which is redundant with `discrete'.
+    - Adjusted some of the very old hacks, which were written when pixels
+      were larger, to be more visible on today's higher rez displays.
+    - X11: More robust desktop image grabbing.
+    - X11: Various improvements to `xscreensaver-settings'.
+    - X11: Silence new Perl warnings from `xscreensaver-getimage-file'.
+    - X11: Supports "Lock" messages from systemd, e.g. when logind.conf
+      has "HandleLidSwitch=lock" instead of "suspend".
+    - X11: Cope with dumb DPMS settings that existed pre-startup.
+    - X11: Silence new Perl warnings from `xscreensaver-getimage-file'.
+    - X11: Fix `sonar' pthreads crash on recent Pi systems.
+    - X11: Removed dependence on `gdk-pixbuf-xlib-2.0'.
+    - X11: GTK 3 is now required.
+    - Settings dialog shows diagnostics for bad image folders and feeds.
+    - URLs for `imageDirectory' can now point at archive.org collections.
+    - Sliders for various "Speed" preferences are easier to use.
+    - X11: Settings dialog shows saver description below embedded preview.
+    - X11: Better behavior when zero monitors are attached.
+    - X11: Improvements to inhibiting blanking while videos are playing:
+      No longer necessary to hack GNOME and KDE to get them to not usurp
+      the org.freedesktop.ScreenSaver endpoint.
+    - X11: `unicrud' displays character names.
+    - Updated `webcollage'.
+    - `sphereeversion' now has corrugation-mode, and can evert the Earth.
+    - `glplanet' is higher resolution, and displays time zones.
+    - `glslideshow' displays relative pathnames again.
+    - X11: fixed `sonar' failing to ping on some Linux systems.
+    - X11: Touch-screens work.
+    - X11: Hold down Backspace to clear the whole password field.
+  * Dropped patches (all applied upstream):
+    - 06-upstream-marbling-fix-signedness-for-x86_64-and-aarch64-on-ve.patch
+    - 08_upstream_man_page_typo.patch
+    - 54_no_dnalogo_hack.patch
+  * Add debian/patches/51_generalize_external_commands.patch:
+    - Brought back to improve man page display
+      Thanks to Aaron Rainbolt for reporting and initial work
+  * Add debian/patches/94_allow_unrecognized_conf_opts.patch:
+    - Patch the upstream configure so dh_auto_reconf works
+  * Add debian/patches/96_nogl-build-for-nogl-config.patch
+    - Allow generating the no-GL application defaults file
+  * Add debian/patches/98_daemon_desktop_file.patch
+    - Base daemon desktop file on upstream's version
+  * Exclude non-free fonts from dfsg tarball (Closes: #1028029)
+  * Ship xscreensaver-auth setuid (Closes: #1007724)
+  * Depend on fonts-urw-base35 instead of gsfonts (Closes: #1020369)
+  * Ship the upstream systemd unit file instead of our own
+  * Update build dependencies for GL, GTK, GDK libraries
+  * Add lintian overrides for false positive warnings
+
+  [ Aaron Rainbolt ]
+  * Add free "OCRA A Std" font replacement
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Thu, 26 Jan 2023 23:58:26 +0100
+
+xscreensaver (6.02+dfsg1-3) unstable; urgency=medium
+
+  * Depend on libcap-dev instead of deprecated libcap2-dev
+  * Fix cross-building by reinstating dh_auto_configure
+    (Closes: #1005956) Thanks Helmut Grohne
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Fri, 18 Feb 2022 09:11:58 +0100
+
+xscreensaver (6.02+dfsg1-2) unstable; urgency=medium
+
+  * Borrow patch from Fedora to fix building "marbling" on arm64
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Sat, 15 Jan 2022 16:40:56 +0100
+
+xscreensaver (6.02+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release 6.02, changes since 5.45:
+    - New hacks, `marbling' and `binaryhorizon'.
+    - `atlantis' behaviors are more random and lifelike.
+    - `headroom' is now Mask Headroom.
+    - X11: `fontglide' skips fonts that can't display ASCII.
+    - X11: Use asterisks in the password dialog if the system fonts
+      don't have bullets in them.
+    - X11: "Disable Screen Saver" was behaving like "Blank Screen Only".
+    - X11: Properly disable the server's built-in screen saver.
+    - X11: The passwdTimeout option was being ignored.
+    - X11: The display of the unlock thermometer was weird.
+    - X11: Fixed password entry on old-school multi-screen setups (:0.1).
+    - X11: Worked around a KDE 5 compositor bug that caused the desktop
+          to momentarily become visible when cycling.
+    - X11: Fixed possible high CPU usage in `xscreensaver-systemd'.
+    - X11: Fixed some spurious warnings in `xscreensaver-text'.
+    - X11: Warn when Wayland is in use, since it makes both screen saving
+          and locking impossible.
+    - X11: Major refactor of the `xscreensaver' daemon for improved
+          security, dividing it into three programs: `xscreensaver',
+          `xscreensaver-gfx' and `xscreensaver-auth'.
+    - X11: Dropped support for systems older than X11R7 (2009).
+    - X11: Renamed `xscreensaver-demo' to `xscreensaver-settings'.
+    - X11: Unlock dialog has user-selectable color schemes.
+    - X11: Everything uses XFreeType for fonts now.
+    - X11: Install a few custom fonts needed by some savers.
+    - X11: Fading works on systems without gamma (e.g. Raspberry Pi).
+    - X11: Use EGL instead of GLX when available.
+    - X11: `xscreensaver-systemd' now detects when a video player has
+          inhibited screen blanking and then exits without uninhibiting.
+    - Improved GLSL and GLES3 support: Phong shading in `etruscanvenus',
+          `hypertorus', `klein', `projectiveplane',`romanboy' and
+          `sphereeversion'.
+    - Updates to `cubicgrid'.
+  * Drop patches:
+    - 14_fix-updating-outputs-info.patch (obsolete)
+    - 21_driver_xscreensaver-getimage-video (applied upstream)
+    - 51_generalize_external_commands.patch (applied upstream)
+    - 56_password_dialog_reworded.patch (obsolete)
+    - 80_Makefile_in-clean-fix.patch (applied upstream)
+  * Add debian/patches/08_upstream_man_page_typo.patch
+  * Updated desktop files (name and description changes from upstream)
+  * Prevent build install failure on hurd and kfreebsd
+  * Use upstream configure instead of running autoreconf
+    (Closes: #978926)
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Mon, 10 Jan 2022 23:10:18 +0100
+
+xscreensaver (5.45+dfsg1-2) unstable; urgency=medium
+
+  * Do not assign raw net capability to "sonar" hack due to a security
+    vulnerability in mesa (Closes: #987149)
+  * Make sure is systemd unit is disabled if upgrading from previous
+    two releases (Closes: #978589)
+  * Do not enable screensaver on login screen (Closes: #979562, #988158)
+  * Recommend needed font for unlock dialog (Closes: #978086)
+  * Apply fix for crash on video output disconnection (Closes: #989508)
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Sun, 06 Jun 2021 12:25:19 +0200
+
+xscreensaver (5.45+dfsg1-1) unstable; urgency=low
+
+  * New upstream release 5.45
+    - New hacks, `covid19', `headroom', `sphereeversion' and `beats'.
+    - Shader updates to `hypertorus'.
+    - No more image-loading pause in `glslideshow'.
+    - BSOD supports GNOME.
+    - Image loaders support SVG.
+    - X11: `xscreensaver-systemd' now allows video players to request that
+      the screen not blank.
+    - X11: -log implies -verbose -no-capture-stderr.
+    - X11: Glade -> GtkBuilder.
+    - Various bug fixes. (Closes: #956251)
+  * Drop libglade2 dependency (Closes: #967892, #967232)
+  * debian/rules: Fix package build on architectures without systemd
+  * Use setcap in postinst only if available (Linux)
+  * Drop patches accepted upstream:
+    - 12_upstream_man_pages_name_header_backslash.patch
+    - 14_upstream_gibson_man_page_name.patch
+    - 16_upstream_cross_ac_path_tool.patch
+    - 18_upstream_misspellings.patch
+  * debian/patches/12_upstream_man_beats_speereev_backslash.patch:
+    - man page name header syntax fixes
+  * debian/patches/94_cpu_usage_verbose.patch: Mostly upstreamed
+  * debian/patches/53_default_newLoginCommand.patch: Update to use
+    dm-tool instead of gdmflexiserver as default for user switching
+  * Use gdm-command as fallback in xscreensaver-wrapper.sh
+  * Recommend xfonts-100dpi (Closes: #932837) thanks jwz
+  * Ship hacks under /usr/libexec instead of /usr/lib (thanks jwz)
+  * Do not enable systemd unit by default, since it breaks existing
+    (non-systemd) setups (Closes: #977804) Note it only got enabled
+    by default in 5.44+dfsg1-2.
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Wed, 23 Dec 2020 00:09:44 +0100
+
+xscreensaver (5.44+dfsg1-2) unstable; urgency=low
+
+  [ Andrej Shadura ]
+  * debian/rules rewritten to short dh form
+  * Bump debhelper from deprecated 9 to 12
+
+  [ Tormod Volden ]
+  * Drop build-depends on autotools-dev and dh-autoreconf
+  * Limit setcap usage to Linux architectures
+  * New, upstreamed patches:
+    - 16_upstream_cross_ac_path_tool.patch (thanks Helmut Grohne)
+      Fixes cross-building from scratch (Closes: #973338)
+    - 18_upstream_misspellings.patch (various misspellings)
+  * debian/copyright: Clarify noseguy/hyperball/hypercube
+  * Add build-depends on gdk-pixbuf libraries no longer pulled in
+    by GTK 2 (Closes: #975703) thanks Simon McVittie
+  * Add NEWS link to upstream README (release notes)
+  * Bump Standards-Version to 4.5.1
+  * Build without shadow passwd support since we rely on pam
+
+ -- Tormod Volden <debian.tormod@gmail.com>  Tue, 08 Dec 2020 19:49:18 +0100
+
+xscreensaver (5.44+dfsg1-1) unstable; urgency=medium
+
+  [ Patrice Duroux ]
+  * Fix invalid syntax in glitchpeg.desktop (Closes: #920753)
+
+  [ Will Ross ]
+  * New upstream release 5.43 (Closes: #954017)
+    - New hacks, `GravityWell', `DeepStars'.
+    - GLPlanet now supports the Mercator projection.
+    - Bouncing Cow has mathematically ideal cows (spherical, frictionless).
+    - Foggy toasters.
+    - Unknown Pleasures can now use an image file as a clip mask.
+    - Updated `webcollage' for recent changes.
+    - X11: Added some sample unlock dialog color schemes to the .ad file.
+    - X11: On systemd systems, closing your laptop lid might actually lock
+      your screen now, maybe. (Closes: #781961)
+    - X11: 'sonar' can ping without being setuid by using setcap.
+      (Closes: #96677)
+  * Removed patches applied upstream or obsolete:
+    - debian/patches/12_upstream_hurd-no-pthread_stack_min.patch
+    - debian/patches/14_upstream_cpp_comments.patch
+    - debian/patches/91_allow_cross_compilation.patch.patch
+
+  [ Tormod Volden ]
+  * New upstream release 5.44
+    - New hacks, `gibson', `etruscanvenus' and `scooter'.
+    - BSOD supports Tivo and Nintendo.
+    - New color options in `romanboy', `projectiveplane', `hypertorus'
+      and `klein'.
+    - Performance tweaks for `eruption', `fireworkx', `halftone', `halo',
+      `moire2', `rd-bomb'
+    - X11: Always use $HOME/.xscreensaver, not getpwuid's directory.
+    - Various bug fixes.
+  * Drop obsolete or upstreamed patches:
+    - debian/patches/22_hacks_barcode.patch
+    - debian/patches/23_hacks_glx_glsnake.patch
+    - debian/patches/24_install_systemd_helper.patch
+    - debian/patches/93_driver_distclean.patch
+  * New, upstreamed patches:
+    - 12_upstream_man_pages_name_header_backslash.patch
+    - 14_upstream_gibson_man_page_name.patch
+    - 99_cpu_usage_verbose.patch
+  * Use dh_update_autotools_config and update debhelper deps
+
+  [ Andrej Shadura ]
+  * debian/copyright: use spaces rather than tabs to start
+    continuation lines.
+  * Remove deprecated Encoding key from desktop file
+    debian/xscreensaver-daemon.desktop.
+
+ -- Andrej Shadura <andrewsh@debian.org>  Sat, 17 Oct 2020 18:08:05 +0200
+
+# Older entries have been removed from this changelog.
+# To read the complete changelog use `apt changelog xscreensaver-screensaver-webcollage`.

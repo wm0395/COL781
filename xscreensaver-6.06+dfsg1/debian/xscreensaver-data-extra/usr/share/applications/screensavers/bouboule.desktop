@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Bouboule
+Exec=/usr/libexec/xscreensaver/bouboule --root
+TryExec=/usr/libexec/xscreensaver/bouboule
+Comment=A deforming balloon with varying-sized spots painted on its invisible surface. Written by Jeremie Petit.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

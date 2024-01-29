@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Attraction
+Exec=/usr/libexec/xscreensaver/attraction --root
+TryExec=/usr/libexec/xscreensaver/attraction
+Comment=Points attract each other and then repel, similar to the strong and weak nuclear forces. Written by Jamie Zawinski and John Pezaris.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

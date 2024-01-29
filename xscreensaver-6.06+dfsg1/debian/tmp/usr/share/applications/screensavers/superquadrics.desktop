@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Superquadrics
+Exec=/usr/libexec/xscreensaver/superquadrics --root
+TryExec=/usr/libexec/xscreensaver/superquadrics
+Comment=Morphing 3D shapes. Written by Ed Mackey.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

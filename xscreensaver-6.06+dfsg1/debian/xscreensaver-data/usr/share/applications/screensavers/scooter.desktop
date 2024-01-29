@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Scooter
+Exec=/usr/libexec/xscreensaver/scooter --root
+TryExec=/usr/libexec/xscreensaver/scooter
+Comment=Zooming down a tunnel in a star field. Originally an Amiga hack. Written by Sven Thoennissen; 2001. Ported by EoflaOE.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

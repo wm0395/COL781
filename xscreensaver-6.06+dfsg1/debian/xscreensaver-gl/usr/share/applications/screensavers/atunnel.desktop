@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Name=Atunnel
+Exec=/usr/libexec/xscreensaver/atunnel --root
+TryExec=/usr/libexec/xscreensaver/atunnel
+Comment=Zooming through a textured tunnel. Written by Eric Lassauge and Roman Podobedov.
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Screensaver;
+OnlyShowIn=MATE;

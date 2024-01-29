@@ -1,0 +1,34 @@
+#
+# Our wrapper may set newLoginCommand first
+# "Screensaver" is a Reserved Category
+#
+Index: xscreensaver-git/driver/xscreensaver.desktop.in
+===================================================================
+--- xscreensaver-git.orig/driver/xscreensaver.desktop.in
++++ xscreensaver-git/driver/xscreensaver.desktop.in
+@@ -1,8 +1,12 @@
+ [Desktop Entry]
+-Exec=xscreensaver
+ Icon=xscreensaver
+ _Name=XScreenSaver
+ _Comment=XScreenSaver daemon: screen saver and locker
+ Type=Application
+-Categories=Screensaver;Security
++Categories=Security
+ Terminal=false
++TryExec=xscreensaver
++Exec=/usr/share/xscreensaver/xscreensaver-wrapper.sh -nosplash
++NoDisplay=true
++X-KDE-StartupNotify=false
++# NotShowIn=KDE;GNOME;
+Index: xscreensaver-git/driver/xscreensaver-settings.desktop.in
+===================================================================
+--- xscreensaver-git.orig/driver/xscreensaver-settings.desktop.in
++++ xscreensaver-git/driver/xscreensaver-settings.desktop.in
+@@ -4,5 +4,5 @@ Icon=xscreensaver
+ _Name=XScreenSaver Settings
+ _Comment=Change screensaver properties
+ Type=Application
+-Categories=Settings;DesktopSettings;Screensaver;Security
++Categories=Settings;DesktopSettings;Security
+ Terminal=false

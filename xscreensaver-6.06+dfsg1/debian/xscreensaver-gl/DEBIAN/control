@@ -1,0 +1,37 @@
+Package: xscreensaver-gl
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 19649
+Depends: libwww-perl, libcap2-bin, libc6 (>= 2.34), libegl1, libgdk-pixbuf-2.0-0 (>= 2.22.0), libgl1, libglib2.0-0 (>= 2.16.0), libglu1-mesa | libglu1, libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+Suggests: xscreensaver
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: GL(Mesa) screen saver modules for screensaver frontends
+ XScreenSaver is a modular screen saver and locker for X11,
+ containing more than 200 screen savers.
+ .
+ This package contains a small selection of 3D (OpenGL) screen saver
+ modules from the xscreensaver collection. This package can be used by
+ xscreensaver and also some other screensaver engines.
+ .
+ This is the set of GL screensavers shipped by default:
+ antinspect, antspotlight, atunnel, beats, blinkbox, bubble3d,
+ chompytower, circuit, cityflow, covid19, crumbler, cubestack,
+ cubestorm, cubetwist, discoball, dymaxionmap, endgame, energystream,
+ engine, esper, etruscanvenus, flipflop, flipscreen3d, flyingtoasters,
+ gears, geodesic, geodesicgears, gflux, gibson, glblur, glcells,
+ gleidescope, glknots, glmatrix, glschool, glslideshow, glsnake,
+ gltext, headroom, hexstrut, hextrail, hydrostat, hypertorus,
+ jigglypuff, kaleidocycle, lavalite, lockward, mapscroller, maze3d,
+ mirrorblob, moebius, moebiusgears, molecule, morph3d, nakagin,
+ peepers, pipes, polyhedra, polytopes, projectiveplane, pulsar,
+ quasicrystal, queens, raverhoop, razzledazzle, romanboy,
+ sierpinski3d, sonar, sphereeversion, spheremonics, splitflap,
+ splodesic, squirtorus, stonerview, superquadrics, topblock, unicrud,
+ vigilance, voronoi, winduprobot.
+ .
+ More display modes can be found in the xscreensaver-data,
+ xscreensaver-data-extra and xscreensaver-gl-extra packages.

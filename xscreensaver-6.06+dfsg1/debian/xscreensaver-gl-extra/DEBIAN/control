@@ -1,0 +1,30 @@
+Package: xscreensaver-gl-extra
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 11437
+Depends: xscreensaver-gl, libc6 (>= 2.34), libegl1, libgdk-pixbuf-2.0-0 (>= 2.22.0), libgl1, libgle3 (>= 3.1.0), libglib2.0-0 (>= 2.16.0), libglu1-mesa | libglu1, libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: Extra GL(Mesa) screen saver modules for screensaver frontends
+ XScreenSaver is a modular screen saver and locker for X11,
+ containing more than 200 screen savers.
+ .
+ This package contains the rest of the 3D (OpenGL) screen saver
+ modules from the xscreensaver collection. This package can be used by
+ xscreensaver and also some other screensaver engines.
+ .
+ This is the set of GL screensavers not shipped by default with
+ xscreensaver-gl:
+ antmaze, atlantis, blocktube, boing, bouncingcow, boxed, cage,
+ carousel, companioncube, crackberg, cube21, cubenetic, cubicgrid,
+ dangerball, deepstars, extrusion, fliptext, flurry, gravitywell, glhanoi,
+ glplanet, handsy, hilbert, hypnowheel, jigsaw, juggler3d, klein, lament,
+ menger, noof, photopile, pinion, providence, rubik, rubikblocks, sballs,
+ skytentacles, sproingies, stairs, starwars, surfaces, tangram, timetunnel,
+ tronbit, unknownpleasures.
+ .
+ More display modes can be found in the xscreensaver-data,
+ xscreensaver-data-extra and xscreensaver-gl packages.

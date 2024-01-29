@@ -3,14 +3,14 @@
 
 namespace Geometric{
     triangle::triangle(){
-        a = glm::vec2(0.0f);
-        b = glm::vec2(0.0f);
-        c = glm::vec2(0.0f);
+        a = glm::vec3(0.0f);
+        b = glm::vec3(0.0f);
+        c = glm::vec3(0.0f);
         A = line(a, b);
         B = line(b, c);
         C = line(c, a);
     }
-    triangle::triangle(glm::vec2 a, glm::vec2 b, glm::vec2 c){
+    triangle::triangle(glm::vec3 a, glm::vec3 b, glm::vec3 c){
         this->a = a;
         this->b = b;
         this->c = c;
@@ -21,6 +21,10 @@ namespace Geometric{
     }
     
     bool triangle::isInside(glm::vec2 p){
+        return A.isLeft(p) && B.isLeft(p) && C.isLeft(p);
+    }
+
+    bool triangle::isInside(glm::vec3 p){
         return A.isLeft(p) && B.isLeft(p) && C.isLeft(p);
     }
 

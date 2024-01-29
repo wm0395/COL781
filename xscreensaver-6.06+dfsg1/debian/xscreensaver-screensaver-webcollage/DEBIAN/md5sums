@@ -1,0 +1,8 @@
+b6dabb58028780f060eef55817d475da  usr/bin/webcollage-helper
+fdf1e026bfbb2ecb107ea9d32b536103  usr/libexec/xscreensaver/webcollage
+b286de9fd1cfd2e88f252ad5f2f39c8e  usr/share/applications/screensavers/webcollage.desktop
+c2c75deab832d496253e59b1138d60f4  usr/share/doc/xscreensaver-screensaver-webcollage/changelog.Debian.gz
+2db75939f75a15e21bbd61e60082539d  usr/share/doc/xscreensaver-screensaver-webcollage/copyright
+a559e417aa60858951940f970cf13eea  usr/share/lintian/overrides/xscreensaver-screensaver-webcollage
+2248b45441e47f0b404734cca98bd624  usr/share/man/man6/webcollage.6x.gz
+6b13ba15e3284e17325a2903097ae492  usr/share/xscreensaver/config/webcollage.xml

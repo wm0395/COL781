@@ -1,0 +1,17 @@
+Package: xscreensaver-screensaver-webcollage
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 181
+Depends: libwww-perl, xscreensaver-data, libc6 (>= 2.34), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.12.0), libjpeg62-turbo (>= 1.3.1)
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: Webcollage screen saver module from XScreenSaver
+ This package ships the mode webcollage which displays images from random
+ web searches on the Internet.
+ .
+ WARNING: The Internet being what it is, absolutely anything might show up
+ in the collage of search results including -- quite possibly -- pornography,
+ or even nudity. Please act accordingly.

@@ -1,0 +1,18 @@
+#
+# From upstream (jwz)
+# Fixes DPMS settings being reset when settings are opened
+# Bug #1031076
+#
+
+Index: xscreensaver-git/driver/demo-Gtk.c
+===================================================================
+--- xscreensaver-git.orig/driver/demo-Gtk.c
++++ xscreensaver-git/driver/demo-Gtk.c
+@@ -1677,6 +1677,7 @@ switch_page_cb (GtkNotebook *notebook, G
+   state *s = &win->state;
+ 
+   if (s->debug_p) fprintf (stderr, "%s: tab changed\n", blurb());
++  populate_prefs_page (s);
+   pref_changed_cb (GTK_WIDGET (notebook), user_data);
+ 
+   /* If we're switching to page 0, schedule the current hack to be run.

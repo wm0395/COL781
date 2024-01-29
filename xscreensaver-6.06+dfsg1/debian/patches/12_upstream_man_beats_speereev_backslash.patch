@@ -1,0 +1,31 @@
+From: Tormod Volden <debian.tormod@gmail.com>
+Date: Sat Dec 19 17:23:14 2020 +0100
+Subject: [PATCH] man pages: Add backslash to section header separator
+Forwarded: 2020-12-19
+
+According to lexgrog(1) it is a good idea to retain the backslash.
+
+Index: xscreensaver-git/hacks/glx/beats.man
+===================================================================
+--- xscreensaver-git.orig/hacks/glx/beats.man
++++ xscreensaver-git/hacks/glx/beats.man
+@@ -1,6 +1,6 @@
+ .TH XScreenSaver 1 "2020-Feb-04" "X Version 11"
+ .SH NAME
+-beats - create offset beating figures
++beats \- create offset beating figures
+ .SH SYNOPSIS
+ .B beats
+ [\-\-display \fIhost:display.screen\fP]
+Index: xscreensaver-git/hacks/glx/sphereeversion.man
+===================================================================
+--- xscreensaver-git.orig/hacks/glx/sphereeversion.man
++++ xscreensaver-git/hacks/glx/sphereeversion.man
+@@ -1,6 +1,6 @@
+ .TH XScreenSaver 1 "" "X Version 11"
+ .SH NAME
+-sphereeversion - Displays a sphere eversion.
++sphereeversion \- Displays a sphere eversion.
+ .SH SYNOPSIS
+ .B sphereeversion
+ [\-\-display \fIhost:display.screen\fP]

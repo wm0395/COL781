@@ -1,0 +1,16 @@
+#
+# This "please upgrade" message would drive users crazy. Bug #819703
+#
+Index: xscreensaver-git/driver/prefsw.c
+===================================================================
+--- xscreensaver-git.orig/driver/prefsw.c
++++ xscreensaver-git/driver/prefsw.c
+@@ -1467,6 +1467,8 @@ senescent_p (void)
+      of date.
+   */
+ 
++  return 0;
++
+   time_t now = time ((time_t *) 0);				/*   d   */
+   struct tm *tm = localtime (&now);				/*   o   */
+   const char *s = screensaver_id;				/*   n   */

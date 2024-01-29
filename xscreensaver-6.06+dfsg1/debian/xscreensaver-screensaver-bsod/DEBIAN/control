@@ -1,0 +1,16 @@
+Package: xscreensaver-screensaver-bsod
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 459
+Depends: xscreensaver-data, libc6 (>= 2.34), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.16.0), libx11-6, libxext6, libxft2 (>> 2.1.1), libxt6
+Section: x11
+Priority: optional
+Homepage: https://www.jwz.org/xscreensaver/
+Description: BSOD screen saver module from XScreenSaver
+ This package ships the mode BSOD that shows the popular Blue Screens of Death
+ from several OSes including BSD, Windows, Linux, Solaris, Apple and much more.
+ .
+ WARNING: This screensaver could be confused with a real BSOD and could lead an
+ user to reboot the machine with consequences like data loss.

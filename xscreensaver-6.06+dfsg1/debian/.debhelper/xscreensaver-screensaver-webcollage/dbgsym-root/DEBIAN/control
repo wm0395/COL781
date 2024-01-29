@@ -1,0 +1,12 @@
+Package: xscreensaver-screensaver-webcollage-dbgsym
+Source: xscreensaver
+Version: 6.06+dfsg1-3
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Tormod Volden <debian.tormod@gmail.com>
+Installed-Size: 33
+Depends: xscreensaver-screensaver-webcollage (= 6.06+dfsg1-3)
+Section: debug
+Priority: optional
+Description: debug symbols for xscreensaver-screensaver-webcollage
+Build-Ids: 48caa8f6f11b65d7b28ceec34ad6c4ac43b691a3

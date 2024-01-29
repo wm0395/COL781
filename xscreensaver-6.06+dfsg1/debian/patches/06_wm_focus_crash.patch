@@ -1,0 +1,19 @@
+#
+# Comment out error handler registration that would interfere
+# with GTK's own error handling (bug #1030909)
+# Workaround until GTK possibly fixes it.
+#
+
+Index: xscreensaver-git/driver/demo-Gtk.c
+===================================================================
+--- xscreensaver-git.orig/driver/demo-Gtk.c
++++ xscreensaver-git/driver/demo-Gtk.c
+@@ -5030,7 +5030,7 @@ xscreensaver_window_realize (GtkWidget *
+       XtAppCreateShell (progname, progclass, applicationShellWidgetClass,
+                         s->dpy, 0, 0);
+       p->db = XtDatabase (s->dpy);
+-      XSetErrorHandler (x_error);
++      /* XSetErrorHandler (x_error); */
+ 
+       signal (SIGPIPE, SIG_IGN);  /* Is this necessary? */
+ 
