@@ -20,7 +20,7 @@ namespace COL781 {
 		int frameWidth;
 		int frameHeight;
 		int displayScale;
-		int spp; // Samples-per-pixel
+		int SPP; // Samples-per-pixel
 
 		template <> float Attribs::get(int index) const;
 		template <> glm::vec2 Attribs::get(int index) const;
@@ -160,6 +160,7 @@ namespace COL781 {
                     frameHeight = height;
                     frameWidth = width;
                     displayScale = 1;
+					SPP = spp;
                     int screenWidth = frameWidth * displayScale;
                     int screenHeight = frameHeight * displayScale;
                     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
@@ -169,7 +170,7 @@ namespace COL781 {
                     } else {
                         windowSurface = SDL_GetWindowSurface(window);
                         framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
-						pointBuffer = std::vector<std::vector<std::vector<float>>>(frameWidth, std::vector<std::vector<float>>(frameHeight, std::vector<float>(5, 0.0f)));
+						pointBuffer = std::vector<std::vector<std::vector<float>>>(frameWidth, std::vector<std::vector<float>>(frameHeight, std::vector<float>(5, -1.0f)));
 						// renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
 					}
                 }
@@ -257,11 +258,16 @@ namespace COL781 {
 			// SDL_RenderClear(renderer);
 			// SDL_FreeSurface(framebuffer);
 			// framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
-			SDL_FillRect(framebuffer, nullptr, SDL_MapRGBA(framebuffer->format, 
-			static_cast<Uint8> (255*color.r), 
-			static_cast<Uint8> (255*color.g),
-			static_cast<Uint8> (255*color.b),
-			static_cast<Uint8> (255*color.a)));
+			// SDL_FillRect(framebuffer, nullptr, SDL_MapRGBA(framebuffer->format, 
+			// static_cast<Uint8> (255*color.r), 
+			// static_cast<Uint8> (255*color.g),
+			// static_cast<Uint8> (255*color.b),
+			// static_cast<Uint8> (255*color.a)));
+			for(int i = 0; i < frameWidth; i++){
+				for(int j = 0; j < frameHeight; j++){
+					pointBuffer[i][j] = {-1.0f, color.r, color.g, color.b, color.a};
+				}
+			}
 		}
 
 		void Rasterizer::useShaderProgram(const ShaderProgram &program){
@@ -280,26 +286,52 @@ namespace COL781 {
 		void Rasterizer::drawObject(const Object &object){
 			// Assuming atributeValues and Dims are vertices in-order
 			auto vertices = object.attributeValues;
-			helper::frameData* frame;
-			frame->framebuffer = framebuffer;
-			frame->frameWidth = frameWidth;
-			frame->frameHeight = frameHeight;
+
+			// for (auto& x : vertices){
+			// 	for (auto& elem:x){
+			// 		std::cout << elem << " ";
+			// 	}
+			// 	std::cout << std::endl;
+			// }
+
+			// helper::frameData* frame;
+			// frame->framebuffer = framebuffer;
+			// frame->frameWidth = frameWidth;
+			// frame->frameHeight = frameHeight;
 
 			std::vector<float> color = {0,0,1,0,1};
 
-			glm::vec4 screenMat = glm::vec4(glm::vec4(0.0f));
+			// glm::vec4 screenMat = glm::vec4(glm::vec4(0.0f));
 
-			if(!depth || depth){
-				std::vector<glm::vec3> a = std::vector<glm::vec3>();
+
+			if(!depth){
+				// std::cout << "here\n";
+				std::vector<glm::vec3> a = std::vector<glm::vec3>(3, glm::vec3(0.0f));
 				for(auto index: object.indices){
 
 					for(int i = 0; i < 3; i++){
-						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], 0);
+						// std::cout << index[i] << std::endl;
+						// std::cout << vertices[index[i]][0] << " " << vertices[index[i]][1] << "\n";
+						// std::cout << frameWidth << " " << frameHeight << std::endl;
+						// std::cout << (frameWidth/2)*vertices[index[i]][0] << std::endl;
+						// std::cout << (frameHeight/2)*vertices[index[i]][1] << std::endl;
+						a[i] = glm::vec3((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), 0);
+						// std::cout << "ok\n";
 					}
+
+					// std::cout << "created a\n";
+
+					// for (auto& elem : a){
+					// 	std::cout << elem.x << " " << elem.y << " " << elem.z << std::endl;
+					// }
 
 					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
 
-					raster::anti_alias( T, spp, color, pointBuffer);
+					// std::cout << "created triangle\n";
+					
+					// T.print();
+
+					raster::anti_alias( T, SPP, color, pointBuffer);
 				}
 			}
 			else{
@@ -307,12 +339,12 @@ namespace COL781 {
 				for(auto index: object.indices){
 
 					for(int i = 0; i < 3; i++){
-						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX);
+						a[i] = glm::vec3(frameWidth/2*(vertices[index[i]][0]+1), frameHeight/2*(vertices[index[i]][1]+1), vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX);
 					}
 
 					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
 
-					raster::anti_alias( T, spp, color, pointBuffer);
+					raster::anti_alias( T, SPP, color, pointBuffer);
 				}
 			}
 		}
@@ -322,7 +354,7 @@ namespace COL781 {
 			SDL_PixelFormat *format = framebuffer->format;
 			for(int j = 0; j < frameHeight; j++){
 				for(int i = 0; i < frameWidth; i++){
-					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*pointBuffer[i][j][1], 255*pointBuffer[i][j][2], 255*pointBuffer[i][j][3], 255*pointBuffer[i][j][4]); 
+					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*pointBuffer[i][frameHeight-1-j][1], 255*pointBuffer[i][frameHeight-1-j][2], 255*pointBuffer[i][frameHeight-1-j][3], 255*pointBuffer[i][frameHeight-1-j][4]); 
 				}
 			}
 			SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
@@ -357,6 +389,22 @@ namespace COL781 {
 			}
 			std::cout << std::endl;
 			std::cout << std::endl;
+		}
+
+		void test(){
+			glm::vec3 a = glm::vec3(0,0, 0), b = glm::vec3(0,10,5), c = glm::vec3(7, 18, 9);
+			Geometric::triangle T = Geometric::triangle(a,b,c);
+			T.print();
+			int spp = 1;
+			std::vector<float> attrib = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+			std::vector<std::vector<std::vector<float>>> pointBuffer = std::vector<std::vector<std::vector<float>>>(50, std::vector<std::vector<float>>(50, std::vector<float>(5, 0.0f)));
+			raster::anti_alias(T, spp, attrib, pointBuffer);
+			for(int j = 0; j < 50; j++){
+				for(int i = 0; i< 50 ;i++)
+					std::cout<<pointBuffer[i][j][0]<<" ";
+				std::cout<<"\n";
+			}
+			
 		}
 
 	}

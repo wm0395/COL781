@@ -46,7 +46,10 @@ int main() {
     r.printObject(tickmark);
 
     std::cout << "i have created my object\n\n";
-
+    
+    // std::cout << "TESTING\n";
+    // R::test();
+    // std::cout << "TEST DONE\n";
     
 
     while (!r.shouldQuit()) {

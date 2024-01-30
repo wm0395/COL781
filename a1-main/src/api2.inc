@@ -81,4 +81,5 @@ public:
 private:
 	SDL_Window *window;
 	bool quit = false;
+	int spp;
 };

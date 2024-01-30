@@ -16,6 +16,8 @@ namespace Geometric{
         float intercept_x(float y);
 
         float intercept_y(float x);
+
+        void print();
     };
     class triangle {
     public:
@@ -28,6 +30,8 @@ namespace Geometric{
         bool isInside(glm::vec2 p);
 
         bool isInside(glm::vec3 p);
+
+        void print();
 
     private:
         void make_anti_clockwise();

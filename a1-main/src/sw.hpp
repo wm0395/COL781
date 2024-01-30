@@ -62,6 +62,8 @@ namespace COL781 {
 			std::vector<glm::ivec3> indices;
 		};
 
+		void test();
+
 #include "api2.inc"
 
 	}

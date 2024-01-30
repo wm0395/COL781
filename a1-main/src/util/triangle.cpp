@@ -1,5 +1,6 @@
 #include "helper.hpp"
 #include "geometric.hpp"
+#include <iostream>
 
 namespace Geometric{
     triangle::triangle(){
@@ -11,6 +12,7 @@ namespace Geometric{
         C = line(c, a);
     }
     triangle::triangle(glm::vec3 a, glm::vec3 b, glm::vec3 c){
+        // std::cout << "makinng triangle\n";
         this->a = a;
         this->b = b;
         this->c = c;
@@ -33,5 +35,14 @@ namespace Geometric{
         if(!A.isLeft(this->c)){
             helper::swap(this->a, this->b);
         }
+    }
+
+    void triangle::print(){
+        std::cout << a.x << " " << a.y << " " << a.z << "\n";
+        std::cout << b.x << " " << b.y << " " << b.z << "\n";
+        std::cout << c.x << " " << c.y << " " << c.z << "\n";
+        A.print();
+        B.print();
+        C.print();
     }
 }
