@@ -13,15 +13,6 @@ namespace COL781 {
 
 		// Forward declarations
 
-		SDL_Surface* framebuffer = NULL;
-		SDL_Surface *windowSurface = NULL;
-		std::vector<std::vector<std::vector<float>>> pointBuffer; 
-		bool depth;
-		int frameWidth;
-		int frameHeight;
-		int displayScale;
-		int spp; // Samples-per-pixel
-
 		template <> float Attribs::get(int index) const;
 		template <> glm::vec2 Attribs::get(int index) const;
 		template <> glm::vec3 Attribs::get(int index) const;
@@ -170,7 +161,6 @@ namespace COL781 {
                         windowSurface = SDL_GetWindowSurface(window);
                         framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
 						pointBuffer = std::vector<std::vector<std::vector<float>>>(frameWidth, std::vector<std::vector<float>>(frameHeight, std::vector<float>(5, 0.0f)));
-						// renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
 					}
                 }
                 return success;
@@ -198,14 +188,6 @@ namespace COL781 {
 			Object object;
 			return object;
 		}
-
-		// struct Object {
-		// 	using Buffer = std::vector<float>;
-		// 	std::vector<Buffer> attributeValues;
-		// 	std::vector<int> attributeDims;
-		// 	std::vector<glm::ivec3> indices;
-		// };
-
 
 		void setAttribs(Object& object, int attribIndex, int n, int d, const float* data){
 			std::cout << "Inside the setAttribs\n";
@@ -253,10 +235,6 @@ namespace COL781 {
 		}
 
 		void Rasterizer::clear(glm::vec4 color){
-			// SDL_SetRenderDrawColor(renderer, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
-			// SDL_RenderClear(renderer);
-			// SDL_FreeSurface(framebuffer);
-			// framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 255*color[0], 255*color[1], 255*color[2], 255*color[3]);
 			SDL_FillRect(framebuffer, nullptr, SDL_MapRGBA(framebuffer->format, 
 			static_cast<Uint8> (255*color.r), 
 			static_cast<Uint8> (255*color.g),
@@ -289,7 +267,7 @@ namespace COL781 {
 
 			glm::vec4 screenMat = glm::vec4(glm::vec4(0.0f));
 
-			if(!depth || depth){
+			if(!depth){
 				std::vector<glm::vec3> a = std::vector<glm::vec3>();
 				for(auto index: object.indices){
 
@@ -330,7 +308,7 @@ namespace COL781 {
 		}		
 
 		// Print the contents of the Object
-		void Rasterizer::printObject(const Object& object) {
+		void printObject(const Object& object) {
 			// Print attributeValues
 			std::cout << "attributeValues:" << std::endl;
 			for (const auto& buffer : object.attributeValues) {

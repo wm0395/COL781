@@ -48,13 +48,6 @@ namespace COL781 {
 			Uniforms uniforms;
 		};
 
-		// struct Object {
-		// 	using Buffer = std::vector<float>;
-		// 	std::vector<Buffer> attributeValues;
-		// 	std::vector<int> attributeDims;
-		// 	std::vector<glm::ivec3> indices;
-		// };
-
 		struct Object {
 			using Buffer = std::vector<float>;
 			std::vector<Buffer> attributeValues;
@@ -62,7 +55,25 @@ namespace COL781 {
 			std::vector<glm::ivec3> indices;
 		};
 
-#include "api2.inc"
+		class Rasterizer {
+		public:
+#include "api.inc"
+
+		private:
+			SDL_Window *window;
+			bool quit;
+
+			SDL_Surface* framebuffer = NULL;
+			SDL_Surface *windowSurface = NULL;
+			std::vector<std::vector<std::vector<float>>> pointBuffer; 
+			bool depth;
+			int frameWidth;
+			int frameHeight;
+			int displayScale;
+			int spp; // Samples-per-pixel
+		};
+
+		void printObject(const Object &object);
 
 	}
 }
