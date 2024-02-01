@@ -7,23 +7,16 @@ using namespace COL781;
 
 namespace raster{
     float sample_aa(int i, int j, int spp, Geometric::triangle &T){
-        // std::cout << "in sample_aa\n";
-        // glm::vec4 sum = glm::vec4(0.0f);
-        float sum= 0;
+        float sum = 0;
         for(int k = 0; k < spp; k++){
             for(int l = 0; l < spp; l++){
                 float x = i + (float)k/spp;
                 float y = j + (float)l/spp;
                 if(T.isInside(glm::vec2(x, y))){
-                    // std::cout << "sume bada\n";
                     sum += 1;
                 }
-                // else{
-                //     sum += pixels[y][x];
-                // }
             }
         }
-        // std::cout << "sum : " << sum << std::endl;
         return (sum/float(spp*spp));
     }
 
@@ -97,9 +90,15 @@ namespace raster{
         for(int j = y_min; j <= y_max; j++){
             for(int i = x_min; i <= x_max; i++){
                 glm::vec2 p = glm::vec2(i,j);
-                glm::vec3 bary = T.getBarycentric();
-                if(T.isInside(p) && ){
-                    ;
+                // glm::vec3 bary = T.getBarycentric(glm::vec2(i, j));
+                glm::vec3 bary = glm::vec3(1/3,1/3,1/3);
+                float z = bary.x*a.z + bary.y*b.z + bary.z*c.z;
+                if(z > 0 && z < pointBuffer[i][j].get<float>(0) && T.isInside(p)){
+                    float alpha = sample_aa(i,j,spp,T);
+                    pointBuffer[i][j].set(0, z);
+                    glm::vec4 color = pointBuffer[i][j].get<glm::vec4>(1);
+                    color.a *= alpha;
+                    pointBuffer[i][j].set(1,  color);
                 }
             }
         }

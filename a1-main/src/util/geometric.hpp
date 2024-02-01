@@ -2,6 +2,7 @@
 #define GEOMETRIC_HPP
 
 #include <glm/glm.hpp>
+#include "../sw.hpp"
 using namespace COL781;
 namespace Geometric{
     class line {
