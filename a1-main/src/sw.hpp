@@ -17,6 +17,7 @@ namespace COL781 {
 			// only float, glm::vec2, glm::vec3, glm::vec4 allowed
 			template <typename T> T get(int attribIndex) const;
 			template <typename T> void set(int attribIndex, T value);
+			void print();
 		private:
 			std::vector<glm::vec4> values;
 			std::vector<int> dims;

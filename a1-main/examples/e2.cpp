@@ -33,9 +33,6 @@ int main() {
 	r.setVertexAttribs(shape, 1, 4, colors);
 	r.setTriangleIndices(shape, 2, triangles);
 
-    std::cout << "printing the object => \n";
-    r.printObject(shape);
-
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.useShaderProgram(program);

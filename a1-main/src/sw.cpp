@@ -74,6 +74,11 @@ namespace COL781 {
 			}
 		}
 
+		void Attribs::print(){
+			std::cout << "values.size() : " << values.size() << "\n";
+			std::cout << "dims.size() => " << dims.size() << "\n";
+		}
+
 		template <> float Attribs::get(int index) const {
 			checkDimension(index, dims[index], 1);
 			return values[index].x;
@@ -245,6 +250,18 @@ namespace COL781 {
 			static_cast<Uint8> (255*color.g),
 			static_cast<Uint8> (255*color.b),
 			static_cast<Uint8> (255*color.a)));
+			Attribs defaultAttrib = Attribs();
+			defaultAttrib.set(0,(float)LONG_LONG_MAX);
+			color.x = color.r;
+			color.y = color.g;
+			color.z = color.b;
+			color.w = color.a;
+			defaultAttrib.set(1, color);			
+			for(int i = 0; i < frameWidth; i++){
+				for(int j = 0; j < frameHeight; j++){
+					pointBuffer[i][j] = defaultAttrib;
+				}
+			}
 		}
 
 		void Rasterizer::useShaderProgram(const ShaderProgram &program){
@@ -266,12 +283,12 @@ namespace COL781 {
 			// Assuming atributeValues and Dims are vertices in-order
 			auto vertices = object.attributeValues;
 
-			// for (auto& x : vertices){
-			// 	for (auto& elem:x){
-			// 		std::cout << elem << " ";
-			// 	}
-			// 	std::cout << std::endl;
-			// }
+			for (auto& x : vertices){
+				for (auto& elem:x){
+					std::cout << elem << " ";
+				}
+				std::cout << std::endl;
+			}
 
 			// helper::frameData* frame;
 			// frame->framebuffer = framebuffer;
@@ -289,7 +306,7 @@ namespace COL781 {
 				for(auto index: object.indices){
 
 					for(int i = 0; i < 3; i++){
-						Attribs pointData;
+						Attribs pointData = Attribs();
 						pointData.set(0, glm::vec3((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), 0.0f)); // Spatial-information
 						pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
 						v_prop[i] = pointData;
@@ -318,7 +335,7 @@ namespace COL781 {
 			for(int j = 0; j < frameHeight; j++){
 				for(int i = 0; i < frameWidth; i++){
 					glm::vec4 color = pointBuffer[i][frameHeight-1-j].get<glm::vec4>(1);
-					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*color.r, 255*color.g, 255*color.b, 255*color.a); 
+					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*color.x, 255*color.y, 255*color.z, 255*color.w); 
 				}
 			}
 			SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
