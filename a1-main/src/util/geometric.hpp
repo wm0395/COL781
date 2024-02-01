@@ -37,8 +37,13 @@ namespace Geometric{
 
         void print();
 
+        float calculateTriangleArea(const glm::vec3& v1, const glm::vec3& v2, const glm::vec3& v3);
+
+        glm::vec3 getBarycentric(glm::vec3 point);
+
     private:
         void make_anti_clockwise();
+        glm::vec3 findZ(glm::vec2 point);
     };
 }
 

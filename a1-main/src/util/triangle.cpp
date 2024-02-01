@@ -51,6 +51,45 @@ namespace Geometric{
         }
     }
 
+    float triangle::calculateTriangleArea(const glm::vec3& v1, const glm::vec3& v2, const glm::vec3& v3) {
+        // Calculate two vectors representing two sides of the triangle
+        glm::vec3 side1 = v2 - v1;
+        glm::vec3 side2 = v3 - v1;
+
+        // Calculate the cross product of the two sides
+        glm::vec3 crossProduct = glm::cross(side1, side2);
+
+        // Calculate the magnitude of the cross product
+        float area = 0.5f * glm::length(crossProduct);
+
+        return area;
+    }
+
+    glm::vec3 triangle::getBarycentric(glm::vec3 point){
+        glm::vec3 a = glm::vec3(this->a.get<glm::vec4>(0).x, this->a.get<glm::vec4>(0).y, this->a.get<glm::vec4>(0).z);
+        glm::vec3 b = glm::vec3(this->b.get<glm::vec4>(0).x, this->b.get<glm::vec4>(0).y, this->b.get<glm::vec4>(0).z);
+        glm::vec3 c = glm::vec3(this->c.get<glm::vec4>(0).x, this->c.get<glm::vec4>(0).y, this->c.get<glm::vec4>(0).z);
+
+        float triangle_area = triangle::calculateTriangleArea(a,b,c);
+
+        float phi1 = triangle::calculateTriangleArea(b,c,point)/triangle_area;
+        float phi2 = triangle::calculateTriangleArea(c,a,point)/triangle_area;
+        float phi3 = triangle::calculateTriangleArea(a,b,point)/triangle_area;
+
+        return glm::vec3(phi1, phi2, phi3);
+    }
+
+    glm::vec3 triangle::findZ(glm::vec2 point){
+        glm::vec3 a = glm::vec3(this->a.get<glm::vec4>(0).x, this->a.get<glm::vec4>(0).y, this->a.get<glm::vec4>(0).z);
+        glm::vec3 b = glm::vec3(this->b.get<glm::vec4>(0).x, this->b.get<glm::vec4>(0).y, this->b.get<glm::vec4>(0).z);
+        glm::vec3 c = glm::vec3(this->c.get<glm::vec4>(0).x, this->c.get<glm::vec4>(0).y, this->c.get<glm::vec4>(0).z);
+
+        glm::vec3 normal = glm::cross(b-a, c-a);
+        float z = normal.x * (a.x - point.x) + normal.y * (a.y - point.y) + normal.z * a.z;
+        z /= normal.z;
+        return glm::vec3(point.x, point.y, z);
+    }
+
     // void triangle::print(){
     //     std::cout << a.x << " " << a.y << " " << a.z << "\n";
     //     std::cout << b.x << " " << b.y << " " << b.z << "\n";
