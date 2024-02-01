@@ -43,10 +43,13 @@ int main() {
 	r.setTriangleIndices(tickmark, 2, triangles);
 
     std::cout << "About to print the object after assigning correctly\n\n";
-    // R::printObject(tickmark);
+    // r.printObject(tickmark);
 
     std::cout << "i have created my object\n\n";
-
+    
+    // std::cout << "TESTING\n";
+    // R::test();
+    // std::cout << "TEST DONE\n";
     
 
     while (!r.shouldQuit()) {

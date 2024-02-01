@@ -9,8 +9,6 @@
 namespace COL781 {
 	namespace Software {
 
-		ShaderProgram current_program;
-
 		// Forward declarations
 
 		template <> float Attribs::get(int index) const;
@@ -25,6 +23,7 @@ namespace COL781 {
 
 		// Built-in shaders
 
+		// A vertex shader that uses the 0th vertex attribute as the v_propition.
 		VertexShader Rasterizer::vsIdentity() {
 			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out) {
 				glm::vec4 vertex = in.get<glm::vec4>(0);
@@ -32,6 +31,7 @@ namespace COL781 {
 			};
 		}
 
+		// A vertex shader that applies the transformation matrix given by the uniform named 'transform'.
 		VertexShader Rasterizer::vsTransform() {
 			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out) {
 				glm::vec4 vertex = in.get<glm::vec4>(0);
@@ -40,6 +40,7 @@ namespace COL781 {
 			};
 		}
 
+		// A vertex shader that uses the 0th vertex attribute as the v_propition and passes on the 1th attribute as the color.
 		VertexShader Rasterizer::vsColor() {
 			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out) {
 				glm::vec4 vertex = in.get<glm::vec4>(0);
@@ -49,7 +50,7 @@ namespace COL781 {
 			};
 		}
 
-
+		// A fragment shader that returns a constant colour given by the uniform named 'color'.
 		FragmentShader Rasterizer::fsConstant() {
 			return [](const Uniforms &uniforms, const Attribs &in) {
 				glm::vec4 color = uniforms.get<glm::vec4>("color");
@@ -57,6 +58,7 @@ namespace COL781 {
 			};
 		}
 
+		// A fragment shader that uses the 0th attribute as the color.
 		FragmentShader Rasterizer::fsIdentity() {
 			return [](const Uniforms &uniforms, const Attribs &in) {
 				glm::vec4 color = in.get<glm::vec4>(0);
@@ -132,9 +134,9 @@ namespace COL781 {
 
 		template <typename T> void Uniforms::set(const std::string &name, T value) {
 			auto it = values.find(name);
-			// if (it != values.end()) {
-			// 	delete it->second;
-			// }
+			if (it != values.end()) {
+				delete it->second;
+			}
 			values[name] = (void*)(new T(value));
 		}
 
@@ -148,19 +150,20 @@ namespace COL781 {
                     printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
                     success = false;
                 } else {
-                    frameHeight = height;
-                    frameWidth = width;
-                    displayScale = 1;
+                    this->frameHeight = height;
+                    this->frameWidth = width;
+                    this->displayScale = 1;
+					this->spp = spp;
                     int screenWidth = frameWidth * displayScale;
                     int screenHeight = frameHeight * displayScale;
-                    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+                    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWv_prop_UNDEFINED, SDL_WINDOWv_prop_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
                     if (window == NULL) {
                         printf("Window could not be created! SDL_Error: %s", SDL_GetError());
                         success = false;
                     } else {
-                        windowSurface = SDL_GetWindowSurface(window);
-                        framebuffer = SDL_CreateRGBSurface(0, frameWidth, frameHeight, 32, 0, 0, 0, 0);
-						pointBuffer = std::vector<std::vector<std::vector<float>>>(frameWidth, std::vector<std::vector<float>>(frameHeight, std::vector<float>(5, 0.0f)));
+                        this->windowSurface = SDL_GetWindowSurface(window);
+                        this->framebuffer = SDL_CreateRGBSurface(0, this->frameWidth, this->frameHeight, 32, 0, 0, 0, 0);
+						this->pointBuffer = std::vector<std::vector<std::vector<float>>>(this->frameWidth, std::vector<std::vector<float>>(this->frameHeight, std::vector<float>(5, 0.0f)));
 					}
                 }
                 return success;
@@ -190,7 +193,7 @@ namespace COL781 {
 		}
 
 		void setAttribs(Object& object, int attribIndex, int n, int d, const float* data){
-			std::cout << "Inside the setAttribs\n";
+			// std::cout << "Inside the setAttribs\n";
 			
 			if (object.attributeValues.empty()){
 				for (int i = 0; i<n; i++){
@@ -201,10 +204,12 @@ namespace COL781 {
 
 			for (int i = 0; i<n; i++){
 				for (int j = 0; j<d; j++){
+					// std::cout << data[i*d+j] << " ";
 					// object.attributeValues[attribIndex+j].push_back(data[i*d + j]);
 					object.attributeValues[i].push_back(data[i*d + j]);
 
 				}
+				// std::cout << "\n";
 			}
 			
 			for (int j = 0; j<n; j++){
@@ -251,48 +256,61 @@ namespace COL781 {
 			current_program.vs = NULL;
 		}
 
-		// template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::vec4 value){
-		// 	current_program.uniforms.set(name, value);
-		// }
+		template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::vec4 value){
+			// program = current_program;
+			current_program.uniforms.set(name, value);
+			color = current_program.uniforms.get<glm::vec4>(name);
+			// current_program.fs.fsConstant
+		}
 
 		void Rasterizer::drawObject(const Object &object){
 			// Assuming atributeValues and Dims are vertices in-order
 			auto vertices = object.attributeValues;
-			helper::frameData* frame;
-			frame->framebuffer = framebuffer;
-			frame->frameWidth = frameWidth;
-			frame->frameHeight = frameHeight;
 
-			std::vector<float> color = {0,0,1,0,1};
+			// for (auto& x : vertices){
+			// 	for (auto& elem:x){
+			// 		std::cout << elem << " ";
+			// 	}
+			// 	std::cout << std::endl;
+			// }
 
-			glm::vec4 screenMat = glm::vec4(glm::vec4(0.0f));
+			// helper::frameData* frame;
+			// frame->framebuffer = framebuffer;
+			// frame->frameWidth = frameWidth;
+			// frame->frameHeight = frameHeight;
 
+			// glm::vec4 color2 = current_program.uniforms.get<glm::vec4>("color");
+
+			// std::cout << color2.r << " " << color2.g << " " << color2.b << " " << color2.a << std::endl;
+
+			int dimension = object.attributeDims[0];
+
+			std::vector<Attribs> v_prop = std::vector<Attribs>();
 			if(!depth){
-				std::vector<glm::vec3> a = std::vector<glm::vec3>();
 				for(auto index: object.indices){
 
 					for(int i = 0; i < 3; i++){
-						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], 0);
+						Attribs pointData;
+						pointData.set(0, glm::vec3((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), 0.0f)); // Spatial-information
+						pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
+						v_prop[i] = pointData;
 					}
-
-					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
-
-					raster::anti_alias( T, spp, color, pointBuffer);
 				}
 			}
 			else{
-				std::vector<glm::vec3> a = std::vector<glm::vec3>();
 				for(auto index: object.indices){
-
 					for(int i = 0; i < 3; i++){
-						a[i] = glm::vec3(frameWidth/2*vertices[index[i]][0], frameHeight/2*vertices[index[i]][1], vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX);
+						Attribs pointData;
+						pointData.set(0, glm::vec3(frameWidth/2*(vertices[index[i]][0]+1), frameHeight/2*(vertices[index[i]][1]+1), vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX)); // Spatial-information
+						pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
+						v_prop[i] = pointData;
 					}
-
-					Geometric::triangle T = Geometric::triangle( a[0], a[1], a[2]);
-
-					raster::anti_alias( T, spp, color, pointBuffer);
 				}
 			}
+
+			Geometric::triangle T = Geometric::triangle(v_prop);
+
+			raster::anti_alias(T, spp, pointData, pointBuffer);
 		}
 
 		void Rasterizer::show(){
@@ -300,7 +318,7 @@ namespace COL781 {
 			SDL_PixelFormat *format = framebuffer->format;
 			for(int j = 0; j < frameHeight; j++){
 				for(int i = 0; i < frameWidth; i++){
-					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*pointBuffer[i][j][1], 255*pointBuffer[i][j][2], 255*pointBuffer[i][j][3], 255*pointBuffer[i][j][4]); 
+					pixels[i + frameWidth*j] = SDL_MapRGBA(format, 255*pointBuffer[i][frameHeight-1-j][1], 255*pointBuffer[i][frameHeight-1-j][2], 255*pointBuffer[i][frameHeight-1-j][3], 255*pointBuffer[i][frameHeight-1-j][4]); 
 				}
 			}
 			SDL_BlitScaled(framebuffer, NULL, windowSurface, NULL);
@@ -335,6 +353,22 @@ namespace COL781 {
 			}
 			std::cout << std::endl;
 			std::cout << std::endl;
+		}
+
+		void test(){
+			glm::vec3 a = glm::vec3(0,0, 0), b = glm::vec3(0,10,5), c = glm::vec3(7, 18, 9);
+			Geometric::triangle T = Geometric::triangle(a,b,c);
+			T.print();
+			int spp = 1;
+			std::vector<float> attrib = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+			std::vector<std::vector<std::vector<float>>> pointBuffer = std::vector<std::vector<std::vector<float>>>(50, std::vector<std::vector<float>>(50, std::vector<float>(5, 0.0f)));
+			raster::anti_alias(T, spp, attrib, pointBuffer);
+			for(int j = 0; j < 50; j++){
+				for(int i = 0; i< 50 ;i++)
+					std::cout<<pointBuffer[i][j][0]<<" ";
+				std::cout<<"\n";
+			}
+			
 		}
 
 	}

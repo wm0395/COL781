@@ -10,35 +10,53 @@ namespace Geometric{
         this->a = a;
         this->b = b;
     }
+    line::line(glm::vec3 a, glm::vec3 b){
+        this->a = glm::vec2(a.x, a.y);
+        this->b = glm::vec2(b.x, b.y);
+    }
+    line::line(glm::vec4 a, glm::vec4 b){
+        this->a = glm::vec2(a.x, a.y);
+        this->b = glm::vec2(b.x, b.y);
+    }
 
-    bool line::isLeft(glm::vec2 &p){
-        glm::vec2 n = glm::vec2(a[1] - b[1], b[0] - a[0]);
+    bool line::isLeft(glm::vec2 p){
+        glm::vec2 n = glm::vec2(a.y - b.y, b.x - a.x);
         glm::vec2 d = p - a;
         return (glm::dot(n, d) >= 0);
     }
-
-    bool line::isLeft(glm::vec3 &p){
-        glm::vec2 p_ = glm::vec2(p[0], p[1]);
-        glm::vec2 n = glm::vec2(a[1] - b[1], b[0] - a[0]);
+    bool line::isLeft(glm::vec3 p){
+        glm::vec2 p_ = glm::vec2(p.x, p.y);
+        glm::vec2 n = glm::vec2(a.y - b.y, b.x - a.x);
+        glm::vec2 d = p_ - a;
+        return (glm::dot(n, d) >= 0);
+    }
+    bool line::isLeft(glm::vec4 p){
+        glm::vec2 p_ = glm::vec2(p.x, p.y);
+        glm::vec2 n = glm::vec2(a.y - b.y, b.x - a.x);
         glm::vec2 d = p_ - a;
         return (glm::dot(n, d) >= 0);
     }
 
     float line::intercept_x(float y){
-        if(a[1] == b[1]){
-            return std::min(a[0],b[0])-1;
+        if(a.y == b.y){
+            std::cout << "parallel line case\n";
+            return std::min(a.x,b.x)-1;
         }
         else{
-            return a[0] + (y - a[1])*(b[0] - a[0])/(b[1] - a[1]);
+            return a.x + (y - a.y)*(b.x - a.x)/(b.y - a.y);
         }
     }
 
     float line::intercept_y(float x){
-        if(a[0] == b[0]){
-            return std::min(a[1], b[1])-1;
+        if(a.x == b.x){
+            return std::min(a.y, b.y)-1;
         }
         else{
-            return a[1] + (x - a[0])*(b[1] - a[1])/(b[1] - a[1]);
+            return a.y + (x - a.x)*(b.y - a.y)/(b.y - a.y);
         }
+    }
+
+    void line::print(){
+        std::cout << "( " << a.x << "," << a.y << ")" << ", (" << b.x << "," << b.y << ")\n"; 
     }
 }

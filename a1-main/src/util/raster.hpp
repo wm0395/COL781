@@ -6,7 +6,7 @@
 #include<vector>
 #include<iostream>
 namespace raster{
-    void anti_alias(Geometric::triangle& T, int spp, std::vector<float>& color, std::vector<std::vector<std::vector<float>>>& pointBuffer);
+    void anti_alias(Geometric::triangle& T, int spp, std::vector<std::vector<Software::Attribs>>& pointBuffer);
 }
 
 #endif

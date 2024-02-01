@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace COL781 {
 	namespace Software {
@@ -62,10 +63,10 @@ namespace COL781 {
 		private:
 			SDL_Window *window;
 			bool quit;
-
+			ShaderProgram program;
 			SDL_Surface* framebuffer = NULL;
 			SDL_Surface *windowSurface = NULL;
-			std::vector<std::vector<std::vector<float>>> pointBuffer; 
+			std::vector<std::vector<Attribs>> pointBuffer; 
 			bool depth;
 			int frameWidth;
 			int frameHeight;
