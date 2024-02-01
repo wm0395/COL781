@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace COL781 {
 	namespace Software {
