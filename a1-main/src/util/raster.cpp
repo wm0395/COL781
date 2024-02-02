@@ -87,18 +87,26 @@ namespace raster{
         int y_min = std::min(a.y, std::min(b.y, c.y));
         int y_max = std::max(a.y, std::max(b.y, c.y));
 
+        // std::cout << "range of x => " << x_min << " " << x_max << std::endl;
+        // std::cout << "range of y => " << y_min << " " << y_max << std::endl;
+
         for(int j = y_min; j <= y_max; j++){
             for(int i = x_min; i <= x_max; i++){
                 glm::vec2 p = glm::vec2(i,j);
-                // glm::vec3 bary = T.getBarycentric(glm::vec2(i, j));
-                glm::vec3 bary = glm::vec3(1/3,1/3,1/3);
+                glm::vec3 bary = T.getBarycentric(glm::vec2(i, j));
+                // glm::vec3 bary = glm::vec3(1/3,1/3,1/3);
                 float z = bary.x*a.z + bary.y*b.z + bary.z*c.z;
-                if(z > 0 && z < pointBuffer[i][j].get<float>(0) && T.isInside(p)){
+                if(z >= 0 && z <= pointBuffer[i][j].get<float>(0) && T.isInside(p)){
+                    // std::cout << "ghus gaya\n";
                     float alpha = sample_aa(i,j,spp,T);
-                    pointBuffer[i][j].set(0, z);
-                    glm::vec4 color = pointBuffer[i][j].get<glm::vec4>(1);
-                    color.a *= alpha;
-                    pointBuffer[i][j].set(1,  color);
+                    // std::cout << "alpha => " << alpha << "\n";
+                    Software::Attribs pointData = T.interpolateAttrib(p);
+                    // pointData.print();
+                    glm::vec4 color = pointData.get<glm::vec4>(1);
+                    color.w *= alpha;
+                    pointData.set(1, color);
+                    pointBuffer[i][j] = pointData;
+                    // return;
                 }
             }
         }

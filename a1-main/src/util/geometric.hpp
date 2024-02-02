@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "../sw.hpp"
 using namespace COL781;
+
 namespace Geometric{
     class line {
     public:
@@ -33,13 +34,16 @@ namespace Geometric{
         triangle(std::vector<Software::Attribs> vertices);
 
         bool isInside(glm::vec2 p);
-
         bool isInside(glm::vec3 p);
 
+        Software::Attribs interpolateAttrib(glm::vec2 p);
+        Software::Attribs interpolateAttrib(glm::vec3 p);
+        
         void print();
 
         float calculateTriangleArea(const glm::vec3& v1, const glm::vec3& v2, const glm::vec3& v3);
 
+        glm::vec3 getBarycentric(glm::vec2 point);
         glm::vec3 getBarycentric(glm::vec3 point);
 
     private:

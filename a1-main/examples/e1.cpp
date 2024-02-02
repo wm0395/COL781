@@ -1,8 +1,8 @@
 #include "../src/a1.hpp"
 #include <iostream>
 
-namespace R = COL781::Software;
-// namespace R = COL781::Hardware;
+// namespace R = COL781::Software;
+namespace R = COL781::Hardware;
 using namespace glm;
 
 int main() {
@@ -43,7 +43,7 @@ int main() {
 	r.setTriangleIndices(tickmark, 2, triangles);
 
     std::cout << "About to print the object after assigning correctly\n\n";
-    printObject(tickmark);
+    // printObject(tickmark);
 
     std::cout << "i have created my object\n\n";
     
@@ -58,8 +58,9 @@ int main() {
         // std::cout << "shaderProgram well\n";
         r.setUniform<vec4>(program, "color", vec4(0.0, 0.6, 0.0, 1.0));
         // std::cout << "Uniform set\n";
-		// r.drawObject(tickmark);
+		r.drawObject(tickmark);
         r.show();
+        // break;
     }
     // r.deleteShaderProgram(program);
     return EXIT_SUCCESS;

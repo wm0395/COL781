@@ -76,7 +76,14 @@ namespace COL781 {
 
 		void Attribs::print(){
 			std::cout << "values.size() : " << values.size() << "\n";
-			std::cout << "dims.size() => " << dims.size() << "\n";
+			std::cout << "dims.size() => " << dims.size() << "\n\n";
+			std::cout << "values vector => \n";
+			for (auto& elem : values){
+				std::cout << elem.x << " " << elem.y << " " << elem.z << " " << elem.w << "\n";
+			}
+			std::cout << "\n";
+			std::cout << "dims vector => \n";
+			for (auto& val : dims) std::cout << val << std::endl;
 		}
 
 		template <> float Attribs::get(int index) const {
@@ -279,16 +286,13 @@ namespace COL781 {
 			// this->program.fs.fsConstant
 		}
 
+		void Rasterizer::enableDepthTest(){
+			depth = true;
+		}
+
 		void Rasterizer::drawObject(const Object &object){
 			// Assuming atributeValues and Dims are vertices in-order
 			auto vertices = object.attributeValues;
-
-			for (auto& x : vertices){
-				for (auto& elem:x){
-					std::cout << elem << " ";
-				}
-				std::cout << std::endl;
-			}
 
 			// helper::frameData* frame;
 			// frame->framebuffer = framebuffer;
@@ -299,21 +303,39 @@ namespace COL781 {
 
 			// std::cout << color2.r << " " << color2.g << " " << color2.b << " " << color2.a << std::endl;
 
-			int dimension = object.attributeDims[0];
-
-			std::vector<Attribs> v_prop = std::vector<Attribs>();
-			if(!depth){
+			// std::vector<Attribs> v_prop = std::vector<Attribs>();
+			if(!depth || depth){
+	
 				for(auto index: object.indices){
+
+					std::vector<Attribs> v_prop(3);
 
 					for(int i = 0; i < 3; i++){
 						Attribs pointData = Attribs();
-						pointData.set(0, glm::vec3((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), 0.0f)); // Spatial-information
-						pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
+						pointData.set(0, glm::vec4((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), vertices[index[i]][2], 1.0f)); // Spatial-information
+						// std::cout << "Coordinates set\n";
+						// pointData.print();
+						if(vertices[index[i]].size() == 8){
+							glm::vec4 color = glm::vec4(vertices[index[i]][4], vertices[index[i]][5], vertices[index[i]][6], vertices[index[i]][7]);
+							pointData.set(1, color);
+						}
+						else
+							pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
+						// std::cout << "color set\n";
+						// pointData.print();
 						v_prop[i] = pointData;
 					}
+
+					// std::cout << "vertex property vector set\n";
+					Geometric::triangle T = Geometric::triangle(v_prop);
+
+					// std::cout << "triangle made\n";
+
+					raster::anti_alias(T, spp, pointBuffer);
 				}
 			}
 			else{
+				std::vector<Attribs> v_prop = std::vector<Attribs>();
 				for(auto index: object.indices){
 					for(int i = 0; i < 3; i++){
 						Attribs pointData;
@@ -324,9 +346,11 @@ namespace COL781 {
 				}
 			}
 
-			Geometric::triangle T = Geometric::triangle(v_prop);
+			// std::cout << "here\n";
 
-			raster::anti_alias(T, spp, pointBuffer);
+			// Geometric::triangle T = Geometric::triangle(v_prop);
+
+			// raster::anti_alias(T, spp, pointBuffer);
 		}
 
 		void Rasterizer::show(){

@@ -31,17 +31,27 @@ namespace Geometric{
 
         make_anti_clockwise();
 
+        // std::cout << "in triangle.cpp\n";
+        // a.print();
+
+        // std::cout << a.get<glm::vec4>(0).x << std::endl;
+
         A = line(a.get<glm::vec4>(0), b.get<glm::vec4>(0));
         B = line(b.get<glm::vec4>(0), c.get<glm::vec4>(0));
         C = line(c.get<glm::vec4>(0), a.get<glm::vec4>(0));
     }
     
     bool triangle::isInside(glm::vec2 p){
-        return A.isLeft(p) && B.isLeft(p) && C.isLeft(p);
+        // return isInside(findZ(p));
+        bool in = A.isLeft(p) && B.isLeft(p) && C.isLeft(p); 
+        return in;
     }
 
     bool triangle::isInside(glm::vec3 p){
-        return A.isLeft(p) && B.isLeft(p) && C.isLeft(p);
+        // glm::vec3 bary = getBarycentric(p);
+        // bool in = bary.x >= 0 && bary.x <=1 && bary.y >= 0 && bary.y <=1 && bary.z >= 0 && bary.z <=1;
+        bool in = A.isLeft(p) && B.isLeft(p) && C.isLeft(p); 
+        return in;
     }
 
     void triangle::make_anti_clockwise(){
@@ -65,6 +75,10 @@ namespace Geometric{
         return area;
     }
 
+    glm::vec3 triangle::getBarycentric(glm::vec2 point){
+        return getBarycentric(findZ(point));
+    }
+
     glm::vec3 triangle::getBarycentric(glm::vec3 point){
         glm::vec3 a = glm::vec3(this->a.get<glm::vec4>(0).x, this->a.get<glm::vec4>(0).y, this->a.get<glm::vec4>(0).z);
         glm::vec3 b = glm::vec3(this->b.get<glm::vec4>(0).x, this->b.get<glm::vec4>(0).y, this->b.get<glm::vec4>(0).z);
@@ -77,6 +91,23 @@ namespace Geometric{
         float phi3 = triangle::calculateTriangleArea(a,b,point)/triangle_area;
 
         return glm::vec3(phi1, phi2, phi3);
+    }
+
+    Software::Attribs triangle::interpolateAttrib(glm::vec2 p){
+        // std::cout << "vec2 \n";
+        // glm::vec3 hehe = findZ(p);
+        // std::cout << hehe.x << " " << hehe.y << " " << hehe.z << std::endl;
+        return interpolateAttrib(findZ(p));
+    }
+
+    Software::Attribs triangle::interpolateAttrib(glm::vec3 p){
+        glm::vec3 bary = getBarycentric(p);
+        // std::cout << bary.x << " " << bary.y << " " << bary.z << std::endl;
+        Software::Attribs pointData = Software::Attribs();
+        pointData.set(0, bary.x*a.get<glm::vec4>(0).x + bary.y*b.get<glm::vec4>(0).y + bary.z*c.get<glm::vec4>(0).z);
+        pointData.set(1, bary.x*a.get<glm::vec4>(1) + bary.y*b.get<glm::vec4>(1) + bary.z*c.get<glm::vec4>(1));
+        // pointData.print();
+        return pointData;
     }
 
     glm::vec3 triangle::findZ(glm::vec2 point){
