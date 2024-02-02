@@ -121,12 +121,17 @@ namespace Geometric{
         return glm::vec3(point.x, point.y, z);
     }
 
-    // void triangle::print(){
-    //     std::cout << a.x << " " << a.y << " " << a.z << "\n";
-    //     std::cout << b.x << " " << b.y << " " << b.z << "\n";
-    //     std::cout << c.x << " " << c.y << " " << c.z << "\n";
-    //     A.print();
-    //     B.print();
-    //     C.print();
-    // }
+    void triangle::print(){
+        std::cout << "vertex 1 => ";
+        std::cout << this->a.get<glm::vec4>(0).x << " " << this->a.get<glm::vec4>(0).y << " " << this->a.get<glm::vec4>(0).z << " " << this->a.get<glm::vec4>(0).w << " ";
+        std::cout << this->a.get<glm::vec4>(1).x << " " << this->a.get<glm::vec4>(1).y << " " << this->a.get<glm::vec4>(1).z << " " << this->a.get<glm::vec4>(1).w << "\n ";
+
+        std::cout << "vertex 2 => ";
+        std::cout << this->b.get<glm::vec4>(0).x << " " << this->b.get<glm::vec4>(0).y << " " << this->b.get<glm::vec4>(0).z << " " << this->b.get<glm::vec4>(0).w << " ";
+        std::cout << this->a.get<glm::vec4>(1).x << " " << this->b.get<glm::vec4>(1).y << " " << this->b.get<glm::vec4>(1).z << " " << this->b.get<glm::vec4>(1).w << "\n ";
+
+        std::cout << "vertex 3 => ";
+        std::cout << this->c.get<glm::vec4>(0).x << " " << this->c.get<glm::vec4>(0).y << " " << this->c.get<glm::vec4>(0).z << " " << this->c.get<glm::vec4>(0).w << " ";
+        std::cout << this->c.get<glm::vec4>(1).x << " " << this->c.get<glm::vec4>(1).y << " " << this->c.get<glm::vec4>(1).z << " " << this->c.get<glm::vec4>(1).w << "\n ";
+    }
 }

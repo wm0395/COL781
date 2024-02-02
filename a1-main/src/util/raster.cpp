@@ -96,6 +96,8 @@ namespace raster{
                 glm::vec3 bary = T.getBarycentric(glm::vec2(i, j));
                 // glm::vec3 bary = glm::vec3(1/3,1/3,1/3);
                 float z = bary.x*a.z + bary.y*b.z + bary.z*c.z;
+                // std::cout << "z => " << z << "\n";
+                // std::cout << pointBuffer[i][j].get<float>(0) << "\n";
                 if(z >= 0 && z <= pointBuffer[i][j].get<float>(0) && T.isInside(p)){
                     // std::cout << "ghus gaya\n";
                     float alpha = sample_aa(i,j,spp,T);
@@ -105,6 +107,7 @@ namespace raster{
                     glm::vec4 color = pointData.get<glm::vec4>(1);
                     color.w *= alpha;
                     pointData.set(1, color);
+                    pointData.set(0,z);
                     pointBuffer[i][j] = pointData;
                     // return;
                 }

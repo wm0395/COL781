@@ -52,6 +52,7 @@ int main() {
 		r.drawObject(box);
 
         r.show();
+        // break;
     }
     r.deleteShaderProgram(program);
     return EXIT_SUCCESS;

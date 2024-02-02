@@ -23,7 +23,7 @@ namespace COL781 {
 
 		// Built-in shaders
 
-		// A vertex shader that uses the 0th vertex attribute as the v_propition.
+		// A vertex shader that uses the 0th vertex attribute as the pospition.
 		VertexShader Rasterizer::vsIdentity() {
 			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out) {
 				glm::vec4 vertex = in.get<glm::vec4>(0);
@@ -76,14 +76,14 @@ namespace COL781 {
 
 		void Attribs::print(){
 			std::cout << "values.size() : " << values.size() << "\n";
-			std::cout << "dims.size() => " << dims.size() << "\n\n";
+			std::cout << "dims.size() => " << dims.size() << "\n";
 			std::cout << "values vector => \n";
 			for (auto& elem : values){
 				std::cout << elem.x << " " << elem.y << " " << elem.z << " " << elem.w << "\n";
 			}
-			std::cout << "\n";
 			std::cout << "dims vector => \n";
 			for (auto& val : dims) std::cout << val << std::endl;
+			std::cout << "\n";
 		}
 
 		template <> float Attribs::get(int index) const {
@@ -196,6 +196,7 @@ namespace COL781 {
 			ShaderProgram program;
 			program.fs = fs;
 			program.vs = vs;
+			program.uniforms.set("transform", glm::mat4(1.0f));
 			return program;
 		}
 
@@ -286,6 +287,10 @@ namespace COL781 {
 			// this->program.fs.fsConstant
 		}
 
+		template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::mat4 mvp){
+			this->program.uniforms.set(name, mvp);
+		}
+
 		void Rasterizer::enableDepthTest(){
 			depth = true;
 		}
@@ -293,6 +298,8 @@ namespace COL781 {
 		void Rasterizer::drawObject(const Object &object){
 			// Assuming atributeValues and Dims are vertices in-order
 			auto vertices = object.attributeValues;
+			Uniforms uniform = program.uniforms;
+			VertexShader vsTf = vsTransform();
 
 			// helper::frameData* frame;
 			// frame->framebuffer = framebuffer;
@@ -312,7 +319,14 @@ namespace COL781 {
 
 					for(int i = 0; i < 3; i++){
 						Attribs pointData = Attribs();
-						pointData.set(0, glm::vec4((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), vertices[index[i]][2], 1.0f)); // Spatial-information
+
+						pointData.set(0, glm::vec4(vertices[index[i]][0],vertices[index[i]][1],vertices[index[i]][2],vertices[index[i]][3]));
+
+						// pointData.set(0, glm::vec4((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), vertices[index[i]][2], 1.0f)); // Spatial-information
+						glm::vec4 pos = vsTf(uniform, pointData, pointData);
+						// std::cout << pos.x << " " << pos.y << " " << pos.z << " " << pos.w << std::endl;
+						pointData.set(0, glm::vec4((frameWidth/2)*(pos.x + 1), (frameHeight/2)*(pos.y+1), pos.z, pos.w));
+						// pointData.set(0, pos);
 						// std::cout << "Coordinates set\n";
 						// pointData.print();
 						if(vertices[index[i]].size() == 8){
@@ -329,7 +343,7 @@ namespace COL781 {
 					// std::cout << "vertex property vector set\n";
 					Geometric::triangle T = Geometric::triangle(v_prop);
 
-					// std::cout << "triangle made\n";
+					// T.print();
 
 					raster::anti_alias(T, spp, pointBuffer);
 				}
