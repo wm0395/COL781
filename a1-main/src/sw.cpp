@@ -40,7 +40,7 @@ namespace COL781 {
 			};
 		}
 
-		// A vertex shader that uses the 0th vertex attribute as the v_propition and passes on the 1th attribute as the color.
+		// A vertex shader that uses the 0th vertex attribute as the position and passes on the 1th attribute as the color.
 		VertexShader Rasterizer::vsColor() {
 			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out) {
 				glm::vec4 vertex = in.get<glm::vec4>(0);
@@ -49,6 +49,11 @@ namespace COL781 {
 				return vertex;
 			};
 		}
+
+		// A vertex shader that handles both transformation and color attributes.
+		// VertexShader vsColorTransform(){
+
+		// }
 
 		// A fragment shader that returns a constant colour given by the uniform named 'color'.
 		FragmentShader Rasterizer::fsConstant() {
@@ -311,7 +316,7 @@ namespace COL781 {
 			// std::cout << color2.r << " " << color2.g << " " << color2.b << " " << color2.a << std::endl;
 
 			// std::vector<Attribs> v_prop = std::vector<Attribs>();
-			if(!depth || depth){
+			if(!depth || depth){  //iske bawjood chala kaise???
 	
 				for(auto index: object.indices){
 
@@ -324,8 +329,9 @@ namespace COL781 {
 
 						// pointData.set(0, glm::vec4((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), vertices[index[i]][2], 1.0f)); // Spatial-information
 						glm::vec4 pos = vsTf(uniform, pointData, pointData);
+						pos /= pos.w;
 						// std::cout << pos.x << " " << pos.y << " " << pos.z << " " << pos.w << std::endl;
-						pointData.set(0, glm::vec4((frameWidth/2)*(pos.x + 1), (frameHeight/2)*(pos.y+1), pos.z, pos.w));
+						pointData.set(0, glm::vec4(((frameWidth/2)*(pos.x + 1)), ((frameHeight/2)*(pos.y+1)), pos.z, pos.w));
 						// pointData.set(0, pos);
 						// std::cout << "Coordinates set\n";
 						// pointData.print();
@@ -342,7 +348,7 @@ namespace COL781 {
 
 					// std::cout << "vertex property vector set\n";
 					Geometric::triangle T = Geometric::triangle(v_prop);
-
+					
 					// T.print();
 
 					raster::anti_alias(T, spp, pointBuffer);

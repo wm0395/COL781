@@ -104,8 +104,10 @@ namespace Geometric{
         glm::vec3 bary = getBarycentric(p);
         // std::cout << bary.x << " " << bary.y << " " << bary.z << std::endl;
         Software::Attribs pointData = Software::Attribs();
-        pointData.set(0, bary.x*a.get<glm::vec4>(0).x + bary.y*b.get<glm::vec4>(0).y + bary.z*c.get<glm::vec4>(0).z);
-        pointData.set(1, bary.x*a.get<glm::vec4>(1) + bary.y*b.get<glm::vec4>(1) + bary.z*c.get<glm::vec4>(1));
+        // float z_interpolate = bary.x/a.get<glm::vec4>(0).z + bary.y/b.get<glm::vec4>(0).z + bary.z/c.get<glm::vec4>(0).z;
+        glm::vec4 pos = bary.x*a.get<glm::vec4>(0) + bary.y*b.get<glm::vec4>(0) + bary.z*c.get<glm::vec4>(0);
+        pointData.set(0, pos.z);
+        pointData.set(1, (bary.x*a.get<glm::vec4>(1) + bary.y*b.get<glm::vec4>(1) + bary.z*c.get<glm::vec4>(1)));
         // pointData.print();
         return pointData;
     }
