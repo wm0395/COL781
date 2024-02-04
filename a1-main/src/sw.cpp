@@ -51,9 +51,15 @@ namespace COL781 {
 		}
 
 		// A vertex shader that handles both transformation and color attributes.
-		// VertexShader vsColorTransform(){
-
-		// }
+		VertexShader Rasterizer::vsColorTransform(){
+			return [](const Uniforms &uniforms, const Attribs &in, Attribs &out){
+				glm::vec4 vertex = in.get<glm::vec4>(0);
+				glm::vec4 color = in.get<glm::vec4>(1);
+				glm::mat4 transform = uniforms.get<glm::mat4>("transform");
+				out.set<glm::vec4>(0, color);
+				return transform * vertex;
+			};
+		}
 
 		// A fragment shader that returns a constant colour given by the uniform named 'color'.
 		FragmentShader Rasterizer::fsConstant() {

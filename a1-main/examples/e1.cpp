@@ -8,7 +8,7 @@ using namespace glm;
 int main() {
     std::cout << "hello\n\n";
 	R::Rasterizer r;
-    if (!r.initialize("Example 1", 640, 480)){
+    if (!r.initialize("Example 1", 640*2, 480*2)){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }      
@@ -62,6 +62,6 @@ int main() {
         r.show();
         // break;
     }
-    // r.deleteShaderProgram(program);
+    r.deleteShaderProgram(program);
     return EXIT_SUCCESS;
 }

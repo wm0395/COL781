@@ -106,6 +106,7 @@ namespace raster{
                     // pointData.print();
                     glm::vec4 color = pointData.get<glm::vec4>(1);
                     color.w *= alpha;
+                    // color *= alpha;
                     pointData.set(1, color);
                     pointData.set(0,z);
                     pointBuffer[i][j] = pointData;

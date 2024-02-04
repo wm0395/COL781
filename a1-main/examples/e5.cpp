@@ -12,8 +12,7 @@ int main() {
         return EXIT_FAILURE;
 
     R::ShaderProgram program = r.createShaderProgram(
-        // r.vsColorTransform(),
-        r.vsIdentity(),
+        r.vsColorTransform(),
         r.fsIdentity()
     );
     vec4 vertices[] = {
