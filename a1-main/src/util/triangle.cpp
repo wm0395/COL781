@@ -107,6 +107,9 @@ namespace Geometric{
         // float z_interpolate = bary.x/a.get<glm::vec4>(0).z + bary.y/b.get<glm::vec4>(0).z + bary.z/c.get<glm::vec4>(0).z;
         glm::vec4 pos = bary.x*a.get<glm::vec4>(0) + bary.y*b.get<glm::vec4>(0) + bary.z*c.get<glm::vec4>(0);
         pointData.set(0, pos.z);
+        // std::cout << a.get<glm::vec4>(0).z << " " << b.get<glm::vec4>(0).z << " " << c.get<glm::vec4>(0).z << "\n";
+        float z_div = bary.x/a.get<glm::vec4>(0).z + bary.y/b.get<glm::vec4>(0).z + bary.z/c.get<glm::vec4>(0).z;
+        // pointData.set(1, ((bary.x*a.get<glm::vec4>(1)/a.get<glm::vec4>(0).z + bary.y*b.get<glm::vec4>(1)/b.get<glm::vec4>(0).z + bary.z*c.get<glm::vec4>(1))/c.get<glm::vec4>(0).z)/z_div);
         pointData.set(1, (bary.x*a.get<glm::vec4>(1) + bary.y*b.get<glm::vec4>(1) + bary.z*c.get<glm::vec4>(1)));
         // pointData.print();
         return pointData;
