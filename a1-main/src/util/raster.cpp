@@ -20,64 +20,9 @@ namespace raster{
         return (sum/float(spp*spp));
     }
 
-    // void anti_alias(Geometric::triangle &T, int spp, std::vector<std::vector<Software::Attribs>> &pointBuffer){
-    //     // std::cout << "in anti_alias\n";
-    //     int x_min, x_max;
-    //     int y_min = std::min(T.a.y, std::min(T.b.y, T.c.y));
-    //     int y_max = std::max(T.a.y, std::max(T.b.y, T.c.y));
 
-    //     const int frameWidth = pointBuffer.size();
-    //     const float sample_centre = 0.5;
-
-    //     // std::cout << frameWidth << std::endl;
-    //     // std::cout << y_min << " " << y_max << std::endl;
-
-    //     for(int j = y_min; j <= y_max; j++){
-    //         int l1 = T.A.intercept_x(j + sample_centre), l2 = T.B.intercept_x(j + sample_centre), l3 = T.C.intercept_x(j + sample_centre);
-
-    //         // std::cout << l1 << " " << l2 << " " << l3 << std::endl;
-
-    //         if(l1< std::min(T.a.x, T.b.x) || l1> std::max(T.a.x, T.b.x)){
-    //             x_min = std::min(l2, l3);
-    //             x_max = std::max(l2, l3);
-    //         }
-    //         else if(l2< std::min(T.b.x, T.c.x) || l2> std::max(T.b.x, T.c.x)){
-    //             x_min = std::min(l1, l3);
-    //             x_max = std::max(l1, l3);
-    //         }
-    //         else{
-    //             x_min = std::min(l1, l2);
-    //             x_max = std::max(l1, l2);
-    //         }
-    //         // std::cout << "x_min and x_max => " <<  x_min << " " << x_max << std::endl;
-    //         if(x_min > 0 && T.isInside( glm::vec2(x_min-1, j))){
-    //             x_min--;
-    //         }
-    //         // else if(!T.isInside(make_pair(x_min, j))){
-    //         //     x_min++;
-    //         // }
-    //         if(x_max < frameWidth -1 && T.isInside( glm::vec2(x_max+1, j))){
-    //             x_max++;
-    //         }
-    //         // else if(!T.isInside(make_pair(x_max, j))){
-    //         //     x_max--;
-    //         // }
-            
-    //         for(int i = x_min; i <= x_max; i++){
-    //             // std::cout << "idhar ghusa\n";
-    //             // if(pointBuffer[i][j][0] > attrib[0]) continue;
-    //             // std::cout << "spp: " << spp << "\n";
-    //             float c = sample_aa(i, j, spp, T);
-    //             // std::cout << "c: " << c << std::endl;
-    //             for(int k = 0; k <= 4; k++){
-    //                 // std::cout << k << std::endl;
-    //                 pointBuffer[i][j][k] = c*attrib[k];
-    //             }
-    //         }
-    //     }
-        
-    // }
     void anti_alias(Geometric::triangle &T, int spp, std::vector<std::vector<Software::Attribs>> &pointBuffer){
+        // spp = 3;
         glm::vec4 a = T.a.get<glm::vec4>(0);
         glm::vec4 b = T.b.get<glm::vec4>(0);
         glm::vec4 c = T.c.get<glm::vec4>(0);
@@ -87,30 +32,24 @@ namespace raster{
         int y_min = std::min(a.y, std::min(b.y, c.y));
         int y_max = std::max(a.y, std::max(b.y, c.y));
 
-        // std::cout << "range of x => " << x_min << " " << x_max << std::endl;
-        // std::cout << "range of y => " << y_min << " " << y_max << std::endl;
-
         for(int j = y_min; j <= y_max; j++){
             for(int i = x_min; i <= x_max; i++){
                 glm::vec2 p = glm::vec2(i,j);
                 glm::vec3 bary = T.getBarycentric(glm::vec2(i, j));
-                // glm::vec3 bary = glm::vec3(1/3,1/3,1/3);
                 float z = bary.x*a.z + bary.y*b.z + bary.z*c.z;
-                // std::cout << "z => " << z << "\n";
-                // std::cout << pointBuffer[i][j].get<float>(0) << "\n";
                 if(z >= 0 && z <= pointBuffer[i][j].get<float>(0) && T.isInside(p)){
-                    // std::cout << "ghus gaya\n";
                     float alpha = sample_aa(i,j,spp,T);
-                    // std::cout << "alpha => " << alpha << "\n";
                     Software::Attribs pointData = T.interpolateAttrib(p);
-                    // pointData.print();
                     glm::vec4 color = pointData.get<glm::vec4>(1);
-                    // color.w *= alpha;
-                    color *= alpha;
+                    glm::vec4 screen = pointBuffer[i][j].get<glm::vec4>(1);
+                    float pre_alpha = color.w;
+                    color.w *= alpha;
+                    color.x = (alpha*pre_alpha*color.x + screen.w*(1-alpha)*screen.x)/pre_alpha;
+                    color.y = (alpha*pre_alpha*color.y + screen.w*(1-alpha)*screen.y)/pre_alpha;
+                    color.z = (alpha*pre_alpha*color.z + screen.w*(1-alpha)*screen.z)/pre_alpha;
                     pointData.set(1, color);
-                    pointData.set(0,z);
+                    pointData.set(0, z);
                     pointBuffer[i][j] = pointData;
-                    // return;
                 }
             }
         }

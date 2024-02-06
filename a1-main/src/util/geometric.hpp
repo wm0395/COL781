@@ -28,9 +28,7 @@ namespace Geometric{
     public:
         Software::Attribs a, b, c;
         line A, B, C;
-
-        // triangle();
-        // triangle(glm::vec3 a, glm::vec3 b, glm::vec3 c);
+        
         triangle(std::vector<Software::Attribs> vertices);
 
         bool isInside(glm::vec2 p);

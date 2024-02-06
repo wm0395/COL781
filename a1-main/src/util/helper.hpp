@@ -9,13 +9,6 @@ namespace helper{
         a = b;
         b = c;
     }
-
-    struct frameData{
-        SDL_Surface* framebuffer;
-        int frameHeight;
-        int frameWidth;
-    };
-
 }
 
 #endif

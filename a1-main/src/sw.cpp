@@ -228,12 +228,9 @@ namespace COL781 {
 
 			for (int i = 0; i<n; i++){
 				for (int j = 0; j<d; j++){
-					// std::cout << data[i*d+j] << " ";
-					// object.attributeValues[attribIndex+j].push_back(data[i*d + j]);
 					object.attributeValues[i].push_back(data[i*d + j]);
 
 				}
-				// std::cout << "\n";
 			}
 			
 			for (int j = 0; j<n; j++){
@@ -255,7 +252,6 @@ namespace COL781 {
 		}
 
 		template <> void Rasterizer::setVertexAttribs(Object &object, int attribIndex, int n, const glm::vec4* data) {
-			// std::cout << "Inside the setVertexAttribs fxn\n";
 			setAttribs(object, attribIndex, n, 4, (float*)data);
 		}
 
@@ -293,9 +289,7 @@ namespace COL781 {
 		}
 
 		template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::vec4 value){
-			// program = this->program;
 			this->program.uniforms.set(name, value);
-			// this->program.fs.fsConstant
 		}
 
 		template <> void Rasterizer::setUniform(ShaderProgram &program, const std::string &name, glm::mat4 mvp){
@@ -312,17 +306,7 @@ namespace COL781 {
 			Uniforms uniform = program.uniforms;
 			VertexShader vsTf = vsTransform();
 
-			// helper::frameData* frame;
-			// frame->framebuffer = framebuffer;
-			// frame->frameWidth = frameWidth;
-			// frame->frameHeight = frameHeight;
-
-			// glm::vec4 color2 = this->program.uniforms.get<glm::vec4>("color");
-
-			// std::cout << color2.r << " " << color2.g << " " << color2.b << " " << color2.a << std::endl;
-
-			// std::vector<Attribs> v_prop = std::vector<Attribs>();
-			if(!depth || depth){  //iske bawjood chala kaise???
+			if(!depth || depth){
 	
 				for(auto index: object.indices){
 
@@ -332,31 +316,19 @@ namespace COL781 {
 						Attribs pointData = Attribs();
 
 						pointData.set(0, glm::vec4(vertices[index[i]][0],vertices[index[i]][1],vertices[index[i]][2],vertices[index[i]][3]));
-
-						// pointData.set(0, glm::vec4((frameWidth/2)*(vertices[index[i]][0] + 1), (frameHeight/2)*(vertices[index[i]][1] + 1), vertices[index[i]][2], 1.0f)); // Spatial-information
 						glm::vec4 pos = vsTf(uniform, pointData, pointData);
 						pos /= pos.w;
-						// std::cout << pos.x << " " << pos.y << " " << pos.z << " " << pos.w << std::endl;
 						pointData.set(0, glm::vec4(((frameWidth/2)*(pos.x + 1)), ((frameHeight/2)*(pos.y+1)), pos.z, pos.w));
-						// pointData.set(0, pos);
-						// std::cout << "Coordinates set\n";
-						// pointData.print();
 						if(vertices[index[i]].size() == 8){
 							glm::vec4 color = glm::vec4(vertices[index[i]][4], vertices[index[i]][5], vertices[index[i]][6], vertices[index[i]][7]);
 							pointData.set(1, color);
 						}
 						else
 							pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
-						// std::cout << "color set\n";
-						// pointData.print();
 						v_prop[i] = pointData;
 					}
 
-					// std::cout << "vertex property vector set\n";
 					Geometric::triangle T = Geometric::triangle(v_prop);
-					
-					// T.print();
-
 					raster::anti_alias(T, spp, pointBuffer);
 				}
 			}
@@ -371,12 +343,6 @@ namespace COL781 {
 					}
 				}
 			}
-
-			// std::cout << "here\n";
-
-			// Geometric::triangle T = Geometric::triangle(v_prop);
-
-			// raster::anti_alias(T, spp, pointBuffer);
 		}
 
 		void Rasterizer::show(){
@@ -421,22 +387,5 @@ namespace COL781 {
 			std::cout << std::endl;
 			std::cout << std::endl;
 		}
-
-		// void test(){
-		// 	glm::vec3 a = glm::vec3(0,0, 0), b = glm::vec3(0,10,5), c = glm::vec3(7, 18, 9);
-		// 	Geometric::triangle T = Geometric::triangle(a,b,c);
-		// 	T.print();
-		// 	int spp = 1;
-		// 	std::vector<float> attrib = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-		// 	std::vector<std::vector<std::vector<float>>> pointBuffer = std::vector<std::vector<std::vector<float>>>(50, std::vector<std::vector<float>>(50, std::vector<float>(5, 0.0f)));
-		// 	raster::anti_alias(T, spp, pointBuffer);
-		// 	for(int j = 0; j < 50; j++){
-		// 		for(int i = 0; i< 50 ;i++)
-		// 			std::cout<<pointBuffer[i][j][0]<<" ";
-		// 		std::cout<<"\n";
-		// 	}
-			
-		// }
-
 	}
 }
