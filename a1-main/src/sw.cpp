@@ -305,46 +305,32 @@ namespace COL781 {
 			auto vertices = object.attributeValues;
 			Uniforms uniform = program.uniforms;
 			VertexShader vsTf = vsTransform();
-
-			if(!depth || depth){
 	
-				for(auto index: object.indices){
+			for(auto index: object.indices){
 
-					std::vector<Attribs> v_prop(3);
+				std::vector<Attribs> v_prop(3);
 
-					for(int i = 0; i < 3; i++){
-						Attribs pointData = Attribs();
+				for(int i = 0; i < 3; i++){
+					Attribs pointData = Attribs();
 
-						pointData.set(0, glm::vec4(vertices[index[i]][0],vertices[index[i]][1],vertices[index[i]][2],vertices[index[i]][3]));
-						glm::vec4 pos = vsTf(uniform, pointData, pointData);
-						pos.x /= pos.w;
-						pos.y /= pos.w;
-						pos.z /= pos.w;
-						pos.w = 1/pos.w;
-						pointData.set(0, glm::vec4(((frameWidth/2)*(pos.x + 1)), ((frameHeight/2)*(pos.y+1)), pos.z, pos.w));
-						if(vertices[index[i]].size() == 8){
-							glm::vec4 color = glm::vec4(vertices[index[i]][4], vertices[index[i]][5], vertices[index[i]][6], vertices[index[i]][7]);
-							pointData.set(1, color);
-						}
-						else
-							pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
-						v_prop[i] = pointData;
+					pointData.set(0, glm::vec4(vertices[index[i]][0],vertices[index[i]][1],vertices[index[i]][2],vertices[index[i]][3]));
+					glm::vec4 pos = vsTf(uniform, pointData, pointData);
+					pos.x /= pos.w;
+					pos.y /= pos.w;
+					pos.z /= pos.w;
+					pos.w = 1/pos.w;
+					pointData.set(0, glm::vec4(((frameWidth/2)*(pos.x + 1)), ((frameHeight/2)*(pos.y+1)), pos.z, pos.w));
+					if(vertices[index[i]].size() == 8){
+						glm::vec4 color = glm::vec4(vertices[index[i]][4], vertices[index[i]][5], vertices[index[i]][6], vertices[index[i]][7]);
+						pointData.set(1, color);
 					}
-
-					Geometric::triangle T = Geometric::triangle(v_prop);
-					raster::anti_alias(T, spp, pointBuffer);
-				}
-			}
-			else{
-				std::vector<Attribs> v_prop = std::vector<Attribs>();
-				for(auto index: object.indices){
-					for(int i = 0; i < 3; i++){
-						Attribs pointData;
-						pointData.set(0, glm::vec3(frameWidth/2*(vertices[index[i]][0]+1), frameHeight/2*(vertices[index[i]][1]+1), vertices[index[i]][2] != 0 ? 1/vertices[index[i]][2] :LONG_LONG_MAX)); // Spatial-information
+					else
 						pointData.set(1, program.uniforms.get<glm::vec4>("color")); // Color-information
-						v_prop[i] = pointData;
-					}
+					v_prop[i] = pointData;
 				}
+
+				Geometric::triangle T = Geometric::triangle(v_prop);
+				raster::anti_alias(T, spp, pointBuffer);
 			}
 		}
 

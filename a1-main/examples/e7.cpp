@@ -2,8 +2,8 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace R = COL781::Software;
-// namespace R = COL781::Hardware;
+// namespace R = COL781::Software;
+namespace R = COL781::Hardware;
 using namespace glm;
 
 int main() {
@@ -17,11 +17,11 @@ int main() {
 
     R::ShaderProgram program = r.createShaderProgram(
         r.vsColorTransform(),
-        r.fsConstant()
+        r.fsIdentity()
     );
 
     float half_edge_length = 0.4f;
-    float depth = 1.0f;
+    float depth = -1.0f;
 
     R::Object room = r.createObject();
     vec4 vert_room[] = {
@@ -36,14 +36,14 @@ int main() {
     };
 
     vec4 color_room[] = {
-        vec4(1.0, 0.0, 0.0, 1.0),
-        vec4(1.0, 0.0, 0.0, 1.0),
-        vec4(1.0, 0.0, 0.0, 1.0),
-        vec4(1.0, 0.0, 0.0, 1.0),
-        vec4(0.0, 0.0, 1.0, 1.0),
-        vec4(0.0, 0.0, 1.0, 1.0),
-        vec4(0.0, 0.0, 1.0, 1.0),
-        vec4(0.0, 0.0, 1.0, 1.0)
+        vec4(1.0, 1.0, 1.0, 1.0),
+        vec4(1.0, 1.0, 1.0, 1.0),
+        vec4(1.0, 1.0, 1.0, 1.0),
+        vec4(1.0, 1.0, 1.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
     };
 
     ivec3 tri_room[]={
@@ -54,16 +54,16 @@ int main() {
         ivec3(7,3,6),
         ivec3(2,6,3),
         ivec3(1,2,6),
-        ivec3(5,6,1),
+        ivec3(5,6,1)
     };
 
-    r.setVertexAttribs(room,0,8,vert_room);
+    r.setVertexAttribs(room, 0, 8, vert_room);
     r.setVertexAttribs(room, 1, 8, color_room);
     r.setTriangleIndices(room, 8, tri_room);
 
     R::Object back_wall = r.createObject();
 
-    float back_wall_start = 1.0f;
+    float back_wall_start = -1.0f;
     vec4 back_wall_vert[] = {
         vec4(-half_edge_length, -half_edge_length, back_wall_start, 1.0),
         vec4(-half_edge_length, half_edge_length, back_wall_start, 1.0),
@@ -71,10 +71,10 @@ int main() {
         vec4(half_edge_length, -half_edge_length, back_wall_start, 1.0) 
     };
     vec4 back_wall_color[] = {
-        vec4(0.0, 1.0, 0.0, 1.0),
-        vec4(0.0, 1.0, 0.0, 1.0),
-        vec4(0.0, 1.0, 0.0, 1.0),
-        vec4(0.0, 1.0, 0.0, 1.0)
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
     };
     ivec3 back_wall_tr[] = {
         ivec3(0,1,3),
@@ -86,14 +86,14 @@ int main() {
     
  
     R::Object triangle = r.createObject();
-    float triangle_length = 0.7f, triangle_thickness = 0.1f;
+    float triangle_length = 0.35f, triangle_thickness = 0.1f;
     vec4 triangles[] = {
-        vec4(0, sqrt(3)/4*triangle_length, back_wall_start+0.05, 1.0),
-        vec4(-triangle_length/2, -sqrt(3)/4*triangle_length, back_wall_start+0.05, 1.0),
-        vec4(triangle_length/2, -sqrt(3)/4*triangle_length, back_wall_start+0.05, 1.0),
-        vec4(0, sqrt(3)/4*(triangle_length-triangle_thickness), back_wall_start+0.05, 1.0),
-        vec4(-(triangle_length-triangle_thickness)/2, -sqrt(3)/4*(triangle_length-triangle_thickness), back_wall_start+0.05, 1.0),
-        vec4((triangle_length-triangle_thickness)/2, -sqrt(3)/4*(triangle_length-triangle_thickness), back_wall_start+0.05, 1.0)
+        vec4(0, triangle_length, back_wall_start+0.05, 1.0),
+        vec4(sqrt(3)/2 * triangle_length, -0.5*triangle_length, back_wall_start+0.05, 1.0),
+        vec4(-sqrt(3)/2 * triangle_length, -0.5*triangle_length, back_wall_start+0.05, 1.0),
+        vec4(0, (triangle_length-triangle_thickness), back_wall_start+0.05, 1.0),
+        vec4(sqrt(3)/2 *(triangle_length - triangle_thickness), -0.5*(triangle_length-triangle_thickness), back_wall_start+0.05, 1.0),
+        vec4(-sqrt(3)/2 * (triangle_length - triangle_thickness), -0.5 *(triangle_length-triangle_thickness), back_wall_start+0.05, 1.0)
     };vec4 triangle_color[] = {
         vec4(1.0, 1.0, 0.0, 1.0),
         vec4(1.0, 1.0, 0.0, 1.0),
@@ -113,27 +113,34 @@ int main() {
     r.setVertexAttribs(triangle, 0, 6, triangles);
     r.setVertexAttribs(triangle, 1, 6, triangle_color);
     r.setTriangleIndices(triangle, 6, triangles_tr);
+    r.enableDepthTest();
 
-    mat4 translation = translate(mat4(1.0f), vec3(0.0f, 0.0f, 1.0f));
+    mat4 translation = translate(mat4(1.0f), vec3(0.0f, 0.0f, -1.0f));
     mat4 projection = perspective(radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
-    // mat4 rotation = rotate(mat4(1.0f), radians(15.0f), vec3(0.0f, 1.0f, 0.0f));
     mat4 matrix = projection * translation;
 
-    float speed = 0.1f;
+    mat4 model = mat4(1.0f);
+    mat4 invert = mat4(1.0f);
+    invert[1][1] = -1.0f;
+
+    float speed1 = 10.0f;
+    float speed2 = 0.5f;
     while (!r.shouldQuit()) {
         float time = SDL_GetTicks64()*1e-3;
-        // std::cout << depth - ((speed*time)-int(speed * time))*(depth-1) << std::endl;
-        // translation = translate(mat4(1.0f), vec3(0.0f,0.0f, depth - ((speed*time)-int(speed * time))*(depth-1)));
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.useShaderProgram(program);
-        r.setUniform<vec4>(program, "color", vec4(0.0, 0.6, 0.0, 1.0));
+        model = rotate(mat4(1.0f), radians(speed1 * time), vec3(0.0f, 0.0f, 1.0f));
         r.setUniform(program, "transform", matrix);
 		
         r.drawObject(room);
         r.drawObject(back_wall);
-        mat4 rotation = rotate(mat4(1.0f), radians(speed * time), vec3(0.0f,1.0f,1.0f));
-        r.setUniform(program, "tranform", matrix * rotation);
+
+        r.setUniform(program, "transform", matrix * model);
         r.drawObject(triangle);
+
+        r.setUniform(program, "transform", matrix * model * model * invert);
+        r.drawObject(triangle);
+
         r.show();
     }
     r.deleteShaderProgram(program);
