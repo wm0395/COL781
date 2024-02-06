@@ -317,7 +317,10 @@ namespace COL781 {
 
 						pointData.set(0, glm::vec4(vertices[index[i]][0],vertices[index[i]][1],vertices[index[i]][2],vertices[index[i]][3]));
 						glm::vec4 pos = vsTf(uniform, pointData, pointData);
-						pos /= pos.w;
+						pos.x /= pos.w;
+						pos.y /= pos.w;
+						pos.z /= pos.w;
+						pos.w = 1/pos.w;
 						pointData.set(0, glm::vec4(((frameWidth/2)*(pos.x + 1)), ((frameHeight/2)*(pos.y+1)), pos.z, pos.w));
 						if(vertices[index[i]].size() == 8){
 							glm::vec4 color = glm::vec4(vertices[index[i]][4], vertices[index[i]][5], vertices[index[i]][6], vertices[index[i]][7]);

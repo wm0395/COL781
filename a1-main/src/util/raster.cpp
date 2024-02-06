@@ -22,7 +22,7 @@ namespace raster{
 
 
     void anti_alias(Geometric::triangle &T, int spp, std::vector<std::vector<Software::Attribs>> &pointBuffer){
-        // spp = 3;
+        // spp = 2;
         glm::vec4 a = T.a.get<glm::vec4>(0);
         glm::vec4 b = T.b.get<glm::vec4>(0);
         glm::vec4 c = T.c.get<glm::vec4>(0);

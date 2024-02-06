@@ -19,11 +19,14 @@ namespace Geometric{
     }
     
     bool triangle::isInside(glm::vec2 p){
+        // return isInside(findZ(p));
         bool in = A.isLeft(p) && B.isLeft(p) && C.isLeft(p); 
         return in;
     }
 
     bool triangle::isInside(glm::vec3 p){
+        // glm::vec3 bary = getBarycentric(p);
+        // return bary.x * bary.y * bary.z >= 0 && bary.x <=1 && bary.y <= 1 && bary.z <=1;
         bool in = A.isLeft(p) && B.isLeft(p) && C.isLeft(p); 
         return in;
     }
@@ -64,7 +67,8 @@ namespace Geometric{
 
         float phi1 = triangle::calculateTriangleArea(b,c,point)/triangle_area;
         float phi2 = triangle::calculateTriangleArea(c,a,point)/triangle_area;
-        float phi3 = triangle::calculateTriangleArea(a,b,point)/triangle_area;
+        // float phi3 = triangle::calculateTriangleArea(a,b,point)/triangle_area;
+        float phi3 = 1.0f - phi1 - phi2;
 
         return glm::vec3(phi1, phi2, phi3);
     }
@@ -76,9 +80,12 @@ namespace Geometric{
     Software::Attribs triangle::interpolateAttrib(glm::vec3 p){
         glm::vec3 bary = getBarycentric(p);
         Software::Attribs pointData = Software::Attribs();
+        glm::vec4 col = (bary.x*a.get<glm::vec4>(1)*a.get<glm::vec4>(0).w + bary.y*b.get<glm::vec4>(1)*b.get<glm::vec4>(0).w + bary.z*c.get<glm::vec4>(1)*c.get<glm::vec4>(0).w);
         glm::vec4 pos = bary.x*a.get<glm::vec4>(0) + bary.y*b.get<glm::vec4>(0) + bary.z*c.get<glm::vec4>(0);
+        col /= pos.w;
+        pos /= pos.w;
         pointData.set(0, pos.z);
-        pointData.set(1, (bary.x*a.get<glm::vec4>(1) + bary.y*b.get<glm::vec4>(1) + bary.z*c.get<glm::vec4>(1)));
+        pointData.set(1, col);
         return pointData;
     }
 

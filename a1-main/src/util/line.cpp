@@ -34,7 +34,7 @@ namespace Geometric{
         glm::vec2 p_ = glm::vec2(p.x, p.y);
         glm::vec2 n = glm::vec2(a.y - b.y, b.x - a.x);
         glm::vec2 d = p_ - a;
-        return (glm::dot(n, d) >= 0);
+        return (glm::dot(n, d) >= -0.1);
     }
 
     float line::intercept_x(float y){
