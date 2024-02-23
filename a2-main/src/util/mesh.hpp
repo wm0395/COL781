@@ -14,7 +14,7 @@ class Face;
 
 class Mesh{
     public:
-    
+    Mesh(int n, Vertex *vertex);
     vec3* vertices;
     vec3* normals;
     ivec3* triangles;

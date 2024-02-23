@@ -1,5 +1,10 @@
 #include "mesh.hpp"
 
+inline Mesh::Mesh(int n, Vertex *vertex){
+    num_of_vertices = n;
+    starting_vertex = vertex;
+}
+
 void Mesh::populate_mesh(){   
     for (int i = 0; i<num_of_vertices; i++) visited_vertices.push_back(false);
     

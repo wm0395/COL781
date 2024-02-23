@@ -1,4 +1,5 @@
 #include "mesh.hpp"
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 using namespace std;
@@ -97,4 +98,5 @@ void get_vflist(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vect
         vhe.second[1]->pair = vhe.second[0];
     }
     head = v2v[0]->halfedge;
+    cout << "exiting vflist" <<endl;
 }
