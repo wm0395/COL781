@@ -5,7 +5,7 @@ using namespace std;
 
 void Vertex::traverse(void (*func)(Face *face)){
     HalfEdge *he = halfedge;
-    bool bdd = false;
+    bool boundary = false;
     do{
         Face *face = he->left;
         func(face);
@@ -14,7 +14,7 @@ void Vertex::traverse(void (*func)(Face *face)){
             he = he->next->pair;
         }
         else{
-            bdd = true;
+            boundary = true;
             break;
         }
 
@@ -22,7 +22,7 @@ void Vertex::traverse(void (*func)(Face *face)){
 
     he = halfedge->pair;
     // reverse traversal for opposite of boundary
-    while(he && bdd){
+    while(he && boundary){
         Face *face = he->left;
         func(face);
         he = he->next->next->pair;
@@ -37,6 +37,21 @@ void Face::traverse(void (*func)(Vertex *vertex)){
         he = he->next;
 
     }while(he != halfedge);    
+}
+
+ivec3 Face::get_face_vertices(){
+    std::vector<GLint> vert = {};
+    
+    HalfEdge *he = halfedge;
+    do{
+        Vertex *vertex = he->head;
+        vert.push_back(vertex->index);
+        he = he->next;
+
+    }while(he != halfedge);
+
+    ivec3 indices = ivec3(vert[0], vert[1], vert[2]);
+    return indices;
 }
 
 int hash_func(int i, int j, int n){
