@@ -18,7 +18,7 @@ int main() {
     };
     ivec3 triangles[] = {
         ivec3(0, 1, 2),
-        ivec3(1, 2, 3)
+        ivec3(1, 2, 3),
     };
 
     V::Viewer v;

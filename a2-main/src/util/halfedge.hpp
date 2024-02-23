@@ -3,6 +3,7 @@
 
 #include <glad/gl.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 using namespace glm;
 
@@ -21,8 +22,8 @@ class Vertex{
     public:
     HalfEdge *halfedge;
     GLint index;
-    vec3* position;
-    vec3* normal;
+    vec3 *position;
+    vec3 *normal;
 
     void traverse(void (*func)(Face *face));
 };
@@ -33,6 +34,7 @@ class Face{
     GLint index;
 
     void traverse(void (*func)(Vertex *vertex));
+    ivec3 get_face_vertices();
 };
 
 void get_vf(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normals, vector<ivec3>& face);
