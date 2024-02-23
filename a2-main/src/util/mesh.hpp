@@ -60,7 +60,7 @@ class Face{
     ivec3 get_face_vertices();
 };
 
-void get_vflist(HalfEdge* head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
+void get_vflist(HalfEdge* &head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
 
 void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3> &normal, std::vector<ivec3> &face);
 
