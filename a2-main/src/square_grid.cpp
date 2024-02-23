@@ -11,11 +11,11 @@ using namespace std;
 
 int main() {
     int m,n;
-    m = 4;
-    n = 7;
+    m = 2;
+    n = 2;
     // vec3 vertices[(m+1)*(n+1)];
-    // vec3 normals[(m+1)*(n+1)] = {};
-    // ivec3 triangles[2*m*n] = {};
+    // vec3 normals[(m+1)*(n+1)];
+    // ivec3 triangles[2*m*n];
 
     vector<vec3> vertices((m+1)*(n+1));
     vector<vec3> normals((m+1)*(n+1));
@@ -49,14 +49,15 @@ int main() {
     HalfEdge *he = nullptr;
     get_vflist(he, vertices, normals, triangles);
     Mesh *mesh = new Mesh(vertices.size(), he->head);
+    mesh->give_initial_mesh();
     mesh->populate_mesh();
 
-    V::Viewer v;
-    if (!v.initialize("Mesh viewer", 640, 480)) {
-        return EXIT_FAILURE;
-    }
-    v.setVertices((m+1)*(n+1), mesh->vertices);
-    v.setNormals((m+1)*(n+1), mesh->normals);
-    v.setTriangles(2*m*n, mesh->triangles);
-    v.view();
+    // V::Viewer v;
+    // if (!v.initialize("Mesh viewer", 640, 480)) {
+    //     return EXIT_FAILURE;
+    // }
+    // v.setVertices((m+1)*(n+1), mesh->vertices);
+    // v.setNormals((m+1)*(n+1), mesh->normals);
+    // v.setTriangles(2*m*n, mesh->triangles);
+    // v.view();
 }

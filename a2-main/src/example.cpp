@@ -39,7 +39,7 @@ int main() {
     vector<vec3> normal;
     vector<ivec3> face;
 
-    string file = "meshes/teapot.obj";
+    string file = "meshes/bunny-1k.obj";
 
     parse_OBJ(file.c_str(), vertex, normal, face);
 

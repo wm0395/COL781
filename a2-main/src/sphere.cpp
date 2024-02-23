@@ -6,8 +6,8 @@ namespace V = COL781::Viewer;
 using namespace glm;
 
 int main() {
-    int m = 20;
-    int n = 20;
+    int m = 12;
+    int n = 8;
     float r = 0.5;   //yeh doubtful hai abhi !!
 
     int vert_cnt = m*(n-1)+2;

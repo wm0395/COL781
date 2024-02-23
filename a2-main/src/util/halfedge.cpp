@@ -62,7 +62,7 @@ int hash_func(int i, int j, int n){
 //     return make_pair((int)(N/n), int(N%n));
 // }
 
-void get_vflist(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
+void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();
     int V = vertex.size();
     vector<Vertex*> v2v(V, new Vertex()); //vertex-list to vertex pointer
@@ -98,5 +98,5 @@ void get_vflist(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vect
         vhe.second[1]->pair = vhe.second[0];
     }
     head = v2v[0]->halfedge;
-    cout << "exiting vflist" <<endl;
+    // cout << "exiting vflist" <<endl;
 }
