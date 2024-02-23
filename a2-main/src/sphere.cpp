@@ -7,7 +7,7 @@ using namespace glm;
 
 int main() {
     int m = 20;
-    int n = 10;
+    int n = 20;
     float r = 0.5;   //yeh doubtful hai abhi !!
 
     int vert_cnt = m*(n-1)+2;

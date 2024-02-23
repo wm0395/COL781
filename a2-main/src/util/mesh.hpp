@@ -8,6 +8,10 @@
 
 using namespace glm;
 
+class Vertex;
+class HalfEdge;
+class Face;
+
 class Mesh{
     public:
     
