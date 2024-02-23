@@ -3,6 +3,6 @@
 
 #include "halfedge.hpp"
 
-
+HalfEdge* unit_square(int m, int n);
 
 #endif

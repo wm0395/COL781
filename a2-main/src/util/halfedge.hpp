@@ -21,6 +21,8 @@ class Vertex{
     public:
     HalfEdge *halfedge;
     GLint index;
+    vec3* position;
+    vec3* normal;
 
     void traverse(void (*func)(Face *face));
 };
@@ -32,5 +34,7 @@ class Face{
 
     void traverse(void (*func)(Vertex *vertex));
 };
+
+void get_vf(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normals, vector<ivec3>& face);
 
 #endif
