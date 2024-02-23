@@ -1,4 +1,4 @@
-#include "halfedge.hpp"
+#include "mesh.hpp"
 #include <vector>
 #include <unordered_map>
 using namespace std;
@@ -42,11 +42,11 @@ void Face::traverse(void (*func)(Vertex *vertex)){
 int hash_func(int i, int j, int n){
     return n*std::min(i,j) + std::max(i,j);
 }
-pair<int,int> inv_hash(int N, int n){
-    return {N/n, N%n};
-}
+// pair<int,int> inv_hash_func(int N, int n){
+//     return make_pair((int)(N/n), int(N%n));
+// }
 
-void get_vf(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
+void get_vflist(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();
     int V = vertex.size();
     vector<Vertex*> v2v(V, new Vertex()); //vertex-list to vertex pointer
@@ -77,6 +77,7 @@ void get_vf(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normal, vector<i
         v2h[hash_func(face[i][2], face[i][0], N)].push_back(he->next->next);
     }
     for(auto vhe: v2h){
+        if(vhe.second.size() < 2) continue;
         vhe.second[0]->pair = vhe.second[1];
         vhe.second[1]->pair = vhe.second[0];
     }

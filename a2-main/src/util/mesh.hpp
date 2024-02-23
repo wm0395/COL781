@@ -3,6 +3,7 @@
 
 #include <glad/gl.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 using namespace glm;
 
@@ -35,6 +36,8 @@ class Face{
     void traverse(void (*func)(Vertex *vertex));
 };
 
-void get_vf(HalfEdge* head, vector<vec3>& vertex, vector<vec3>& normals, vector<ivec3>& face);
+void get_vflist(HalfEdge* head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
+
+void parse_OBJ();
 
 #endif
