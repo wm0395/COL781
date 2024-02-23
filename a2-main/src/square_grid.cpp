@@ -48,6 +48,9 @@ int main() {
 
     HalfEdge *he = nullptr;
     get_vflist(he, vertices, normals, triangles);
+    cout << "he head id " << he->head->index << endl; 
+    cout << "he left id " << he->left->index << endl; 
+
     Mesh *mesh = new Mesh(vertices.size(), he->head);
     mesh->give_initial_mesh();
     mesh->populate_mesh();

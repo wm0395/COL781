@@ -62,7 +62,7 @@ int hash_func(int i, int j, int n){
 //     return make_pair((int)(N/n), int(N%n));
 // }
 
-void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
+void get_vflist(HalfEdge* &&head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();
     int V = vertex.size();
     vector<Vertex*> v2v(V, new Vertex()); //vertex-list to vertex pointer
@@ -76,18 +76,22 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
     }
     for(int i = 0; i < N; i++){
         f2f[i]->index = i;
+        
         HalfEdge *he = new HalfEdge();
-        f2f[i]->halfedge = he; 
+        f2f[i]->halfedge = he;
+        he->left = f2f[i]; 
         v2v[face[i][0]]->halfedge = he;
         he->head = v2v[face[i][0]];
         v2h[hash_func(face[i][0], face[i][1], N)].push_back(he);
 
         he->next = new HalfEdge();
+        he->next->left = f2f[i];
         v2v[face[i][1]]->halfedge = he->next;
         he->next->head = v2v[face[i][1]];
         v2h[hash_func(face[i][1], face[i][2], N)].push_back(he->next);
 
         he->next->next = new HalfEdge();
+        he->next->next->left = f2f[i];
         v2v[face[i][2]]->halfedge = he->next->next;
         he->next->next->head = v2v[face[i][2]];
         v2h[hash_func(face[i][2], face[i][0], N)].push_back(he->next->next);
