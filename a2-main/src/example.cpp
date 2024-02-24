@@ -65,19 +65,18 @@ int main() {
     // v.view();
 
 
-    vector<vec3> vertex;
-    vector<vec3> normal;
-    vector<ivec3> face;
+    // vector<vec3> vertex;
+    // vector<vec3> normal;
+    // vector<ivec3> face;
 
     string file = "meshes/cube.obj";
 
-    parse_OBJ(file.c_str(), vertex, normal, face);
+    Mesh *mesh = new Mesh(file);
+    // parse_OBJ(file.c_str(), vertex, normal, face);
 
-    HalfEdge *he = nullptr;
-    get_vflist(he, vertex, normal, face);
-
-    Mesh *mesh = new Mesh(vertex.size(), face.size(), he->head);
-    mesh->recompute_normals();
+    // HalfEdge *he = nullptr;
+    // Mesh *mesh = new Mesh(vertex.size(), face.size(), he->head);
+    // mesh->recompute_normals();
     // vec3* vertices = mesh->vertices;
     // vec3* normals = mesh->normals;
     // ivec3* triangles = mesh->triangles;
@@ -97,24 +96,24 @@ int main() {
     //     }
     // }
 
-    vec3* vertices = new vec3[vertex.size()];
-    copy(vertex.begin(), vertex.end(),vertices);
+    // vec3* vertices = new vec3[vertex.size()];
+    // copy(vertex.begin(), vertex.end(),vertices);
 
-    vec3* normals = new vec3[normal.size()];
-    copy(normal.begin(), normal.end(),normals);
+    // vec3* normals = new vec3[normal.size()];
+    // copy(normal.begin(), normal.end(),normals);
 
-    ivec3* triangles = new ivec3[face.size()];
-    copy(face.begin(), face.end(), triangles);
+    // ivec3* triangles = new ivec3[face.size()];
+    // copy(face.begin(), face.end(), triangles);
 
-    for (int i = 0; i<vertex.size(); i++){
-        // if (mesh->vertices[i] != vertices[i]){
-        //     std::cout << i << "\n";
-        // }
-        // if (mesh->normals[i] != normals[i]){
-        //     std::cout << i << "\n";
-        // }
-        std::cout << i << " "  << normals[i].x << " " << normals[i].y << " " << normals[i].z << " " << mesh->normals[i].x << " " << mesh->normals[i].y << " " << mesh->normals[i].z << "\n";
-    }
+    // for (int i = 0; i<vertex.size(); i++){
+    //     // if (mesh->vertices[i] != vertices[i]){
+    //     //     std::cout << i << "\n";
+    //     // }
+    //     // if (mesh->normals[i] != normals[i]){
+    //     //     std::cout << i << "\n";
+    //     // }
+    //     std::cout << i << " "  << normals[i].x << " " << normals[i].y << " " << normals[i].z << " " << mesh->normals[i].x << " " << mesh->normals[i].y << " " << mesh->normals[i].z << "\n";
+    // }
 
     // for (int i = 0; i<vertex.size(); i++){
     //     std::cout << &normals[i] << " " << &mesh->normals[i] << "\n";
@@ -126,12 +125,16 @@ int main() {
     //     }
     // }
 
-    // V::Viewer v;
-    // if (!v.initialize("Mesh viewer", 640, 480)) {
-    //     return EXIT_FAILURE;
-    // }
-    // v.setVertices(vertex.size(), mesh->vertices);
-    // v.setNormals(normal.size(), mesh->normals);
-    // v.setTriangles(face.size(), mesh->triangles);
-    // v.view(); 
+    V::Viewer v;
+    if (!v.initialize("Mesh viewer", 640, 480)) {
+        return EXIT_FAILURE;
+    }
+    v.setVertices(mesh->num_of_vertices, mesh->vertices);
+    cout << "set vertices\n";
+    // cout << "normal size +> " << normal.size() << "\n";
+    v.setNormals(mesh->num_of_vertices, mesh->normals);
+    cout << "set normals\n";
+    v.setTriangles(mesh->num_of_faces, mesh->triangles);
+    cout << "set face\n";
+    v.view(); 
 } 

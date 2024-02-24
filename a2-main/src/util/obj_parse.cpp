@@ -71,7 +71,6 @@ void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3
                 normal.push_back(glm::vec3(0.0, 0.0, 0.0));
             }
         }
-
     }
     //the mesh data is finally calculated here
     // for(unsigned int i=0;i<faceIndex.size();i++)

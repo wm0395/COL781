@@ -5,8 +5,10 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <set>
+#include <string>
 
 using namespace glm;
+using namespace std;
 
 class Vertex;
 class HalfEdge;
@@ -14,17 +16,25 @@ class Face;
 
 class Mesh{
     public:
-    Mesh(int V, int N, Vertex *vertex);
+    Mesh(int V, int N, Vertex **v2v, Face **f2f);
+    Mesh(int V, int N, vec3 *vertices, vec3 *normals, ivec3 *triangles);
+    Mesh(string file);
     vec3* vertices;
     vec3* normals;
     ivec3* triangles;
-    // std::vector<vec3> vertices;
-    // std::vector<vec3> normals;
-    // std::vector<ivec3> triangles;
+    Vertex** v2v; //vertex-list to vertex pointer
+    Face** f2f;//face-list to face pointer
+
+    
+    int num_of_vertices;
+    int num_of_faces;
 
     Vertex *starting_vertex;
 
-    void populate_mesh();   
+    void update_VFlist(); 
+    void update_HElist();
+    void parse_OBJ(const char *file_name);
+
     void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
     void give_initial_mesh();
     vec3* give_vertices();
@@ -34,8 +44,6 @@ class Mesh{
 
 
     private:
-    int num_of_vertices;
-    int num_of_faces;
     std::vector<bool> visited_vertices;
     std::vector<bool> visited_faces;
     int visited_vert_count;
@@ -44,8 +52,6 @@ class Mesh{
     void print_vis_vert();
     void print_vis_faces();
 };
-
-void get_vflist(HalfEdge* &head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
 
 
 // Things to be implemented:
