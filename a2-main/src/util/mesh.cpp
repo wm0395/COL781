@@ -1,10 +1,20 @@
 #include "mesh.hpp"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <unordered_map>
 
-inline Mesh::Mesh(int V, int N, Vertex *vertex){
+using namespace std;
+
+inline Mesh::Mesh(int V, int N, Vertex **v2v, Face **f2f){
     num_of_vertices = V;
     num_of_faces = N;
-    starting_vertex = vertex;
+
+    this->v2v = v2v;
+    this->f2f = f2f;
+
     visited_vertices = std::vector<bool>(V, false);
     visited_faces = std::vector<bool>(N, false);
     visited_vert_count = 0;
@@ -21,10 +31,118 @@ inline Mesh::Mesh(int V, int N, Vertex *vertex){
         triangles[i] = ivec3(0,0,0);
     }
 
-    populate_mesh();
-    // vertices = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
-    // normals = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
-    // triangles = std::vector<ivec3>(N, ivec3(0, 0, 0));
+    update_VFlist();
+}
+
+inline Mesh::Mesh(int V, int N, vec3 *vertices, vec3 *normals, ivec3 *triangles){
+    num_of_vertices = V;
+    num_of_faces = N;
+
+    this->vertices = vertices;
+    this->normals = normals;
+    this->triangles = triangles;
+
+    visited_vertices = std::vector<bool>(V, false);
+    visited_faces = std::vector<bool>(N, false);
+    visited_vert_count = 0;
+
+    v2v = new Vertex*[V];
+    f2f = new Face*[N];
+
+    update_HElist();
+}
+
+inline Mesh::Mesh(string file){
+    parse_OBJ(file.c_str());
+    update_HElist();
+}
+
+void Mesh::parse_OBJ(const char *filename){
+    std::vector<vec3> vertex;
+    std::vector<vec3> normal;
+    std::vector<ivec3> face;
+    std::ifstream in(filename, std::ios::in);
+
+    bool nn = false;
+    
+    if (!in){
+        std::cerr << "Cannot open " << filename << std::endl;
+        exit(1);
+
+    }
+    std::string line;
+    while (std::getline(in, line))
+    {
+        //check v for vertices
+        if (line.substr(0,2)=="v "){
+            std::istringstream v(line.substr(2));
+            glm::vec3 vert;
+            double x,y,z;
+            v>>x;v>>y;v>>z;
+            vert=glm::vec3(x,y,z);
+            vertex.push_back(vert);
+        }
+        //check for texture co-ordinate
+        else if(line.substr(0,2)=="vn"){
+
+            nn = true;
+            std::istringstream v(line.substr(3));
+            glm::vec3 nor;
+            float x,y,z;
+            v>>x;v>>y;v>>z;
+            nor=glm::vec3(x,y,z);
+            normal.push_back(nor);
+
+        }
+        //check for faces
+        else if(line.substr(0,2)=="f " && nn){
+            int a,b,c; //to store mesh index
+            int A,B,C; //to store texture index
+            //std::istringstream v;
+            //v.str(line.substr(2));
+            const char* chh=line.c_str();
+            sscanf (chh, "f %i//%i %i//%i %i//%i",&a,&A,&b,&B,&c,&C); //here it read the line start with f and store the corresponding values in the variables
+
+            //v>>a;v>>b;v>>c;
+            a--;b--;c--;
+            A--;B--;C--;
+            //std::cout<<a<<b<<c<<A<<B<<C;
+            // faceIndex.push_back(a);//textureIndex.push_back(A);
+            // faceIndex.push_back(b);//textureIndex.push_back(B);
+            // faceIndex.push_back(c);//textureIndex.push_back(C);
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+        }
+
+        else if (line.substr(0,2)=="f " && !nn){
+            int a,b,c;
+            const char* chh=line.c_str();
+            sscanf(chh, "f %i %i %i", &a, &b, &c);
+            a--;b--;c--;
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+
+        }
+    
+    }
+
+    if (!nn){
+        for (int i = 0; i<vertex.size(); i++){
+            normal.push_back(glm::vec3(0.0, 0.0, 0.0));
+        }
+    }
+    
+    vertices = new vec3[vertex.size()];
+    copy(vertex.begin(), vertex.end(), vertices);
+
+    normals = new vec3[normal.size()];
+    copy(normal.begin(), normal.end(), normals);
+
+    triangles = new ivec3[face.size()];
+    copy(face.begin(), face.end(), triangles);
+
+    num_of_vertices = vertex.size();
+    num_of_faces = face.size();
 }
 
 vec3* Mesh::give_vertices(){
@@ -57,28 +175,67 @@ void Mesh::print_vis_faces(){
     std::cout << "\n";
 }
 
-void Mesh::populate_mesh(){   
-    dfs(starting_vertex, nullptr, nullptr);
+void Mesh::update_VFlist(){   
+    for(int i = 0; i < num_of_vertices; i++){
+        if(!visited_vertices[i]){
+            dfs(v2v[i], nullptr, nullptr);
+        }
+    }
     visited_vert_count = 0;
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
+}
 
-    // for (int i = 0; i<num_of_vertices; i++){
-    //     vec3 pos = vertices[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-    // std::cout << "\n";
 
-    // for (int i = 0; i<num_of_vertices; i++){
-    //     vec3 pos = normals[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-    // std::cout << "\n";
+int hash_func(int i, int j, int n){
+    return n*std::min(i,j) + std::max(i,j);
+}
 
-    // for (int i = 0; i<num_of_faces; i++){
-    //     ivec3 pos = triangles[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
+void Mesh::update_HElist(){
+    unordered_map<int, vector<HalfEdge*>> v2h;
+    for(int i = 0; i < num_of_vertices; i++){
+        v2v[i] = new Vertex();
+        v2v[i]->index = i;
+        v2v[i]->position = vertices[i];
+        v2v[i]->normal = normals[i];
+    }
+
+    for(int i = 0; i < num_of_faces; i++){
+        f2f[i] = new Face();
+        f2f[i]->index = i;
+        
+        HalfEdge *he = new HalfEdge();
+        f2f[i]->halfedge = he;
+        he->left = f2f[i]; 
+        v2v[triangles[i].x]->halfedge = he;
+        he->head = v2v[triangles[i].x];
+        int hxsh = hash_func(triangles[i].z, triangles[i].x, num_of_faces);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he);
+
+        he->next = new HalfEdge();
+        he->next->left = f2f[i];
+        v2v[triangles[i].y]->halfedge = he->next;
+        he->next->head = v2v[triangles[i].y];
+        hxsh = hash_func(triangles[i].x, triangles[i].y, num_of_faces);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he->next);
+
+        he->next->next = new HalfEdge();
+        he->next->next->left = f2f[i];
+        v2v[triangles[i].z]->halfedge = he->next->next;
+        he->next->next->head = v2v[triangles[i].z];
+        hxsh = hash_func(triangles[i].y, triangles[i].z, num_of_faces);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he->next->next);
+        
+        he->next->next->next = he;
+    }
+    for(auto vhe: v2h){
+        if(vhe.second.size() < 2) continue;
+        vhe.second[0]->pair = vhe.second[1];
+        vhe.second[1]->pair = vhe.second[0];
+    }
 }
 
 void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
@@ -103,24 +260,18 @@ void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_op
 }
 
 void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
-    // std::cout<< "dfs begin +> " << v->index <<"\n";
     if (!visited_vertices[v->index]){
-        // std::cout << v->index << "\n";
         visited_vertices[v->index] = true;
-        // print_vis_vert();
         visited_vert_count++;
         vertices[v->index] = v->position;
         normals[v->index] = v->normal;
 
-        // std::cout << vertices[v->index].x << " " <<  vertices[v->index].y << " " <<  vertices[v->index].z << "\n";
-        
         v->traverse(&Mesh::dfs_helper, *this, vtx_opr, fac_opr);
         
         if(vtx_opr){
             vtx_opr(v);
         }
     }
-    // std::cout<< "dfs end +> " << v->index <<"\n";
     if (visited_vert_count == num_of_vertices) return;
 }
 
@@ -139,4 +290,5 @@ void Mesh::recompute_normals(){
     visited_vert_count = 0;
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
+    update_VFlist();
 }

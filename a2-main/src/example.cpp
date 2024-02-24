@@ -65,19 +65,25 @@ int main() {
     // v.view();
 
 
-    vector<vec3> vertex;
-    vector<vec3> normal;
-    vector<ivec3> face;
+    // vector<vec3> vertex;
+    // vector<vec3> normal;
+    // vector<ivec3> face;
 
-    string file = "meshes/noisycube.obj";
+    string file = "meshes/cube.obj";
 
-    parse_OBJ(file.c_str(), vertex, normal, face);
+    Mesh *mesh = new Mesh(file);
 
-    HalfEdge *he = nullptr;
-    get_vflist(he, vertex, normal, face);
+    std::cout << mesh->num_of_vertices << "\n";
+    vec3* vertices = mesh->vertices;
+    for (int i = 0; i<mesh->num_of_vertices; i++){
+        vec3 v = vertices[i];
+        std::cout << v.x << " " << v.y << " " << v.z << "\n";
+    }
+    // parse_OBJ(file.c_str(), vertex, normal, face);
 
-    Mesh *mesh = new Mesh(vertex.size(), face.size(), he->head);
-    mesh->recompute_normals();
+    // HalfEdge *he = nullptr;
+    // Mesh *mesh = new Mesh(vertex.size(), face.size(), he->head);
+    // mesh->recompute_normals();
     // vec3* vertices = mesh->vertices;
     // vec3* normals = mesh->normals;
     // ivec3* triangles = mesh->triangles;
@@ -97,14 +103,14 @@ int main() {
     //     }
     // }
 
-    vec3* vertices = new vec3[vertex.size()];
-    copy(vertex.begin(), vertex.end(),vertices);
+    // vec3* vertices = new vec3[vertex.size()];
+    // copy(vertex.begin(), vertex.end(),vertices);
 
-    vec3* normals = new vec3[normal.size()];
-    copy(normal.begin(), normal.end(),normals);
+    // vec3* normals = new vec3[normal.size()];
+    // copy(normal.begin(), normal.end(),normals);
 
-    ivec3* triangles = new ivec3[face.size()];
-    copy(face.begin(), face.end(), triangles);
+    // ivec3* triangles = new ivec3[face.size()];
+    // copy(face.begin(), face.end(), triangles);
 
     // for (int i = 0; i<vertex.size(); i++){
     //     // if (mesh->vertices[i] != vertices[i]){
@@ -130,8 +136,12 @@ int main() {
     if (!v.initialize("Mesh viewer", 640, 480)) {
         return EXIT_FAILURE;
     }
-    v.setVertices(vertex.size(), mesh->vertices);
-    v.setNormals(vertex.size(), mesh->normals);
-    v.setTriangles(face.size(), mesh->triangles);
+    v.setVertices(mesh->num_of_vertices, mesh->vertices);
+    cout << "set vertices\n";
+    // cout << "normal size +> " << normal.size() << "\n";
+    v.setNormals(mesh->num_of_vertices, mesh->normals);
+    cout << "set normals\n";
+    v.setTriangles(mesh->num_of_faces, mesh->triangles);
+    cout << "set face\n";
     v.view(); 
 } 

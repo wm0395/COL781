@@ -14,8 +14,8 @@ target_link_libraries(viewer glm::glm OpenGL::GL SDL2::SDL2)
 add_executable(example src/example.cpp)
 target_link_libraries(example viewer)
 
-add_executable(square_grid src/square_grid.cpp)
-target_link_libraries(square_grid viewer)
+# add_executable(square_grid src/square_grid.cpp)
+# target_link_libraries(square_grid viewer)
 
-add_executable(sphere src/sphere.cpp)
-target_link_libraries(sphere viewer)
+# add_executable(sphere src/sphere.cpp)
+# target_link_libraries(sphere viewer)
