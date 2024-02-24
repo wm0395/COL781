@@ -30,6 +30,34 @@ void Vertex::traverse(void (*func)(Face *face)){
     }
 }
 
+void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+    HalfEdge *he = halfedge;
+    bool boundary = false;
+    do{
+        Face *face = he->left;
+        (mesh.*func)(face, vtx_opr,fac_opr);
+        //check for boundary
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+    
+    if(!halfedge->pair) return;
+    he = halfedge->pair->next->next;
+    // reverse traversal for opposite of boundary
+    while(he && boundary){
+        Face *face = he->left;
+        (mesh.*func)(face, vtx_opr, fac_opr);
+        if(!he->pair) return;
+        he = he->pair->next->next;
+    }
+}
+
 void Face::traverse(void (*func)(Vertex *vertex)){
     HalfEdge *he = halfedge;
     do{

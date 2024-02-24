@@ -8,74 +8,92 @@ inline Mesh::Mesh(int V, int N, Vertex *vertex){
     visited_vertices = std::vector<bool>(V, false);
     visited_faces = std::vector<bool>(N, false);
     visited_vert_count = 0;
+    // vertices = 
+    // vertices = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
+    // normals = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
+    // triangles = std::vector<ivec3>(N, ivec3(0, 0, 0));
 }
 
 void Mesh::give_initial_mesh(){
     std::cout << "Number of vertices => " << num_of_vertices << "\n";
     std::cout << "Starting vertex => " << starting_vertex->index << "\n";
+    std::cout << "\n";
 }
 
-void Mesh::print_vis_vert(std::vector<bool> &visited_vertices){
-    for (int i = 0; i<visited_vertices.size(); i++) std::cout << visited_vertices[i] << " ";
+void Mesh::print_vis_vert(){
+    std::cout << "Visited vertices => ";
+    for (int i = 0; i<num_of_vertices; i++) std::cout << visited_vertices[i] << " ";
+    std::cout << "\n";
+}
+
+void Mesh::print_vis_faces(){
+    std::cout << "Visited face => ";
+    for (int i = 0; i<num_of_faces; i++) std::cout << visited_vertices[i] << " ";
     std::cout << "\n";
 }
 
 void Mesh::populate_mesh(){   
-    for (int i = 0; i<num_of_vertices; i++){
-        vertices.push_back(glm::vec3(0.0, 0.0, 0.0));
-        normals.push_back(glm::vec3(0.0, 0.0, 0.0));
-    }
-
-    dfs(starting_vertex);
+    dfs(starting_vertex, nullptr, nullptr);
     visited_vert_count = 0;
-}
+    visited_vertices = std::vector<bool>(num_of_vertices, false);
+    visited_faces = std::vector<bool>(num_of_faces, false);
 
-void Mesh::dfs_helper(Face *face){
-    if (!visited_faces[face->index]){
-        visited_faces[face->index] = true;
-        std::vector<Vertex*> vert = face->face_vertices();
-        ivec3 v = face->get_face_vertices_indices();
-        triangles.push_back(v);
-        dfs(vert[0]);
-        dfs(vert[1]);
-        dfs(vert[2]);
+    for (int i = 0; i<num_of_vertices; i++){
+        vec3 pos = vertices[i];
+        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    }
+    std::cout << "\n";
+
+    for (int i = 0; i<num_of_vertices; i++){
+        vec3 pos = normals[i];
+        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    }
+    std::cout << "\n";
+
+    for (int i = 0; i<num_of_faces; i++){
+        vec3 pos = triangles[i];
+        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
     }
 }
 
-void Mesh::dfs(Vertex *v){
+void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+    face->print_face_vertices();
+    if (!visited_faces[face->index]){
+        if(fac_opr){
+            fac_opr(face);
+        }
+        visited_faces[face->index] = true;
+
+        // std::cout << "printing face vertices => ";
+        print_vis_faces();
+        std::vector<Vertex*> vert = face->face_vertices();
+        // std::cout << "doabara => ";
+        std::cout << vert[0]->index << " " << vert[1]->index << " " << vert[2]->index << "\n";
+        ivec3 v = face->get_face_vertices_indices();
+        triangles[face->index] = v;
+        dfs(vert[0], vtx_opr, fac_opr);
+        dfs(vert[1], vtx_opr, fac_opr);
+        dfs(vert[2], vtx_opr, fac_opr);
+    }
+}
+
+void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+    std::cout<< "dfs begin +> " << v->index <<"\n";
     if (!visited_vertices[v->index]){
+        std::cout << v->index << "\n";
         visited_vertices[v->index] = true;
+        print_vis_vert();
         visited_vert_count++;
         vertices[v->index] = *v->position;
         normals[v->index] = *v->normal;
-        HalfEdge *he = v->halfedge;
-        HalfEdge *initial = v->halfedge;
-        bool boundary = false;
-        do{
-            Face *face = he->left;
-            dfs_helper(face);
 
-            if (he->next->pair){
-                he = he->next;
-                dfs(he->head);
-                he = he->pair;
-            }
-            else{
-                boundary = true;
-                break;
-            }
-        }while(he != initial);
-
-        he = initial->pair;
-
-        while(he && boundary){
-            Face *face = he->left;
-            dfs_helper(face);
-            he = he->next->next;
-            dfs(he->head);
-            he = he->pair;
+        // std::cout << vertices[v->index].x << " " <<  vertices[v->index].y << " " <<  vertices[v->index].z << "\n";
+        
+        v->traverse(&Mesh::dfs_helper, *this, vtx_opr, fac_opr);
+        if(vtx_opr){
+            vtx_opr(v);
         }
     }
-
+    std::cout<< "dfs end +> " << v->index <<"\n";
     if (visited_vert_count == num_of_vertices) return;
 }

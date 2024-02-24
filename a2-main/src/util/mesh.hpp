@@ -25,8 +25,9 @@ class Mesh{
     Vertex *starting_vertex;
 
     void populate_mesh();   
-    void dfs(Vertex *v);
+    void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
     void give_initial_mesh();
+
 
     private:
     int num_of_vertices;
@@ -35,9 +36,9 @@ class Mesh{
     std::vector<bool> visited_faces;
     int visited_vert_count;
 
-    void dfs_helper(Face *face);
-    void print_vis_vert(std::vector<bool> &visited_vertices);
-    void print_vis_faces(std::set<GLint> &covered_faces);
+    void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
+    void print_vis_vert();
+    void print_vis_faces();
 };
 
 void get_vflist(HalfEdge* &head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
@@ -62,6 +63,7 @@ class Vertex{
     vec3* normal;
 
     void traverse(void (*func)(Face *face));
+    void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
 };
 
 class Face{
