@@ -25,7 +25,7 @@ class Mesh{
     Vertex *starting_vertex;
 
     void populate_mesh();   
-    void dfs(Vertex *v, int &visited_vert_count);
+    void dfs(Vertex *v);
     void give_initial_mesh();
 
     private:
@@ -33,6 +33,7 @@ class Mesh{
     int num_of_faces;
     std::vector<bool> visited_vertices;
     std::vector<bool> visited_faces;
+    int visited_vert_count;
 
     void dfs_helper(Face *face);
     void print_vis_vert(std::vector<bool> &visited_vertices);
@@ -69,7 +70,9 @@ class Face{
     GLint index;
 
     void traverse(void (*func)(Vertex *vertex));
-    ivec3 get_face_vertices();
+    std::vector<Vertex*> face_vertices();
+    ivec3 get_face_vertices_indices();
+    void print_face_vertices();
 };
 
 void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3> &normal, std::vector<ivec3> &face);

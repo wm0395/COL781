@@ -40,22 +40,28 @@ void Face::traverse(void (*func)(Vertex *vertex)){
     }while(he != halfedge);    
 }
 
-ivec3 Face::get_face_vertices(){
-    std::vector<GLint> vert = {};
-    
+vector<Vertex*> Face::face_vertices(){
+    std::vector<Vertex*> vert = {};
+
     HalfEdge *he = this->halfedge;
     do{
         Vertex *vertex = he->head;
-        // std::cout << vertex->index << "\n";
-        vert.push_back(vertex->index);
-        // std::cout << he->head->index << " " << he->next->head->index << "\n";
+        vert.push_back(vertex);
         he = he->next;
-        // std::cout << he->head->index << "\n";
 
     }while(he != this->halfedge);
 
-    ivec3 indices = ivec3(vert[0], vert[1], vert[2]);
-    return indices;
+    return vert;
+}
+
+ivec3 Face::get_face_vertices_indices(){
+    std::vector<Vertex*> vert = face_vertices();
+    return ivec3(vert[0]->index, vert[1]->index, vert[2]->index);
+}
+
+void Face::print_face_vertices(){
+    ivec3 v = get_face_vertices_indices();
+    std::cout << "Face vertices => " << v.x << " " << v.y << " " << v.z << "\n";
 }
 
 int hash_func(int i, int j, int n){
@@ -66,7 +72,6 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
     int N = face.size();
     int V = vertex.size();
     vector<Vertex*> v2v(V, nullptr); //vertex-list to vertex pointer
-    // vector<vector<HalfEdge*>> v2h(V, vector<HalfEdge*>(V, new HalfEdge()));//vertex-list to all it's half-edge pointers
     unordered_map<int, vector<HalfEdge*>> v2h;
     vector<Face*> f2f(N, nullptr);//face-list to face pointer
     for(int i = 0; i < V; i++){
@@ -122,5 +127,4 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
         vhe.second[1]->pair = vhe.second[0];
     }
     head = v2v[0]->halfedge;
-    // cout << "exiting vflist" <<endl;
 }
