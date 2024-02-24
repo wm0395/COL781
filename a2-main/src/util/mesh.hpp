@@ -25,7 +25,7 @@ class Mesh{
     Vertex *starting_vertex;
 
     void populate_mesh();   
-    void dfs(Vertex *v, int &visited_vert_count);
+    void dfs(Vertex *v, int &visited_vert_count, void (*vtx_opr)(Vertex *vertex) = nullptr , void (*fac_opr)(Face *face));
     void give_initial_mesh();
 
     private:
@@ -34,7 +34,7 @@ class Mesh{
     std::vector<bool> visited_vertices;
     std::vector<bool> visited_faces;
 
-    void dfs_helper(Face *face);
+    void dfs_helper(Face *face, void (*fac_opr)(Face *face));
     void print_vis_vert(std::vector<bool> &visited_vertices);
     void print_vis_faces(std::set<GLint> &covered_faces);
 };
@@ -61,6 +61,7 @@ class Vertex{
     vec3* normal;
 
     void traverse(void (*func)(Face *face));
+    void traverse(void (Mesh::*func)(Face *face, void (*fac_opr)(Face *face)), Mesh &mesh, void (*fac_opr)(Face *face));
 };
 
 class Face{
