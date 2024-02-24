@@ -8,10 +8,35 @@ inline Mesh::Mesh(int V, int N, Vertex *vertex){
     visited_vertices = std::vector<bool>(V, false);
     visited_faces = std::vector<bool>(N, false);
     visited_vert_count = 0;
-    // vertices = 
+
+    vertices = new vec3[V];
+    normals = new vec3[V];
+    triangles = new ivec3[N];
+
+    for (int i = 0; i<num_of_vertices; i++){
+        vertices[i] = vec3(0.0, 0.0, 0.0);
+        normals[i] = vec3(0.0, 0.0, 0.0);
+    }
+    for (int i = 0; i<num_of_faces; i++){
+        triangles[i] = ivec3(0,0,0);
+    }
+
+    populate_mesh();
     // vertices = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
     // normals = std::vector<vec3>(V, vec3(0.0, 0.0, 0.0));
     // triangles = std::vector<ivec3>(N, ivec3(0, 0, 0));
+}
+
+vec3* Mesh::give_vertices(){
+    return vertices;
+}
+
+vec3* Mesh::give_normals(){
+    return normals;
+}
+
+ivec3* Mesh::give_triangles(){
+    return triangles;
 }
 
 void Mesh::give_initial_mesh(){
@@ -38,26 +63,26 @@ void Mesh::populate_mesh(){
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
 
-    for (int i = 0; i<num_of_vertices; i++){
-        vec3 pos = vertices[i];
-        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    }
-    std::cout << "\n";
+    // for (int i = 0; i<num_of_vertices; i++){
+    //     vec3 pos = vertices[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
+    // std::cout << "\n";
 
-    for (int i = 0; i<num_of_vertices; i++){
-        vec3 pos = normals[i];
-        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    }
-    std::cout << "\n";
+    // for (int i = 0; i<num_of_vertices; i++){
+    //     vec3 pos = normals[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
+    // std::cout << "\n";
 
-    for (int i = 0; i<num_of_faces; i++){
-        vec3 pos = triangles[i];
-        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    }
+    // for (int i = 0; i<num_of_faces; i++){
+    //     vec3 pos = triangles[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
 }
 
 void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
-    face->print_face_vertices();
+    // face->print_face_vertices();
     if (!visited_faces[face->index]){
         if(fac_opr){
             fac_opr(face);
@@ -65,10 +90,10 @@ void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_op
         visited_faces[face->index] = true;
 
         // std::cout << "printing face vertices => ";
-        print_vis_faces();
+        // print_vis_faces();
         std::vector<Vertex*> vert = face->face_vertices();
         // std::cout << "doabara => ";
-        std::cout << vert[0]->index << " " << vert[1]->index << " " << vert[2]->index << "\n";
+        // std::cout << vert[0]->index << " " << vert[1]->index << " " << vert[2]->index << "\n";
         ivec3 v = face->get_face_vertices_indices();
         triangles[face->index] = v;
         dfs(vert[0], vtx_opr, fac_opr);
@@ -78,11 +103,11 @@ void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_op
 }
 
 void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
-    std::cout<< "dfs begin +> " << v->index <<"\n";
+    // std::cout<< "dfs begin +> " << v->index <<"\n";
     if (!visited_vertices[v->index]){
-        std::cout << v->index << "\n";
+        // std::cout << v->index << "\n";
         visited_vertices[v->index] = true;
-        print_vis_vert();
+        // print_vis_vert();
         visited_vert_count++;
         vertices[v->index] = *v->position;
         normals[v->index] = *v->normal;
@@ -94,6 +119,6 @@ void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face 
             vtx_opr(v);
         }
     }
-    std::cout<< "dfs end +> " << v->index <<"\n";
+    // std::cout<< "dfs end +> " << v->index <<"\n";
     if (visited_vert_count == num_of_vertices) return;
 }

@@ -11,8 +11,8 @@ using namespace std;
 
 int main() {
     int m,n;
-    m = 2;
-    n = 2;
+    m = 4;
+    n = 9;
     // vec3 vertices[(m+1)*(n+1)];
     // vec3 normals[(m+1)*(n+1)];
     // ivec3 triangles[2*m*n];
@@ -48,19 +48,19 @@ int main() {
 
     HalfEdge *he = nullptr;
     get_vflist(he, vertices, normals, triangles);
-    cout << "he head id " << he->head->index << endl; 
-    cout << "he left id " << he->left->index << endl; 
+    // cout << "he head id " << he->head->index << endl; 
+    // cout << "he left id " << he->left->index << endl; 
 
     Mesh *mesh = new Mesh(vertices.size(), triangles.size(), he->head);
-    mesh->give_initial_mesh();
-    mesh->populate_mesh();
+    // mesh->give_initial_mesh();
+    // mesh->populate_mesh();
 
-    // V::Viewer v;
-    // if (!v.initialize("Mesh viewer", 640, 480)) {
-    //     return EXIT_FAILURE;
-    // }
-    // v.setVertices((m+1)*(n+1), mesh->vertices);
-    // v.setNormals((m+1)*(n+1), mesh->normals);
-    // v.setTriangles(2*m*n, mesh->triangles);
-    // v.view();
+    V::Viewer v;
+    if (!v.initialize("Mesh viewer", 640, 480)) {
+        return EXIT_FAILURE;
+    }
+    v.setVertices((m+1)*(n+1), mesh->vertices);
+    v.setNormals((m+1)*(n+1), mesh->normals);
+    v.setTriangles(2*m*n, mesh->triangles);
+    v.view();
 }

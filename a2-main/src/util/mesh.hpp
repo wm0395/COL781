@@ -15,18 +15,21 @@ class Face;
 class Mesh{
     public:
     Mesh(int V, int N, Vertex *vertex);
-    // vec3* vertices;
-    // vec3* normals;
-    // ivec3* triangles;
-    std::vector<vec3> vertices;
-    std::vector<vec3> normals;
-    std::vector<ivec3> triangles;
+    vec3* vertices;
+    vec3* normals;
+    ivec3* triangles;
+    // std::vector<vec3> vertices;
+    // std::vector<vec3> normals;
+    // std::vector<ivec3> triangles;
 
     Vertex *starting_vertex;
 
     void populate_mesh();   
     void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
     void give_initial_mesh();
+    vec3* give_vertices();
+    vec3* give_normals();
+    ivec3* give_triangles();
 
 
     private:

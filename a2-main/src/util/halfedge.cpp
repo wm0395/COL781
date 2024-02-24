@@ -109,14 +109,14 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
         v2v[i]->normal = &normal[i];
     }
 
-    for (int i = 0; i<V; i++){
-        Vertex *v = v2v[i];
-        std::cout << "vertex => " << v << "\n";
-        std::cout << "Index => " << v->index << "\n";
-        vec3 pos = *v->position;
-        std::cout << "position => " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        std::cout << "\n";
-    }
+    // for (int i = 0; i<V; i++){
+    //     Vertex *v = v2v[i];
+    //     std::cout << "vertex => " << v << "\n";
+    //     std::cout << "Index => " << v->index << "\n";
+    //     vec3 pos = *v->position;
+    //     std::cout << "position => " << pos.x << " " << pos.y << " " << pos.z << "\n";
+    //     std::cout << "\n";
+    // }
 
     for(int i = 0; i < N; i++){
         f2f[i] = new Face();
