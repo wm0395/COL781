@@ -68,6 +68,8 @@ int hash_func(int i, int j, int n){
 void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();
     int V = vertex.size();
+
+    // std::cout << N << " " << V << "\n";
     vector<Vertex*> v2v(V, new Vertex()); //vertex-list to vertex pointer
     // vector<vector<HalfEdge*>> v2h(V, vector<HalfEdge*>(V, new HalfEdge()));//vertex-list to all it's half-edge pointers
     unordered_map<int, vector<HalfEdge*>> v2h;
@@ -77,6 +79,16 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
         v2v[i]->position = &vertex[i];
         v2v[i]->normal = &normal[i];
     }
+
+    for (int i = 0; i<V; i++){
+        Vertex *v = v2v[i];
+        std::cout << "vertex => " << v << "\n";
+        std::cout << "Index => " << v->index << "\n";
+        vec3 pos = *v->position;
+        std::cout << "position => " << pos.x << " " << pos.y << " " << pos.z << "\n";
+        std::cout << "\n";
+    }
+    
     for(int i = 0; i < N; i++){
         f2f[i]->index = i;
         
@@ -98,7 +110,7 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
         v2v[face[i].z]->halfedge = he->next->next;
         he->next->next->head = v2v[face[i].z];
         v2h[hash_func(face[i].z, face[i].x, N)].push_back(he->next->next);
-        
+
         he->next->next->next = he;
     }
     for(auto vhe: v2h){
