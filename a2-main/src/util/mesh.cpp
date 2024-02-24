@@ -76,7 +76,7 @@ void Mesh::populate_mesh(){
     // std::cout << "\n";
 
     // for (int i = 0; i<num_of_faces; i++){
-    //     vec3 pos = triangles[i];
+    //     ivec3 pos = triangles[i];
     //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
     // }
 }
@@ -109,16 +109,34 @@ void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face 
         visited_vertices[v->index] = true;
         // print_vis_vert();
         visited_vert_count++;
-        vertices[v->index] = *v->position;
-        normals[v->index] = *v->normal;
+        vertices[v->index] = v->position;
+        normals[v->index] = v->normal;
 
         // std::cout << vertices[v->index].x << " " <<  vertices[v->index].y << " " <<  vertices[v->index].z << "\n";
         
         v->traverse(&Mesh::dfs_helper, *this, vtx_opr, fac_opr);
+        
         if(vtx_opr){
             vtx_opr(v);
         }
     }
     // std::cout<< "dfs end +> " << v->index <<"\n";
     if (visited_vert_count == num_of_vertices) return;
+}
+
+void add_face_normal(Face *face, Vertex *vertex){
+    vertex->normal += face->calculate_normal();
+}
+
+void avg_normals(Vertex *vertex){
+    vertex->normal = vec3(0,0,0);
+    int n = vertex->traverse(add_face_normal);
+    vertex->normal = vec3(vertex->normal.x/n, vertex->normal.y/n, vertex->normal.z/n);
+}
+
+void Mesh::recompute_normals(){
+    dfs(starting_vertex, avg_normals, nullptr);
+    visited_vert_count = 0;
+    visited_vertices = std::vector<bool>(num_of_vertices, false);
+    visited_faces = std::vector<bool>(num_of_faces, false);
 }

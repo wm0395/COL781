@@ -1,21 +1,28 @@
 #include "viewer.hpp"
+#include "./util/util.hpp"
+#include "./util/mesh.cpp"
+#include "./util/halfedge.cpp"
+#include <vector>
 #include <iostream>
-#include <cmath>
 
 namespace V = COL781::Viewer;
 using namespace glm;
 
 int main() {
-    int m = 12;
-    int n = 8;
+    int m = 41;
+    int n = 20;
     float r = 0.5;   //yeh doubtful hai abhi !!
 
     int vert_cnt = m*(n-1)+2;
     int tri_cnt = 2*m*(n-1);
 
-    vec3 vertices[vert_cnt];
-    vec3 normals[vert_cnt];
-    ivec3 triangles[tri_cnt];
+    // vec3 vertices[vert_cnt];
+    // vec3 normals[vert_cnt];
+    // ivec3 triangles[tri_cnt];
+
+    std::vector<vec3> vertices(vert_cnt, vec3(0.0, 0.0, 0.0));
+    std::vector<vec3> normals(vert_cnt, vec3(0.0, 0.0, 0.0));
+    std::vector<ivec3> triangles(tri_cnt, ivec3(0, 0, 0));
 
     int cnt = 1;
     int pres_tri_cnt = m;
@@ -70,12 +77,20 @@ int main() {
         }
     }
 
+    HalfEdge *he = nullptr;
+    get_vflist(he, vertices, normals, triangles);
+
+    Mesh *mesh = new Mesh(vertices.size(), triangles.size(), he->head);
+    // // vec3* vertices = mesh->give_vertices();
+    // // vec3* normalss = mesh->give_normalss();
+    // // ivec3* triangles = mesh->give_triangles();
+
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {
         return EXIT_FAILURE;
     }
-    v.setVertices(vert_cnt, vertices);
-    v.setNormals(vert_cnt, normals);
-    v.setTriangles(tri_cnt, triangles);
+    v.setVertices(vert_cnt, mesh->vertices);
+    v.setNormals(vert_cnt, mesh->normals);
+    v.setTriangles(tri_cnt, mesh->triangles);
     v.view();
 }

@@ -21,13 +21,46 @@ void Vertex::traverse(void (*func)(Face *face)){
 
     }while(he != halfedge);
 
+    if(!halfedge->pair) return;
     he = halfedge->pair->next->next;
     // reverse traversal for opposite of boundary
     while(he && boundary){
         Face *face = he->left;
         func(face);
+        if(!he->pair) return;
         he = he->pair->next->next;
     }
+}
+
+int Vertex::traverse(void (*func)(Face *face, Vertex *vertex)){
+    HalfEdge *he = halfedge;
+    bool boundary = false;
+    int n = 0;
+    do{
+        Face *face = he->left;
+        func(face, this);
+        n++;
+        //check for boundary
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+    if(!halfedge->pair) return n;
+    he = halfedge->pair->next->next;
+    // reverse traversal for opposite of boundary
+    while(he && boundary){
+        n++;
+        Face *face = he->left;
+        func(face, this);
+        if(!he->pair) return n;
+        he = he->pair->next->next;
+    }
+    return n;
 }
 
 void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
@@ -92,6 +125,12 @@ void Face::print_face_vertices(){
     std::cout << "Face vertices => " << v.x << " " << v.y << " " << v.z << "\n";
 }
 
+vec3 Face::calculate_normal(){
+    vec3 a = (halfedge->head->position), b = (halfedge->next->head->position), c = (halfedge->next->next->head->position);
+    vec3 norm = glm::cross(b-a, c-a);
+    return norm;
+}
+
 int hash_func(int i, int j, int n){
     return n*std::min(i,j) + std::max(i,j);
 }
@@ -105,8 +144,8 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
     for(int i = 0; i < V; i++){
         v2v[i] = new Vertex();
         v2v[i]->index = i;
-        v2v[i]->position = &vertex[i];
-        v2v[i]->normal = &normal[i];
+        v2v[i]->position = vertex[i];
+        v2v[i]->normal = normal[i];
     }
 
     // for (int i = 0; i<V; i++){

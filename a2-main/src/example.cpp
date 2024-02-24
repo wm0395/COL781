@@ -77,16 +77,61 @@ int main() {
     get_vflist(he, vertex, normal, face);
 
     Mesh *mesh = new Mesh(vertex.size(), face.size(), he->head);
-    vec3* vertices = mesh->give_vertices();
-    vec3* normals = mesh->give_normals();
-    ivec3* triangles = mesh->give_triangles();
+    mesh->recompute_normals();
+    // vec3* vertices = mesh->vertices;
+    // vec3* normals = mesh->normals;
+    // ivec3* triangles = mesh->triangles;
 
-    V::Viewer v;
-    if (!v.initialize("Mesh viewer", 640, 480)) {
-        return EXIT_FAILURE;
+    // for (int i = 0; i<vertex.size(); i++){
+    //     if (vertex[i] != vertices[i]){
+    //         std::cout << i << "\n";
+    //     }
+    //     if (normal[i] != normals[i]){
+    //         std::cout << i << "\n";
+    //     }
+    // }
+
+    // for (int i = 0; i<face.size(); i++){
+    //     if (face[i] != triangles[i]){
+    //         std::cout << i << "\n";
+    //     }
+    // }
+
+    vec3* vertices = new vec3[vertex.size()];
+    copy(vertex.begin(), vertex.end(),vertices);
+
+    vec3* normals = new vec3[normal.size()];
+    copy(normal.begin(), normal.end(),normals);
+
+    ivec3* triangles = new ivec3[face.size()];
+    copy(face.begin(), face.end(), triangles);
+
+    for (int i = 0; i<vertex.size(); i++){
+        // if (mesh->vertices[i] != vertices[i]){
+        //     std::cout << i << "\n";
+        // }
+        // if (mesh->normals[i] != normals[i]){
+        //     std::cout << i << "\n";
+        // }
+        std::cout << i << " "  << normals[i].x << " " << normals[i].y << " " << normals[i].z << " " << mesh->normals[i].x << " " << mesh->normals[i].y << " " << mesh->normals[i].z << "\n";
     }
-    v.setVertices(vertex.size(), vertices);
-    v.setNormals(normal.size(), normals);
-    v.setTriangles(face.size(), triangles);
-    v.view(); 
-}
+
+    // for (int i = 0; i<vertex.size(); i++){
+    //     std::cout << &normals[i] << " " << &mesh->normals[i] << "\n";
+    // }
+
+    // for (int i = 0; i<face.size(); i++){
+    //     if (mesh->triangles[i] != triangles[i]){
+    //         std::cout << i << "\n";
+    //     }
+    // }
+
+    // V::Viewer v;
+    // if (!v.initialize("Mesh viewer", 640, 480)) {
+    //     return EXIT_FAILURE;
+    // }
+    // v.setVertices(vertex.size(), mesh->vertices);
+    // v.setNormals(normal.size(), mesh->normals);
+    // v.setTriangles(face.size(), mesh->triangles);
+    // v.view(); 
+} 

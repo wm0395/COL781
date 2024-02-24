@@ -30,6 +30,7 @@ class Mesh{
     vec3* give_vertices();
     vec3* give_normals();
     ivec3* give_triangles();
+    void recompute_normals();
 
 
     private:
@@ -62,10 +63,11 @@ class Vertex{
     public:
     HalfEdge *halfedge;
     GLint index;
-    vec3* position;
-    vec3* normal;
+    vec3 position;
+    vec3 normal;
 
     void traverse(void (*func)(Face *face));
+    int traverse(void (*func)(Face *face, Vertex *vertex));
     void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
 };
 
@@ -78,6 +80,7 @@ class Face{
     std::vector<Vertex*> face_vertices();
     ivec3 get_face_vertices_indices();
     void print_face_vertices();
+    vec3 calculate_normal();
 };
 
 void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3> &normal, std::vector<ivec3> &face);
