@@ -51,7 +51,7 @@ int main() {
     cout << "he head id " << he->head->index << endl; 
     cout << "he left id " << he->left->index << endl; 
 
-    Mesh *mesh = new Mesh(vertices.size(), he->head);
+    Mesh *mesh = new Mesh(vertices.size(), triangles.size(), he->head);
     mesh->give_initial_mesh();
     mesh->populate_mesh();
 

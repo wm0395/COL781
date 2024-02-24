@@ -14,7 +14,7 @@ class Face;
 
 class Mesh{
     public:
-    Mesh(int n, Vertex *vertex);
+    Mesh(int V, int N, Vertex *vertex);
     // vec3* vertices;
     // vec3* normals;
     // ivec3* triangles;
@@ -25,16 +25,22 @@ class Mesh{
     Vertex *starting_vertex;
 
     void populate_mesh();   
-    void dfs(Vertex *v, int &visited_vert_count, int &visited_face_count);
+    void dfs(Vertex *v, int &visited_vert_count);
     void give_initial_mesh();
 
     private:
     int num_of_vertices;
+    int num_of_faces;
     std::vector<bool> visited_vertices;
-    std::set<GLint> covered_faces;
+    std::vector<bool> visited_faces;
+
+    void dfs_helper(Face *face);
     void print_vis_vert(std::vector<bool> &visited_vertices);
     void print_vis_faces(std::set<GLint> &covered_faces);
 };
+
+void get_vflist(HalfEdge* &head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
+
 
 // Things to be implemented:
 // efficient link between vertex locations and triangle locations
@@ -65,8 +71,6 @@ class Face{
     void traverse(void (*func)(Vertex *vertex));
     ivec3 get_face_vertices();
 };
-
-void get_vflist(HalfEdge* &head, std::vector<vec3>& vertex, std::vector<vec3>& normals, std::vector<ivec3>& face);
 
 void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3> &normal, std::vector<ivec3> &face);
 

@@ -21,12 +21,12 @@ void Vertex::traverse(void (*func)(Face *face)){
 
     }while(he != halfedge);
 
-    he = halfedge->pair;
+    he = halfedge->pair->next->next;
     // reverse traversal for opposite of boundary
     while(he && boundary){
         Face *face = he->left;
         func(face);
-        he = he->next->next->pair;
+        he = he->pair->next->next;
     }
 }
 
@@ -61,9 +61,6 @@ ivec3 Face::get_face_vertices(){
 int hash_func(int i, int j, int n){
     return n*std::min(i,j) + std::max(i,j);
 }
-// pair<int,int> inv_hash_func(int N, int n){
-//     return make_pair((int)(N/n), int(N%n));
-// }
 
 void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();

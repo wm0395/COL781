@@ -49,6 +49,10 @@ int main() {
     HalfEdge *he = nullptr;
     get_vflist(he, vertices, normals, triangles);
 
+    Mesh *mesh = new Mesh(vertices.size(), triangles.size(), he->head);
+    mesh->give_initial_mesh();
+    mesh->populate_mesh();
+
     // V::Viewer v;
     // if (!v.initialize("Mesh viewer", 640, 480)) {
     //     return EXIT_FAILURE;
