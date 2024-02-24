@@ -68,16 +68,28 @@ int hash_func(int i, int j, int n){
 void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vector<ivec3>& face){
     int N = face.size();
     int V = vertex.size();
-    vector<Vertex*> v2v(V, new Vertex()); //vertex-list to vertex pointer
+    vector<Vertex*> v2v(V, nullptr); //vertex-list to vertex pointer
     // vector<vector<HalfEdge*>> v2h(V, vector<HalfEdge*>(V, new HalfEdge()));//vertex-list to all it's half-edge pointers
     unordered_map<int, vector<HalfEdge*>> v2h;
-    vector<Face*> f2f(N, new Face());//face-list to face pointer
+    vector<Face*> f2f(N, nullptr);//face-list to face pointer
     for(int i = 0; i < V; i++){
+        v2v[i] = new Vertex();
         v2v[i]->index = i;
         v2v[i]->position = &vertex[i];
         v2v[i]->normal = &normal[i];
     }
+
+    for (int i = 0; i<V; i++){
+        Vertex *v = v2v[i];
+        std::cout << "vertex => " << v << "\n";
+        std::cout << "Index => " << v->index << "\n";
+        vec3 pos = *v->position;
+        std::cout << "position => " << pos.x << " " << pos.y << " " << pos.z << "\n";
+        std::cout << "\n";
+    }
+
     for(int i = 0; i < N; i++){
+        f2f[i] = new Face();
         f2f[i]->index = i;
         
         HalfEdge *he = new HalfEdge();
@@ -85,19 +97,25 @@ void get_vflist(HalfEdge* &head, vector<vec3>& vertex, vector<vec3>& normal, vec
         he->left = f2f[i]; 
         v2v[face[i].x]->halfedge = he;
         he->head = v2v[face[i].x];
-        v2h[hash_func(face[i].x, face[i].y, N)].push_back(he);
+        int hxsh = hash_func(face[i].z, face[i].x, N);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he);
 
         he->next = new HalfEdge();
         he->next->left = f2f[i];
         v2v[face[i].y]->halfedge = he->next;
         he->next->head = v2v[face[i].y];
-        v2h[hash_func(face[i].y, face[i].z, N)].push_back(he->next);
+        hxsh = hash_func(face[i].x, face[i].y, N);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he->next);
 
         he->next->next = new HalfEdge();
         he->next->next->left = f2f[i];
         v2v[face[i].z]->halfedge = he->next->next;
         he->next->next->head = v2v[face[i].z];
-        v2h[hash_func(face[i].z, face[i].x, N)].push_back(he->next->next);
+        hxsh = hash_func(face[i].y, face[i].z, N);
+        if(v2h.find(hxsh) == v2h.end()) v2h[hxsh] = vector<HalfEdge*>();
+        v2h[hxsh].push_back(he->next->next);
         
         he->next->next->next = he;
     }
