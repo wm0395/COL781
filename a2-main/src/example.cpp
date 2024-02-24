@@ -2,6 +2,7 @@
 #include "./util/util.hpp"
 #include "./util/mesh.cpp"
 #include "./util/halfedge.cpp"
+#include "./util/square_grid.cpp"
 #include <vector>
 #include <iostream>
 
@@ -69,9 +70,12 @@ int main() {
     // vector<vec3> normal;
     // vector<ivec3> face;
 
-    string file = "meshes/cube.obj";
+    // string file = "meshes/noisycube.obj";
 
-    Mesh *mesh = new Mesh(file);
+    // Mesh *mesh = new Mesh(file);
+
+    Mesh *mesh = square_grid(4,6);
+    // mesh->recompute_normals();
     // parse_OBJ(file.c_str(), vertex, normal, face);
 
     // HalfEdge *he = nullptr;
@@ -126,7 +130,7 @@ int main() {
     // }
 
     V::Viewer v;
-    if (!v.initialize("Mesh viewer", 640, 480)) {
+    if (!v.initialize("Mesh viewer", 2*640, 2*480)) {
         return EXIT_FAILURE;
     }
     v.setVertices(mesh->num_of_vertices, mesh->vertices);

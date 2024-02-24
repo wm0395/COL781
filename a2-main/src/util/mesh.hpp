@@ -29,8 +29,6 @@ class Mesh{
     int num_of_vertices;
     int num_of_faces;
 
-    Vertex *starting_vertex;
-
     void update_VFlist(); 
     void update_HElist();
     void parse_OBJ(const char *file_name);
