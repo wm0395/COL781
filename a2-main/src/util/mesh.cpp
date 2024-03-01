@@ -34,26 +34,40 @@ inline Mesh::Mesh(int V, int N, Vertex **v2v, Face **f2f){
     update_VFlist();
 }
 
-inline Mesh::Mesh(int V, int N, vec3 *vertices, vec3 *normals, ivec3 *triangles){
+inline Mesh::Mesh(int V, int N, vec3 *vertex, vec3 *normal, ivec3 *face){
     num_of_vertices = V;
     num_of_faces = N;
 
-    this->vertices = vertices;
-    this->normals = normals;
-    this->triangles = triangles;
+    this->vertices = vertex;
+    this->normals = normal;
+    this->triangles = face;
 
-    visited_vertices = std::vector<bool>(V, false);
-    visited_faces = std::vector<bool>(N, false);
-    visited_vert_count = 0;
+    // std::cout << num_of_vertices << " " << num_of_faces << "\n";
+    // for (int i = 0; i<num_of_vertices; i++){
+    //     vec3 pos = vertices[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
 
-    v2v = new Vertex*[V];
-    f2f = new Face*[N];
+    // visited_vertices = std::vector<bool>(V, false);
+    // visited_faces = std::vector<bool>(N, false);
+    // visited_vert_count = 0;
 
-    update_HElist();
+    // v2v = new Vertex*[V];
+    // f2f = new Face*[N];
+
+    // update_HElist();
 }
 
 inline Mesh::Mesh(string file){
     parse_OBJ(file.c_str());
+
+    visited_vertices = std::vector<bool>(num_of_vertices, false);
+    visited_faces = std::vector<bool>(num_of_faces, false);
+    visited_vert_count = 0;
+
+    v2v = new Vertex*[num_of_vertices];
+    f2f = new Face*[num_of_faces];
+
     update_HElist();
 }
 
@@ -123,7 +137,7 @@ void Mesh::parse_OBJ(const char *filename){
             face.push_back(fac);
 
         }
-    
+
     }
 
     if (!nn){
@@ -143,6 +157,7 @@ void Mesh::parse_OBJ(const char *filename){
 
     num_of_vertices = vertex.size();
     num_of_faces = face.size();
+
 }
 
 vec3* Mesh::give_vertices(){
@@ -157,11 +172,6 @@ ivec3* Mesh::give_triangles(){
     return triangles;
 }
 
-void Mesh::give_initial_mesh(){
-    std::cout << "Number of vertices => " << num_of_vertices << "\n";
-    std::cout << "Starting vertex => " << starting_vertex->index << "\n";
-    std::cout << "\n";
-}
 
 void Mesh::print_vis_vert(){
     std::cout << "Visited vertices => ";
@@ -185,7 +195,6 @@ void Mesh::update_VFlist(){
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
 }
-
 
 int hash_func(int i, int j, int n){
     return n*std::min(i,j) + std::max(i,j);
@@ -286,7 +295,11 @@ void avg_normals(Vertex *vertex){
 }
 
 void Mesh::recompute_normals(){
-    dfs(starting_vertex, avg_normals, nullptr);
+    for(int i = 0; i < num_of_vertices; i++){
+        if(!visited_vertices[i]){
+            dfs(v2v[i], avg_normals, nullptr);
+        }
+    }
     visited_vert_count = 0;
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);

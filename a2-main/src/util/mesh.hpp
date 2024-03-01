@@ -17,7 +17,7 @@ class Face;
 class Mesh{
     public:
     Mesh(int V, int N, Vertex **v2v, Face **f2f);
-    Mesh(int V, int N, vec3 *vertices, vec3 *normals, ivec3 *triangles);
+    Mesh(int V, int N, vec3 *vertex, vec3 *normal, ivec3 *face);
     Mesh(string file);
     vec3* vertices;
     vec3* normals;
@@ -28,8 +28,6 @@ class Mesh{
     
     int num_of_vertices;
     int num_of_faces;
-
-    Vertex *starting_vertex;
 
     void update_VFlist(); 
     void update_HElist();
