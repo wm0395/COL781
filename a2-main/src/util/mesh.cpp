@@ -42,12 +42,6 @@ inline Mesh::Mesh(int V, int N, vec3 *vertex, vec3 *normal, ivec3 *face){
     this->normals = normal;
     this->triangles = face;
 
-    // std::cout << num_of_vertices << " " << num_of_faces << "\n";
-    // for (int i = 0; i<num_of_vertices; i++){
-    //     vec3 pos = vertices[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-
     // visited_vertices = std::vector<bool>(V, false);
     // visited_faces = std::vector<bool>(N, false);
     // visited_vert_count = 0;
@@ -112,18 +106,10 @@ void Mesh::parse_OBJ(const char *filename){
         else if(line.substr(0,2)=="f " && nn){
             int a,b,c; //to store mesh index
             int A,B,C; //to store texture index
-            //std::istringstream v;
-            //v.str(line.substr(2));
             const char* chh=line.c_str();
             sscanf (chh, "f %i//%i %i//%i %i//%i",&a,&A,&b,&B,&c,&C); //here it read the line start with f and store the corresponding values in the variables
-
-            //v>>a;v>>b;v>>c;
             a--;b--;c--;
-            A--;B--;C--;
-            //std::cout<<a<<b<<c<<A<<B<<C;
-            // faceIndex.push_back(a);//textureIndex.push_back(A);
-            // faceIndex.push_back(b);//textureIndex.push_back(B);
-            // faceIndex.push_back(c);//textureIndex.push_back(C);
+            A--;B--;C--;\
             glm::ivec3 fac = ivec3(a,b,c);
             face.push_back(fac);
         }

@@ -87,6 +87,4 @@ class Face{
     vec3 calculate_normal();
 };
 
-void parse_OBJ(const char *filename, std::vector<vec3> &vertex, std::vector<vec3> &normal, std::vector<ivec3> &face);
-
 #endif

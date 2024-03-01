@@ -1,5 +1,7 @@
 #include "viewer.hpp"
 #include "./util/util.hpp"
+// #include "./util/square_grid.cpp"
+// #include "./util/sphere_grid.cpp"
 #include <vector>
 #include <iostream>
 
@@ -30,18 +32,23 @@ int main() {
 
     // Mesh *mesh = new Mesh(4, 2, vertices, normals, triangles);
 
-
     // Make the square grid, run the following =>
     // Mesh* mesh = square_grid(2,2);
 
     // Make the sphere usign the following command =>
-    // Mesh *mesh = sphere(4,2);
+    // Mesh *mesh = sphere_grid(4,2);
 
 
     // To run the example files =>
     string file = "meshes/teapot.obj";
     Mesh *mesh = new Mesh(file);
-    mesh->recompute_normals();     // if you want to recompute normals
+    // mesh->recompute_normals();     // if you want to recompute normals
+
+    std::cout << mesh->vertices << "\n";
+    for (int i = 0; i<mesh->num_of_vertices; i++){
+        vec3 pos = mesh->vertices[i];
+        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    }
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {
