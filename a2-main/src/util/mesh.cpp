@@ -491,57 +491,81 @@ void Mesh::edge_split_helper(HalfEdge* halfedge){
     norm[num_of_vertices - 1] = v->normal;
     normals = norm;
 
+    Vertex *v2vnew[num_of_vertices];
+    copy(v2v, v2v + num_of_vertices - 1, v2vnew);
+    v2vnew[num_of_vertices - 1] = v;
+    v2v = v2vnew;
 
     if (!boundary){
         ivec3* faces = new ivec3[num_of_faces + 2];
+        Face *f2fnew[num_of_faces + 2];
         int face_cnt = 0;
+        int added = 0;
         for (int i = 0; i<num_of_faces; i++){
             if (!(check_same_face(triangles[i], ivec3(v1->index, v3->index, v2->index)) || check_same_face(triangles[i], ivec3(v1->index, v2->index, v4->index)))){
                 faces[face_cnt] = triangles[i];
                 face_cnt++;
+                f2fnew[i] = f2f[i];
+            }
+            else{
+                if (added == 0){
+                    faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
+                    f1->index = face_cnt;
+                    face_cnt++;
+                    added = 1;
+                    f2fnew[f1->index] = f1;
+                }
+                else if (added == 1){                   
+                    faces[face_cnt] = ivec3(v->index, v2->index, v4->index);
+                    f2->index = face_cnt;
+                    face_cnt++;
+                    f2fnew[f2->index] = f2;
+                }
             }
         }
 
-        faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
-        f1->index = face_cnt;
-        face_cnt++;
-
-        faces[face_cnt] = ivec3(v->index, v2->index, v4->index);
-        f2->index = face_cnt;
-        face_cnt++;
-
         faces[face_cnt] = ivec3(v->index, v4->index, v1->index);
         f3->index = face_cnt;
+        f2fnew[f3->index] = f3;
         face_cnt++;
 
         faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
         f4->index = face_cnt;
+        f2fnew[f4->index] = f4;
         face_cnt++;
 
         num_of_faces += 2;
         triangles = faces;
+        f2f = f2fnew;
     }
 
     else{
         ivec3* faces = new ivec3[num_of_faces + 1];
+        Face *f2fnew[num_of_faces+1];
+
         int face_cnt = 0;
         for (int i = 0; i<num_of_faces; i++){
             if (!(check_same_face(triangles[i], ivec3(v1->index, v3->index, v2->index)))){
                 faces[face_cnt] = triangles[i];
                 face_cnt++;
+                f2fnew[i] = f2f[i];
+            }
+            else{
+                faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
+                f1->index = face_cnt;
+                f2fnew[f1->index] = f1;
+                face_cnt++;
             }
         }
 
-        faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
-        f1->index = face_cnt;
-        face_cnt++;
-
         faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
         f4->index = face_cnt;
+        f2fnew[f4->index] = f4;
         face_cnt++;
 
         num_of_faces += 1;
         triangles = faces;
+        f2f = f2fnew;
     }
 }
 
