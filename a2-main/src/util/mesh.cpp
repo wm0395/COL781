@@ -8,6 +8,30 @@
 
 using namespace std;
 
+inline Mesh::Mesh(int V, int N){
+    num_of_vertices = V;
+    num_of_faces = N;
+    
+    v2v = new Vertex*[V];
+    f2f = new Face*[N];
+    
+    vertices = new vec3[V];
+    normals = new vec3[V];
+    triangles = new ivec3[N];
+
+    for (int i = 0; i<num_of_vertices; i++){
+        vertices[i] = vec3(0.0, 0.0, 0.0);
+        normals[i] = vec3(0.0, 0.0, 0.0);
+    }
+    for (int i = 0; i<num_of_faces; i++){
+        triangles[i] = ivec3(0,0,0);
+    }
+
+    visited_vertices = std::vector<bool>(V, false);
+    visited_faces = std::vector<bool>(N, false);
+    visited_vert_count = 0;
+}
+
 inline Mesh::Mesh(int V, int N, Vertex **v2v, Face **f2f){
     num_of_vertices = V;
     num_of_faces = N;
@@ -34,22 +58,22 @@ inline Mesh::Mesh(int V, int N, Vertex **v2v, Face **f2f){
     update_VFlist();
 }
 
-inline Mesh::Mesh(int V, int N, vec3 *vertex, vec3 *normal, ivec3 *face){
+inline Mesh::Mesh(int V, int N, vec3 &vertex, vec3 &normal, ivec3 &face){
     num_of_vertices = V;
     num_of_faces = N;
 
-    this->vertices = vertex;
-    this->normals = normal;
-    this->triangles = face;
+    this->vertices = &vertex;
+    this->normals = &normal;
+    this->triangles = &face;
 
-    // visited_vertices = std::vector<bool>(V, false);
-    // visited_faces = std::vector<bool>(N, false);
-    // visited_vert_count = 0;
+    visited_vertices = std::vector<bool>(V, false);
+    visited_faces = std::vector<bool>(N, false);
+    visited_vert_count = 0;
 
-    // v2v = new Vertex*[V];
-    // f2f = new Face*[N];
+    v2v = new Vertex*[V];
+    f2f = new Face*[N];
 
-    // update_HElist();
+    update_HElist();
 }
 
 inline Mesh::Mesh(string file){
@@ -290,4 +314,45 @@ void Mesh::recompute_normals(){
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
     update_VFlist();
+}
+
+void Mesh::edge_flip(HalfEdge* halfedge){
+    Face* f1 = halfedge->left;
+    Face* f2 = halfedge->pair->left;
+
+    Face* f1new = new Face();
+    Face* f2new = new Face();
+    f1new->halfedge = new HalfEdge();
+    f2new->halfedge = new HalfEdge();
+    HalfEdge* f11 = halfedge->next->next;
+    HalfEdge* f12 = halfedge->pair->next;
+    HalfEdge* f21 = halfedge->pair->next->next;
+    HalfEdge* f22 = halfedge->next;
+
+    f1new->halfedge->next = f11;
+    f1new->halfedge->next->next = f12;
+    f1new->halfedge->next->next->next = f1new->halfedge;
+    f1new->halfedge->head = f22->head;
+    int v1 = f1new->halfedge->head->index;
+
+    f2new->halfedge->next = f21;
+    f2new->halfedge->next->next = f22;
+    f2new->halfedge->next->next->next = f2new->halfedge;
+    f2new->halfedge->head = f12->head;
+    int v2 = f2new->halfedge->head->index;
+
+    v2v[v1]->halfedge = f1new->halfedge;
+    v2v[v2]->halfedge = f2new->halfedge;
+
+    f1new->index = f1->index;
+    f2new->index = f2->index;
+
+    f2f[f1new->index] = f1new;
+    f2f[f2new->index] = f2new;
+
+    f1new->halfedge->pair = f2new->halfedge;
+    f2new->halfedge->pair = f1new->halfedge;
+
+    triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
+    triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
 }

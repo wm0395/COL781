@@ -1,6 +1,6 @@
 #include "viewer.hpp"
 #include "./util/util.hpp"
-// #include "./util/square_grid.cpp"
+#include "./util/square_grid.cpp"
 // #include "./util/sphere_grid.cpp"
 #include <vector>
 #include <iostream>
@@ -40,15 +40,40 @@ int main() {
 
 
     // To run the example files =>
-    string file = "meshes/teapot.obj";
-    Mesh *mesh = new Mesh(file);
+    // string file = "meshes/teapot.obj";
+    // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
 
-    std::cout << mesh->vertices << "\n";
-    for (int i = 0; i<mesh->num_of_vertices; i++){
-        vec3 pos = mesh->vertices[i];
-        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    }
+    int m = 3, n = 3;
+    vec3 vertices[(m+1)*(n+1)];
+    vec3 normals[(m+1)*(n+1)];
+    ivec3 triangles[2*m*n];
+
+    Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
+    square_grid(mesh, m, n);
+
+    mesh->edge_flip(mesh->f2f[9]->halfedge);
+    // int vert_cnt = m*(n-1)+2;
+    // int tri_cnt = 2*m*(n-1);
+
+    // vec3 vertices[vert_cnt];
+    // vec3 normals[vert_cnt];
+    // ivec3 triangles[tri_cnt];
+
+    // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
+    // sphere_grid(mesh, m, n);
+
+    // std::cout << mesh->vertices << "\n";
+    // for (int i = 0; i<mesh->num_of_vertices; i++){
+    //     vec3 pos = mesh->vertices[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
+
+    // std::cout << mesh->triangles << "\n";
+    // for (int i = 0; i<mesh->num_of_faces; i++){
+    //     ivec3 pos = mesh->triangles[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {
