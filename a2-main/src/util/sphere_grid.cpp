@@ -1,6 +1,7 @@
-// #include "square_grid.cpp"
+#include "mesh.hpp"
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 using namespace glm;
 using namespace std;
@@ -37,7 +38,7 @@ void sphere_grid(Mesh* mesh, int m, int n){
                     int x4 = x3 + 1;
                     mesh->triangles[pres_tri_cnt] = ivec3(x1, x3, x4);
                     pres_tri_cnt++;
-                    mesh->triangles[pres_tri_cnt] = ivec3(x1, x2, x4);
+                    mesh->triangles[pres_tri_cnt] = ivec3(x2, x1, x4);
                     pres_tri_cnt++;
                 }
                 else if (log == m-1){
@@ -63,14 +64,15 @@ void sphere_grid(Mesh* mesh, int m, int n){
             }
         }
     }
-
+    
+    mesh->update_HElist();
     // Mesh* mesh = new Mesh(vert_cnt, tri_cnt, vertices, normals, triangles);
 
-    std::cout << mesh->vertices << "\n";
+    // std::cout << mesh->vertices << "\n";
 
-    for (int i = 0; i<mesh->num_of_vertices; i++){
-        vec3 pos = mesh->vertices[i];
-        std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    }
+    // for (int i = 0; i<mesh->num_of_vertices; i++){
+    //     vec3 pos = mesh->vertices[i];
+    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
+    // }
     return;
 }

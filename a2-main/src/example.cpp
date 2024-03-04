@@ -40,19 +40,15 @@ int main() {
 
 
     // To run the example files =>
-    // string file = "meshes/teapot.obj";
-    // Mesh *mesh = new Mesh(file);
-    // mesh->recompute_normals();     // if you want to recompute normals
+    string file = "meshes/noisycube.obj";
+    Mesh *mesh = new Mesh(file);
+    mesh->recompute_normals();     // if you want to recompute normals
 
-    int m = 3, n = 3;
-    vec3 vertices[(m+1)*(n+1)];
-    vec3 normals[(m+1)*(n+1)];
-    ivec3 triangles[2*m*n];
+    // int m = 4, n = 4;
+    // Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
+    // square_grid(mesh, m, n);
 
-    Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
-    square_grid(mesh, m, n);
-
-    mesh->edge_flip(mesh->f2f[9]->halfedge->next);
+    mesh->taubin_smoothing(100, 0.33, -0.245);
     // int vert_cnt = m*(n-1)+2;
     // int tri_cnt = 2*m*(n-1);
 
@@ -62,6 +58,7 @@ int main() {
 
     // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
     // sphere_grid(mesh, m, n);
+    // mesh->edge_flip(mesh->f2f[1]->halfedge->next);
 
     // std::cout << mesh->vertices << "\n";
     // for (int i = 0; i<mesh->num_of_vertices; i++){

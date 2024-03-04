@@ -198,7 +198,7 @@ void Mesh::print_vis_faces(){
 void Mesh::update_VFlist(){   
     for(int i = 0; i < num_of_vertices; i++){
         if(!visited_vertices[i]){
-            dfs(v2v[i], nullptr, nullptr);
+            dfs(v2v[i], nullptr, nullptr, true, true);
         }
     }
     visited_vert_count = 0;
@@ -257,7 +257,7 @@ void Mesh::update_HElist(){
     }
 }
 
-void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update){
     // face->print_face_vertices();
     if (!visited_faces[face->index]){
         if(fac_opr){
@@ -272,23 +272,32 @@ void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_op
         // std::cout << vert[0]->index << " " << vert[1]->index << " " << vert[2]->index << "\n";
         ivec3 v = face->get_face_vertices_indices();
         triangles[face->index] = v;
-        dfs(vert[0], vtx_opr, fac_opr);
-        dfs(vert[1], vtx_opr, fac_opr);
-        dfs(vert[2], vtx_opr, fac_opr);
+        dfs(vert[0], vtx_opr, fac_opr, VL_update, HE_update);
+        dfs(vert[1], vtx_opr, fac_opr, VL_update, HE_update);
+        dfs(vert[2], vtx_opr, fac_opr, VL_update, HE_update);
     }
 }
 
-void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+void Mesh::dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update){
     if (!visited_vertices[v->index]){
         visited_vertices[v->index] = true;
         visited_vert_count++;
-        vertices[v->index] = v->position;
-        normals[v->index] = v->normal;
-
-        v->traverse(&Mesh::dfs_helper, *this, vtx_opr, fac_opr);
+        
+        v->traverse(&Mesh::dfs_helper, *this, vtx_opr, fac_opr, VL_update, HE_update);
         
         if(vtx_opr){
             vtx_opr(v);
+        }
+        
+        vec3 tempPos = vertices[v->index];
+        vec3 tempNor = normals[v->index];
+        if(VL_update){
+            vertices[v->index] = v->position;
+            normals[v->index] = v->normal;
+        }
+        if(!HE_update){
+            v->position = tempPos;
+            v->normal = tempNor;
         }
     }
     if (visited_vert_count == num_of_vertices) return;
@@ -307,13 +316,48 @@ void avg_normals(Vertex *vertex){
 void Mesh::recompute_normals(){
     for(int i = 0; i < num_of_vertices; i++){
         if(!visited_vertices[i]){
-            dfs(v2v[i], avg_normals, nullptr);
+            dfs(v2v[i], avg_normals, nullptr, true, true);
         }
     }
     visited_vert_count = 0;
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
-    update_VFlist();
+    // update_VFlist();
+}
+
+void add_nbv(Face *face, Vertex *vertex){
+    HalfEdge *he = face->halfedge;
+    while(he->head != vertex){
+        he = he->next;
+    }
+    vertex->position += he->next->next->head->position;
+}
+
+void umbrella(Vertex* vertex){
+    vec3 temp = vertex->position; 
+    vertex->position = vec3(0,0,0);
+    int n = vertex->traverse(add_nbv);
+    temp *= n;
+    vertex->position -= temp;
+    vertex->position /= n;
+}
+
+
+void Mesh::taubin_smoothing(int iter, float lambda, float mu){
+    for(int i = 0; i < iter; i++){
+        dfs(v2v[0], umbrella, nullptr, true, false);
+        for(int v = 0; v < num_of_vertices; v++){
+            vertices[v] *= lambda;
+            v2v[v]->position += vertices[v];
+            vertices[v] = v2v[v]->position;
+        }
+        dfs(v2v[0], umbrella, nullptr, true, false);
+        for(int v = 0; v < num_of_vertices; v++){
+            vertices[v] *= mu;
+            v2v[v]->position += vertices[v];
+            vertices[v] = v2v[v]->position;
+        }
+    }
 }
 
 void Mesh::edge_flip(HalfEdge* halfedge){

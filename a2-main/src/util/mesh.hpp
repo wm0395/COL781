@@ -34,12 +34,15 @@ class Mesh{
     void update_HElist();
     void parse_OBJ(const char *file_name);
 
-    void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
+    void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void give_initial_mesh();
     vec3* give_vertices();
     vec3* give_normals();
     ivec3* give_triangles();
+
     void recompute_normals();
+
+    void taubin_smoothing(int iter, float lambda, float mu);
 
     void edge_flip(HalfEdge *halfedge);
 
@@ -48,9 +51,11 @@ class Mesh{
     std::vector<bool> visited_faces;
     int visited_vert_count;
 
-    void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
+    void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void print_vis_vert();
     void print_vis_faces();
+
+    void taubin_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
 };
 
 
@@ -74,7 +79,7 @@ class Vertex{
 
     void traverse(void (*func)(Face *face));
     int traverse(void (*func)(Face *face, Vertex *vertex));
-    void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
+    void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
 };
 
 class Face{

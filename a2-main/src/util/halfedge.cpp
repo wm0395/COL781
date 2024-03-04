@@ -64,12 +64,12 @@ int Vertex::traverse(void (*func)(Face *face, Vertex *vertex)){
     return n;
 }
 
-void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face)){
+void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update){
     HalfEdge *he = halfedge;
     bool boundary = false;
     do{
         Face *face = he->left;
-        (mesh.*func)(face, vtx_opr,fac_opr);
+        (mesh.*func)(face, vtx_opr,fac_opr, VL_update, HE_update);
         //check for boundary
         if(he->next->pair){
             he = he->next->pair;
@@ -86,7 +86,7 @@ void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *ver
     // reverse traversal for opposite of boundary
     while(he && boundary){
         Face *face = he->left;
-        (mesh.*func)(face, vtx_opr, fac_opr);
+        (mesh.*func)(face, vtx_opr, fac_opr, VL_update, HE_update);
         if(!he->pair) return;
         he = he->pair->next->next;
     }
