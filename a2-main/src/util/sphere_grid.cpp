@@ -66,13 +66,5 @@ void sphere_grid(Mesh* mesh, int m, int n){
     }
     
     mesh->update_HElist();
-    // Mesh* mesh = new Mesh(vert_cnt, tri_cnt, vertices, normals, triangles);
-
-    // std::cout << mesh->vertices << "\n";
-
-    // for (int i = 0; i<mesh->num_of_vertices; i++){
-    //     vec3 pos = mesh->vertices[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
     return;
 }

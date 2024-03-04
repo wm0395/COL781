@@ -40,9 +40,8 @@ class Mesh{
 
     void taubin_smoothing(int iter, float lambda, float mu);
 
-    void edge_flip(HalfEdge *halfedge);
+    void flip_edge(int i1, int i2);
     void split_edge(int i1, int i2);
-    void edge_split(HalfEdge *halfedge);
     void collapse_edge(HalfEdge *halfedge);
 
     void add_vertex(vec3 &position, vec3 &normal);
@@ -61,6 +60,9 @@ class Mesh{
     void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void print_vis_vert();
     void print_vis_faces();
+
+    void edge_flip_helper(HalfEdge *halfedge);
+    void edge_split_helper(HalfEdge *halfedge);
 
     void taubin_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
 };
@@ -100,5 +102,6 @@ class Face{
 };
 
 bool check_same_face(ivec3 v1, ivec3 v2);
+HalfEdge* give_halfedge(Vertex* v1, Vertex* v2);
 
 #endif

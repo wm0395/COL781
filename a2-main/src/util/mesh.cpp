@@ -329,6 +329,33 @@ void umbrella(Vertex* vertex){
     vertex->position /= n;
 }
 
+HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
+    HalfEdge* halfedge = v1->halfedge;
+    HalfEdge* he = v1->halfedge;
+    bool boundary = false;
+    do{
+        if (he->next->next->head == v2) return he;
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+
+    if (!halfedge->pair) return nullptr;
+    he = halfedge->pair->next->next;
+    // reverse traversal for opposite of boundary
+    while(he && boundary){
+        if (he->next->next->head == v2) return he;
+        if(!he->pair) return nullptr;
+        he = he->pair->next->next;
+    }
+    return nullptr;
+}
+
 
 void Mesh::taubin_smoothing(int iter, float lambda, float mu){
     for(int i = 0; i < iter; i++){
@@ -347,7 +374,7 @@ void Mesh::taubin_smoothing(int iter, float lambda, float mu){
     }
 }
 
-void Mesh::edge_flip(HalfEdge* halfedge){
+void Mesh::edge_flip_helper(HalfEdge* halfedge){
     Face* f1 = halfedge->left;
     Face* f2 = halfedge->pair->left;
 
@@ -389,34 +416,15 @@ void Mesh::edge_flip(HalfEdge* halfedge){
 }
 
 
-HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
-    HalfEdge* halfedge = v1->halfedge;
-    HalfEdge* he = v1->halfedge;
-    bool boundary = false;
-    do{
-        // std::cout << he->pair->head->index << "\n";
-        if (he->pair){
-            std::cout << he->pair->head->index << "\n";
-            if (he->pair->head == v2) return he;
-        }
-        if(he->next->pair){
-            he = he->next->pair;
-        }
-        else{
-            boundary = true;
-            break;
-        }
+void Mesh::edge_split_helper(HalfEdge* halfedge){
+    bool boundary = true;
+    if (halfedge->pair) boundary = false;
 
-    }while(he != halfedge);
-
-    return he;
-}
-
-void Mesh::edge_split(HalfEdge* halfedge){
     Vertex* v1 = halfedge->head;
-    Vertex* v2 = halfedge->pair->head;
+    Vertex* v2 = halfedge->next->next->head;
     Vertex* v3 = halfedge->next->head;
-    Vertex* v4 = halfedge->pair->next->head;
+    Vertex* v4 = nullptr;
+    if (!boundary) v4 = halfedge->pair->next->head;
 
     Vertex* v = new Vertex;
     v->position = ((v1->position) + (v2->position));
@@ -425,7 +433,6 @@ void Mesh::edge_split(HalfEdge* halfedge){
     v->normal /= 2;
     v->index = num_of_vertices;
     num_of_vertices++;
-    // v2v[]
 
     HalfEdge* h1 = new HalfEdge;
     HalfEdge* h2 = new HalfEdge;
@@ -437,17 +444,19 @@ void Mesh::edge_split(HalfEdge* halfedge){
     HalfEdge* h8 = new HalfEdge;
 
     h1->head = v;
-    h1->pair = h2;
-    h4->head = v;
-    h4->pair = h3;
+    if(!boundary) h1->pair = h2;
+    h3->head = v1;
+    if (!boundary) h3->pair = h4;
     h5->head = v;
     h5->pair = h6;
-    h8->head = v;
-    h8->pair = h7;
+    if (!boundary) {
+        h8->head = v;
+        h8->pair = h7;
+        h8->next = h2;
+        h4->next = h7;
+    }
     h1->next = h6;
-    h5->next = h3;
-    h4->next = h7;
-    h8->next = h2;
+    h5->next = h3;  
 
     v->halfedge = h1;
 
@@ -457,18 +466,20 @@ void Mesh::edge_split(HalfEdge* halfedge){
     Face* f4 = new Face;
 
     f1->halfedge = h1;
-    f2->halfedge = h2;
-    f3->halfedge = h4;
+    if (!boundary){
+        f2->halfedge = h2;
+        f3->halfedge = h4;
+    }
     f4->halfedge = h3;
 
     h1->left = f1;
-    h2->left = f2;
+    if (!boundary) h2->left = f2;
     h3->left = f4;
-    h4->left = f3;
+    if (!boundary) h4->left = f3;
     h5->left = f4;
     h6->left = f1;
-    h7->left = f3;
-    h8->left = f2;
+    if (!boundary) h7->left = f3;
+    if (!boundary) h8->left = f2;
 
     vec3* vert = new vec3[num_of_vertices];
     copy(vertices, vertices + num_of_vertices - 1, vert);
@@ -480,43 +491,77 @@ void Mesh::edge_split(HalfEdge* halfedge){
     norm[num_of_vertices - 1] = v->normal;
     normals = norm;
 
-    ivec3* faces = new ivec3[num_of_faces + 2];
-    int face_cnt = 0;
-    for (int i = 0; i<mesh->num_of_faces; i++){
-        if (!(check_same_face(mesh->triangles[i], ivec3(v1->index, v3->index, v2->index)) || check_same_face(mesh->triangles[i], ivec3(v1->index, v2->index, v4->index)))){
-            faces[face_cnt] = mesh->triangles[i];
-            face_cnt++;
+
+    if (!boundary){
+        ivec3* faces = new ivec3[num_of_faces + 2];
+        int face_cnt = 0;
+        for (int i = 0; i<num_of_faces; i++){
+            if (!(check_same_face(triangles[i], ivec3(v1->index, v3->index, v2->index)) || check_same_face(triangles[i], ivec3(v1->index, v2->index, v4->index)))){
+                faces[face_cnt] = triangles[i];
+                face_cnt++;
+            }
         }
+
+        faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
+        f1->index = face_cnt;
+        face_cnt++;
+
+        faces[face_cnt] = ivec3(v->index, v2->index, v4->index);
+        f2->index = face_cnt;
+        face_cnt++;
+
+        faces[face_cnt] = ivec3(v->index, v4->index, v1->index);
+        f3->index = face_cnt;
+        face_cnt++;
+
+        faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
+        f4->index = face_cnt;
+        face_cnt++;
+
+        num_of_faces += 2;
+        triangles = faces;
     }
 
-    // f2f[]
+    else{
+        ivec3* faces = new ivec3[num_of_faces + 1];
+        int face_cnt = 0;
+        for (int i = 0; i<num_of_faces; i++){
+            if (!(check_same_face(triangles[i], ivec3(v1->index, v3->index, v2->index)))){
+                faces[face_cnt] = triangles[i];
+                face_cnt++;
+            }
+        }
 
-    faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
-    f1->index = face_cnt;
-    face_cnt++;
+        faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
+        f1->index = face_cnt;
+        face_cnt++;
 
-    faces[face_cnt] = ivec3(v->index, v2->index, v4->index);
-    f2->index = face_cnt;
-    face_cnt++;
+        faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
+        f4->index = face_cnt;
+        face_cnt++;
 
-    faces[face_cnt] = ivec3(v->index, v4->index, v1->index);
-    f3->index = face_cnt;
-    face_cnt++;
+        num_of_faces += 1;
+        triangles = faces;
+    }
+}
 
-    faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
-    f4->index = face_cnt;
-    face_cnt++;
 
-    mesh->num_of_faces += 2;
-    mesh->triangles = faces;
+void Mesh::flip_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    if (!he) he = give_halfedge(v2, v1);
+    if (!he) return;
+    edge_flip_helper(he);
 }
 
 void Mesh::split_edge(int i1, int i2){
     Vertex* v1 = v2v[i1];
     Vertex* v2 = v2v[i2];
     HalfEdge* he = give_halfedge(v1, v2);
-    std::cout << he->head->index << " " << he->pair->head->index << "\n";
-    he->split_halfedge(this);
+    if (!he) he = give_halfedge(v2, v1);
+    if (!he) return;
+    edge_split_helper(he);
 }
 
 void Mesh::collapse_edge(HalfEdge* halfedge){
