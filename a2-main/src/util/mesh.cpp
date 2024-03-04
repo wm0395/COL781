@@ -296,7 +296,7 @@ void add_face_normal(Face *face, Vertex *vertex){
 
 void avg_normals(Vertex *vertex){
     vertex->normal = vec3(0,0,0);
-    int n = vertex->traverse(add_face_normal);
+    int n = vertex->traverse(add_face_normal, vertex);
     vertex->normal = vec3(vertex->normal.x/n, vertex->normal.y/n, vertex->normal.z/n);
 }
 
@@ -323,7 +323,7 @@ void add_nbv(Face *face, Vertex *vertex){
 void umbrella(Vertex* vertex){
     vec3 temp = vertex->position; 
     vertex->position = vec3(0,0,0);
-    int n = vertex->traverse(add_nbv);
+    int n = vertex->traverse(add_nbv, vertex);
     temp *= n;
     vertex->position -= temp;
     vertex->position /= n;
@@ -564,16 +564,112 @@ void Mesh::split_edge(int i1, int i2){
     edge_split_helper(he);
 }
 
+void rehead(Face* face, Vertex *vertex){
+    HalfEdge* he = face->halfedge;
+    while(he->head != vertex){
+        he = he->next;
+    }
+    face->halfedge = he;
+}
+
+void reconnect_to_vtx(Face* face, Vertex* vertex){
+    face->halfedge->head = vertex;
+}
+
+void reconnect_vertex(Vertex* a, Vertex* b){
+    a->traverse(rehead, a);
+    a->traverse(reconnect_to_vtx, b);
+}
+
 void Mesh::collapse_edge(HalfEdge* halfedge){
     Face *f1 = halfedge->left;
-    if(!halfedge->pair){
-        Vertex *vnew = new Vertex();
-        vnew->position = halfedge->head->position + halfedge->next->next->head->position;
-        vnew->position /=2;
-        vnew->normal = halfedge->head->normal + halfedge->next->next->head->normal;
-        vnew->normal /=2;
-        vnew->index = halfedge->head->index;
-        return;
+    Vertex *v1 = halfedge->head, *v2 = halfedge->next->next->head;
+
+    vec3 position = v1->position + v2->position;
+    position /=2;
+    vec3 normal = v1->normal + v2->normal;
+    normal /=2;
+
+    v1->position = position;
+    v1->normal = normal;
+    reconnect_vertex(v2, v1);
+    delete_vertex(v2->index);
+
+    HalfEdge *neHE = nullptr;
+    
+    if(halfedge->next->pair && halfedge->next->next->pair){
+        HalfEdge *temp = halfedge->next->pair;
+        halfedge->next->pair->pair = halfedge->next->next->pair;
+        halfedge->next->next->pair->pair = temp;
+        neHE = temp;
+    }
+    else if(halfedge->next->next->pair){
+        halfedge->next->next->pair->pair = nullptr;
+        neHE = halfedge->next->next->pair;
+    }
+    else if(halfedge->next->pair){
+        halfedge->next->pair->pair = nullptr;
+        neHE = halfedge->next->pair;
+    }
+    delete_face(halfedge->left->index);
+    
+    if(halfedge->pair){
+        if(halfedge->pair->next->pair && halfedge->pair->next->next->pair){
+            HalfEdge *temp = halfedge->next->pair;
+            halfedge->pair->next->pair->pair = halfedge->pair->next->next->pair;
+            halfedge->pair->next->next->pair->pair = temp;
+            if(!neHE)
+            neHE = halfedge->pair->next->pair;
+        }
+        else if(halfedge->pair->next->next->pair){
+            halfedge->pair->next->next->pair->pair = nullptr;
+            if(!neHE)
+            neHE = halfedge->pair->next->next->pair;
+        }
+        else if(halfedge->pair->next->pair){
+            halfedge->pair->next->pair->pair = nullptr;
+            if(!neHE)
+            neHE = halfedge->pair->next->pair;
+        }
+        delete_face(halfedge->pair->left->index);
     }
 
+    v1->halfedge = neHE;
+}
+
+void Mesh::delete_face(int index){
+    triangles[index] = triangles[num_of_faces-1];
+    f2f[num_of_faces-1]->index = index;
+    f2f[index] = f2f[num_of_faces-1];
+
+    num_of_faces--;
+
+    ivec3 temp[num_of_faces];
+    copy(triangles, triangles + num_of_faces, temp);
+    triangles = temp;
+    delete temp;
+
+    Face *temp[num_of_faces];
+    copy(f2f, f2f + num_of_faces, temp);
+    delete temp;
+}
+
+void Mesh::delete_vertex(int index){
+    vertices[index] = vertices[num_of_vertices-1];
+    normals[index] = normals[num_of_vertices-1];
+    v2v[num_of_vertices-1]->index = index;
+    v2v[index] = v2v[num_of_vertices-1];
+
+    num_of_vertices--;
+
+    vec3 temp[num_of_vertices];
+    copy(vertices, vertices + num_of_vertices, temp);
+    vertices = temp;
+    copy(normals, normals + num_of_vertices, temp);
+    normals = temp;
+    delete temp;
+
+    Vertex *temp[num_of_vertices];
+    copy(v2v, v2v + num_of_vertices, temp);
+    delete temp;
 }
