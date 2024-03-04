@@ -28,7 +28,7 @@ void square_grid(Mesh* mesh, int m, int n){
                 int x4 = x3+1;
                 mesh->triangles[tri_cnt] = ivec3(x1, x2, x3);
                 tri_cnt++;
-                mesh->triangles[tri_cnt] = ivec3(x2, x3, x4);
+                mesh->triangles[tri_cnt] = ivec3(x3, x2, x4);
                 tri_cnt++;
             }
         }

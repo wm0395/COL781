@@ -52,7 +52,7 @@ int main() {
     Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
     square_grid(mesh, m, n);
 
-    mesh->edge_flip(mesh->f2f[9]->halfedge);
+    mesh->edge_flip(mesh->f2f[9]->halfedge->next);
     // int vert_cnt = m*(n-1)+2;
     // int tri_cnt = 2*m*(n-1);
 
