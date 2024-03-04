@@ -36,6 +36,8 @@ int main() {
     int m = 3, n = 3;
     Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
     square_grid(mesh, m, n);
+    mesh->split_edge(6,9);
+    // mesh->edge_split(mesh->f2f[9]->halfedge->next);
 
     // Make the sphere usign the following command =>
     // Mesh *mesh = sphere_grid(4,2);
@@ -47,7 +49,6 @@ int main() {
     // mesh->recompute_normals();     // if you want to recompute normals
 
 
-    // mesh->edge_flip(mesh->f2f[9]->halfedge);
     // int vert_cnt = m*(n-1)+2;
     // int tri_cnt = 2*m*(n-1);
 

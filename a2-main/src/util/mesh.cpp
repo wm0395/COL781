@@ -170,19 +170,6 @@ void Mesh::parse_OBJ(const char *filename){
 
 }
 
-vec3* Mesh::give_vertices(){
-    return vertices;
-}
-
-vec3* Mesh::give_normals(){
-    return normals;
-}
-
-ivec3* Mesh::give_triangles(){
-    return triangles;
-}
-
-
 void Mesh::print_vis_vert(){
     std::cout << "Visited vertices => ";
     for (int i = 0; i<num_of_vertices; i++) std::cout << visited_vertices[i] << " ";
@@ -357,12 +344,15 @@ void Mesh::edge_flip(HalfEdge* halfedge){
     triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
 }
 
+
 HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
     HalfEdge* halfedge = v1->halfedge;
     HalfEdge* he = v1->halfedge;
     bool boundary = false;
     do{
+        // std::cout << he->pair->head->index << "\n";
         if (he->pair){
+            std::cout << he->pair->head->index << "\n";
             if (he->pair->head == v2) return he;
         }
         if(he->next->pair){
@@ -375,19 +365,13 @@ HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
 
     }while(he != halfedge);
 
-    // if(!halfedge->pair) return;    // ye karna hai abhi sahi
-    // he = halfedge->pair->next->next;
-    // // reverse traversal for opposite of boundary
-    // while(he && boundary){
-    //     if(!he->pair) return;
-    //     he = he->pair->next->next;
-    // }
     return he;
 }
 
-// void Mesh::split_edge(int i1, int i2){
-//     Vertex* v1 = v2v[i1];
-//     Vertex* v2 = v2v[i2];
-//     HalfEdge* he = give_halfedge(v1, v2);
-//     he->split_halfedge(this);
-// }
+void Mesh::split_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    std::cout << he->head->index << " " << he->pair->head->index << "\n";
+    he->split_halfedge(this);
+}

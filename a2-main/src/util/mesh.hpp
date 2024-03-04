@@ -36,14 +36,11 @@ class Mesh{
 
     void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
     void give_initial_mesh();
-    vec3* give_vertices();
-    vec3* give_normals();
-    ivec3* give_triangles();
     void recompute_normals();
 
     void edge_flip(HalfEdge *halfedge);
     void split_edge(int i1, int i2);
-
+    void edge_split(HalfEdge *halfedge);
 
     private:
     std::vector<bool> visited_vertices;
@@ -87,7 +84,8 @@ class Face{
     ivec3 get_face_vertices_indices();
     void print_face_vertices();
     vec3 calculate_normal();
-    // bool check_same_face(Face* face);
 };
+
+bool check_same_face(ivec3 v1, ivec3 v2);
 
 #endif
