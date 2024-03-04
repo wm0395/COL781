@@ -32,13 +32,13 @@ void Vertex::traverse(void (*func)(Face *face)){
     }
 }
 
-int Vertex::traverse(void (*func)(Face *face, Vertex *vertex)){
+int Vertex::traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex){
     HalfEdge *he = halfedge;
     bool boundary = false;
     int n = 0;
     do{
         Face *face = he->left;
-        func(face, this);
+        func(face, vertex);
         n++;
         //check for boundary
         if(he->next->pair){
@@ -57,7 +57,7 @@ int Vertex::traverse(void (*func)(Face *face, Vertex *vertex)){
     while(he && boundary){
         n++;
         Face *face = he->left;
-        func(face, this);
+        func(face, vertex);
         if(!he->pair) return n;
         he = he->pair->next->next;
     }

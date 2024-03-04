@@ -45,6 +45,11 @@ class Mesh{
     void edge_split(HalfEdge *halfedge);
     void collapse_edge(HalfEdge *halfedge);
 
+    private:
+    std::vector<bool> visited_vertices;
+    std::vector<bool> visited_faces;
+    int visited_vert_count;
+
     void add_vertex(vec3 &position, vec3 &normal);
     void delete_vertex(int index);
     void update_vertex(int index, vec3 &position, vec3 &normal);
@@ -53,10 +58,6 @@ class Mesh{
     void delete_face(int index);
     void update_face(int index, ivec3 &triangle);
 
-    private:
-    std::vector<bool> visited_vertices;
-    std::vector<bool> visited_faces;
-    int visited_vert_count;
 
     void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void print_vis_vert();
@@ -83,7 +84,7 @@ class Vertex{
     vec3 normal;
 
     void traverse(void (*func)(Face *face));
-    int traverse(void (*func)(Face *face, Vertex *vertex));
+    int traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex);
     void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
 };
 
