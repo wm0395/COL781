@@ -3,7 +3,7 @@
 
 #include "mesh.hpp"
 
-Mesh* square_grid(int m, int n);
-Mesh* sphere_grid(int m, int n);
+void square_grid(Mesh* mesh, int m, int n);
+void sphere_grid(Mesh* mesh, int m, int n);
 
 #endif

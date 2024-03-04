@@ -16,8 +16,9 @@ class Face;
 
 class Mesh{
     public:
+    Mesh(int V, int N);
     Mesh(int V, int N, Vertex **v2v, Face **f2f);
-    Mesh(int V, int N, vec3 *vertex, vec3 *normal, ivec3 *face);
+    Mesh(int V, int N, vec3 &vertex, vec3 &normal, ivec3 &face);
     Mesh(string file);
     vec3* vertices;
     vec3* normals;
@@ -40,6 +41,7 @@ class Mesh{
     ivec3* give_triangles();
     void recompute_normals();
 
+    void edge_flip(HalfEdge *halfedge);
     void split_edge(int i1, int i2);
 
 
