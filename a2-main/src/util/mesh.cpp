@@ -170,19 +170,6 @@ void Mesh::parse_OBJ(const char *filename){
 
 }
 
-vec3* Mesh::give_vertices(){
-    return vertices;
-}
-
-vec3* Mesh::give_normals(){
-    return normals;
-}
-
-ivec3* Mesh::give_triangles(){
-    return triangles;
-}
-
-
 void Mesh::print_vis_vert(){
     std::cout << "Visited vertices => ";
     for (int i = 0; i<num_of_vertices; i++) std::cout << visited_vertices[i] << " ";
@@ -399,4 +386,149 @@ void Mesh::edge_flip(HalfEdge* halfedge){
 
     triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
     triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
+}
+
+
+HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
+    HalfEdge* halfedge = v1->halfedge;
+    HalfEdge* he = v1->halfedge;
+    bool boundary = false;
+    do{
+        // std::cout << he->pair->head->index << "\n";
+        if (he->pair){
+            std::cout << he->pair->head->index << "\n";
+            if (he->pair->head == v2) return he;
+        }
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+
+    return he;
+}
+
+void Mesh::edge_split(HalfEdge* halfedge){
+    Vertex* v1 = halfedge->head;
+    Vertex* v2 = halfedge->pair->head;
+    Vertex* v3 = halfedge->next->head;
+    Vertex* v4 = halfedge->pair->next->head;
+
+    Vertex* v = new Vertex;
+    v->position = ((v1->position) + (v2->position));
+    v->position /= 2;
+    v->normal = (v1 -> normal) + (v2->normal);
+    v->normal /= 2;
+    v->index = num_of_vertices;
+    num_of_vertices++;
+    // v2v[]
+
+    HalfEdge* h1 = new HalfEdge;
+    HalfEdge* h2 = new HalfEdge;
+    HalfEdge* h3 = new HalfEdge;
+    HalfEdge* h4 = new HalfEdge;
+    HalfEdge* h5 = new HalfEdge;
+    HalfEdge* h6 = new HalfEdge;
+    HalfEdge* h7 = new HalfEdge;
+    HalfEdge* h8 = new HalfEdge;
+
+    h1->head = v;
+    h1->pair = h2;
+    h4->head = v;
+    h4->pair = h3;
+    h5->head = v;
+    h5->pair = h6;
+    h8->head = v;
+    h8->pair = h7;
+    h1->next = h6;
+    h5->next = h3;
+    h4->next = h7;
+    h8->next = h2;
+
+    v->halfedge = h1;
+
+    Face* f1 = new Face;
+    Face* f2 = new Face;
+    Face* f3 = new Face;
+    Face* f4 = new Face;
+
+    f1->halfedge = h1;
+    f2->halfedge = h2;
+    f3->halfedge = h4;
+    f4->halfedge = h3;
+
+    h1->left = f1;
+    h2->left = f2;
+    h3->left = f4;
+    h4->left = f3;
+    h5->left = f4;
+    h6->left = f1;
+    h7->left = f3;
+    h8->left = f2;
+
+    vec3* vert = new vec3[num_of_vertices];
+    copy(vertices, vertices + num_of_vertices - 1, vert);
+    vert[num_of_vertices - 1] = v->position;
+    vertices = vert;
+
+    vec3* norm = new vec3[num_of_vertices];
+    copy(normals, normals + num_of_vertices - 1, norm);
+    norm[num_of_vertices - 1] = v->normal;
+    normals = norm;
+
+    ivec3* faces = new ivec3[num_of_faces + 2];
+    int face_cnt = 0;
+    for (int i = 0; i<mesh->num_of_faces; i++){
+        if (!(check_same_face(mesh->triangles[i], ivec3(v1->index, v3->index, v2->index)) || check_same_face(mesh->triangles[i], ivec3(v1->index, v2->index, v4->index)))){
+            faces[face_cnt] = mesh->triangles[i];
+            face_cnt++;
+        }
+    }
+
+    // f2f[]
+
+    faces[face_cnt] = ivec3(v->index, v3->index, v2->index);
+    f1->index = face_cnt;
+    face_cnt++;
+
+    faces[face_cnt] = ivec3(v->index, v2->index, v4->index);
+    f2->index = face_cnt;
+    face_cnt++;
+
+    faces[face_cnt] = ivec3(v->index, v4->index, v1->index);
+    f3->index = face_cnt;
+    face_cnt++;
+
+    faces[face_cnt] = ivec3(v->index, v1->index, v3->index);
+    f4->index = face_cnt;
+    face_cnt++;
+
+    mesh->num_of_faces += 2;
+    mesh->triangles = faces;
+}
+
+void Mesh::split_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    std::cout << he->head->index << " " << he->pair->head->index << "\n";
+    he->split_halfedge(this);
+}
+
+void Mesh::collapse_edge(HalfEdge* halfedge){
+    Face *f1 = halfedge->left;
+    if(!halfedge->pair){
+        Vertex *vnew = new Vertex();
+        vnew->position = halfedge->head->position + halfedge->next->next->head->position;
+        vnew->position /=2;
+        vnew->normal = halfedge->head->normal + halfedge->next->next->head->normal;
+        vnew->normal /=2;
+        vnew->index = halfedge->head->index;
+        return;
+    }
+
 }

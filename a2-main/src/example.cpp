@@ -33,7 +33,11 @@ int main() {
     // Mesh *mesh = new Mesh(4, 2, vertices, normals, triangles);
 
     // Make the square grid, run the following =>
-    // Mesh* mesh = square_grid(2,2);
+    int m = 3, n = 3;
+    Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
+    square_grid(mesh, m, n);
+    mesh->split_edge(6,9);
+    // mesh->edge_split(mesh->f2f[9]->halfedge->next);
 
     // Make the sphere usign the following command =>
     // Mesh *mesh = sphere_grid(4,2);
@@ -58,19 +62,6 @@ int main() {
 
     // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
     // sphere_grid(mesh, m, n);
-    // mesh->edge_flip(mesh->f2f[1]->halfedge->next);
-
-    // std::cout << mesh->vertices << "\n";
-    // for (int i = 0; i<mesh->num_of_vertices; i++){
-    //     vec3 pos = mesh->vertices[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-
-    // std::cout << mesh->triangles << "\n";
-    // for (int i = 0; i<mesh->num_of_faces; i++){
-    //     ivec3 pos = mesh->triangles[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {

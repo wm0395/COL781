@@ -35,40 +35,4 @@ void square_grid(Mesh* mesh, int m, int n){
     }
 
     mesh->update_HElist();
-    // vec3 vertices[] = {
-    //     vec3(-0.5, -0.5, 0.0),
-    //     vec3( 0.5, -0.5, 0.0),
-    //     vec3(-0.5,  0.5, 0.0),
-    //     vec3( 0.5,  0.5, 0.0)
-    // };
-    // vec3 normals[] = {
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0)
-    // };
-    // ivec3 triangles[] = {
-    //     ivec3(0, 1, 2),
-    //     ivec3(1, 2, 3),
-    // };
-
-    // Mesh *mesh = new Mesh(4, 2, *vertices, *normals, *triangles);
-
-    // Mesh* mesh = new Mesh((m+1)*(n+1), 2*m*n, vertices, normals, triangles);
-
-    // std::cout << (mesh)->vertices << "\n";
-
-    // for (int i = 0; i<(mesh)->num_of_vertices; i++){
-    //     vec3 pos = mesh->vertices[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-
-    // std::cout << (mesh)->triangles << "\n";
-    // for (int i = 0; i<(mesh)->num_of_faces; i++){
-    //     ivec3 pos = (mesh)->triangles[i];
-    //     std::cout << pos.x << " " << pos.y << " " << pos.z << "\n";
-    // }
-
-    // std::cout << "outside mesh\n";
-    // return mesh;
 }

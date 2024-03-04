@@ -36,15 +36,22 @@ class Mesh{
 
     void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void give_initial_mesh();
-    vec3* give_vertices();
-    vec3* give_normals();
-    ivec3* give_triangles();
-
     void recompute_normals();
 
     void taubin_smoothing(int iter, float lambda, float mu);
 
     void edge_flip(HalfEdge *halfedge);
+    void split_edge(int i1, int i2);
+    void edge_split(HalfEdge *halfedge);
+    void collapse_edge(HalfEdge *halfedge);
+
+    void add_vertex(vec3 &position, vec3 &normal);
+    void delete_vertex(int index);
+    void update_vertex(int index, vec3 &position, vec3 &normal);
+
+    void add_face(ivec3 &triangle);
+    void delete_face(int index);
+    void update_face(int index, ivec3 &triangle);
 
     private:
     std::vector<bool> visited_vertices;
@@ -59,15 +66,13 @@ class Mesh{
 };
 
 
-// Things to be implemented:
-// efficient link between vertex locations and triangle locations
-// How to send this to raster API?
-
 class HalfEdge{
     public:
     HalfEdge *pair, *next;
     Vertex *head;
     Face *left;
+
+    void split_halfedge(Mesh* mesh);
 };
 
 class Vertex{
@@ -93,5 +98,7 @@ class Face{
     void print_face_vertices();
     vec3 calculate_normal();
 };
+
+bool check_same_face(ivec3 v1, ivec3 v2);
 
 #endif
