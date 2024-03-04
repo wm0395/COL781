@@ -40,6 +40,8 @@ class Mesh{
     ivec3* give_triangles();
     void recompute_normals();
 
+    void split_edge(int i1, int i2);
+
 
     private:
     std::vector<bool> visited_vertices;
@@ -52,15 +54,13 @@ class Mesh{
 };
 
 
-// Things to be implemented:
-// efficient link between vertex locations and triangle locations
-// How to send this to raster API?
-
 class HalfEdge{
     public:
     HalfEdge *pair, *next;
     Vertex *head;
     Face *left;
+
+    void split_halfedge(Mesh* mesh);
 };
 
 class Vertex{
@@ -85,6 +85,7 @@ class Face{
     ivec3 get_face_vertices_indices();
     void print_face_vertices();
     vec3 calculate_normal();
+    // bool check_same_face(Face* face);
 };
 
 #endif

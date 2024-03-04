@@ -291,3 +291,38 @@ void Mesh::recompute_normals(){
     visited_faces = std::vector<bool>(num_of_faces, false);
     update_VFlist();
 }
+
+HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
+    HalfEdge* halfedge = v1->halfedge;
+    HalfEdge* he = v1->halfedge;
+    bool boundary = false;
+    do{
+        if (he->pair){
+            if (he->pair->head == v2) return he;
+        }
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+
+    // if(!halfedge->pair) return;    // ye karna hai abhi sahi
+    // he = halfedge->pair->next->next;
+    // // reverse traversal for opposite of boundary
+    // while(he && boundary){
+    //     if(!he->pair) return;
+    //     he = he->pair->next->next;
+    // }
+    return he;
+}
+
+void Mesh::split_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    he->split_halfedge(this);
+}

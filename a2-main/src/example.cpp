@@ -40,9 +40,9 @@ int main() {
 
 
     // To run the example files =>
-    string file = "meshes/teapot.obj";
+    string file = "meshes/cube.obj";
     Mesh *mesh = new Mesh(file);
-    // mesh->recompute_normals();     // if you want to recompute normals
+    mesh->recompute_normals();     // if you want to recompute normals
 
     std::cout << mesh->vertices << "\n";
     for (int i = 0; i<mesh->num_of_vertices; i++){
