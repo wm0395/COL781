@@ -1,7 +1,6 @@
 #include "viewer.hpp"
 #include "./util/util.hpp"
 #include "./util/square_grid.cpp"
-// #include "./util/sphere_grid.cpp"
 #include <vector>
 #include <iostream>
 
