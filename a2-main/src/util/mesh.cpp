@@ -400,29 +400,47 @@ HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
 
 void Mesh::naive_smoothing(int iter, float lambda){
     for(int i = 0; i < iter; i++){
-        dfs(v2v[0], umbrella, nullptr, true, false);
+        for (int i = 0; i<num_of_vertices; i++){
+            if (!visited_vertices[i]){
+                dfs(v2v[i], umbrella, nullptr, true, false);
+            }
+        }
         for(int v = 0; v < num_of_vertices; v++){
             vertices[v] *= lambda;
             v2v[v]->position += vertices[v];
             vertices[v] = v2v[v]->position;
         }
+        visited_vert_count = 0;
+        visited_vertices = std::vector<bool>(num_of_vertices, false);
+        visited_faces = std::vector<bool>(num_of_faces, false);
     }
 }
 
 void Mesh::taubin_smoothing(int iter, float lambda, float mu){
     for(int i = 0; i < iter; i++){
-        dfs(v2v[0], umbrella, nullptr, true, false);
+        for (int i = 0; i<num_of_vertices; i++){
+            if (!visited_vertices[i]){
+                dfs(v2v[i], umbrella, nullptr, true, false);
+            }
+        }
         for(int v = 0; v < num_of_vertices; v++){
             vertices[v] *= lambda;
             v2v[v]->position += vertices[v];
             vertices[v] = v2v[v]->position;
         }
-        dfs(v2v[0], umbrella, nullptr, true, false);
+        for (int i = 0; i<num_of_vertices; i++){
+            if (!visited_vertices[i]){
+                dfs(v2v[i], umbrella, nullptr, true, false);
+            }
+        }
         for(int v = 0; v < num_of_vertices; v++){
             vertices[v] *= mu;
             v2v[v]->position += vertices[v];
             vertices[v] = v2v[v]->position;
         }
+        visited_vert_count = 0;
+        visited_vertices = std::vector<bool>(num_of_vertices, false);
+        visited_faces = std::vector<bool>(num_of_faces, false);
     }
 }
 
