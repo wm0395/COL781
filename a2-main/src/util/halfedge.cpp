@@ -51,14 +51,14 @@ int Vertex::traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex){
 
     }while(he != halfedge);
 
-    if(!halfedge->pair) return n;
+    if(!halfedge->pair) return n + boundary;
     he = halfedge->pair->next->next;
     // reverse traversal for opposite of boundary
     while(he && boundary){
         n++;
         Face *face = he->left;
         func(face, vertex);
-        if(!he->pair) return n;
+        if(!he->pair) return n+1;
         he = he->pair->next->next;
     }
     return n;

@@ -41,7 +41,7 @@ int main() {
     // mesh->collapse_edge(mesh->f2f[5]->halfedge);
 
     // Make the sphere usign the following command =>
-    // int m = 4, n = 3;
+    // int m = 4, n = 4;
     // int vert_cnt = m*(n-1)+2;
     // int tri_cnt = 2*m*(n-1);
     // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
@@ -50,10 +50,14 @@ int main() {
 
 
     // To run the example files =>
-    // string file = "meshes/noisycube.obj";
+    // string file = "meshes/bunny-1k.obj";
     // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
     mesh->loop_subdivide();
+    // mesh->loop_subdivide();
+    // mesh->loop_subdivide();
+    // mesh->loop_subdivide();
+    // mesh->loop_subdivide();
     // mesh->taubin_smoothing(5, 0.33, -0.23);
     // mesh = mesh->loop_subdivide();
     // mesh->taubin_smoothing(5, 0.33, -0.23);
