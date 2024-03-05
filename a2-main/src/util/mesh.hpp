@@ -47,6 +47,8 @@ class Mesh{
 
     void subdivide_mesh();
 
+    void give_new_vertex(int i1, int i2);
+
     private:
     std::vector<bool> visited_vertices;
     std::vector<bool> visited_faces;
@@ -62,6 +64,9 @@ class Mesh{
 
 
     void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
+    void print_vis_vert();
+    void print_vis_faces();
+    void print_VL();
 
     void edge_flip_helper(HalfEdge *halfedge);
     void edge_split_helper(HalfEdge *halfedge);
@@ -89,6 +94,7 @@ class Vertex{
 
     void traverse(void (*func)(Face *face));
     int traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex);
+    int traverse(void (*func)(Face *face, Vertex *vertex, Mesh *mesh), Vertex *vertex, Mesh *mesh);
     void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
 };
 

@@ -64,6 +64,39 @@ int Vertex::traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex){
     return n;
 }
 
+int Vertex::traverse(void (*func)(Face *face, Vertex *vertex, Mesh *mesh), Vertex *vertex, Mesh *mesh){
+    HalfEdge *he = halfedge;
+    bool boundary = false;
+    int n = 0;
+    do{
+        Face *face = he->left;
+        func(face, vertex, mesh);
+        n++;
+        //check for boundary
+        if(he->next->pair){
+            he = he->next->pair;
+        }
+        else{
+            boundary = true;
+            break;
+        }
+
+    }while(he != halfedge);
+
+    if(!halfedge->pair) return n;
+    he = halfedge->pair->next->next;
+    // reverse traversal for opposite of boundary
+    while(he && boundary){
+        n++;
+        Face *face = he->left;
+        func(face, vertex, mesh);
+        if(!he->pair) return n;
+        he = he->pair->next->next;
+    }
+    return n;
+}
+
+
 void Vertex::traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update){
     HalfEdge *he = halfedge;
     bool boundary = false;

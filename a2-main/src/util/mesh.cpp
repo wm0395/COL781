@@ -157,22 +157,46 @@ void Mesh::parse_OBJ(const char *filename){
     }
     
     vertices = new vec3[vertex.size()];
-    copy(vertex.begin(), vertex.end(), vertices);
+    std::copy(vertex.begin(), vertex.end(), vertices);
 
     normals = new vec3[normal.size()];
-    copy(normal.begin(), normal.end(), normals);
+    std::copy(normal.begin(), normal.end(), normals);
 
     triangles = new ivec3[face.size()];
-    copy(face.begin(), face.end(), triangles);
+    std::copy(face.begin(), face.end(), triangles);
 
     num_of_vertices = vertex.size();
     num_of_faces = face.size();
 
 }
 
+void Mesh::print_vis_vert(){
+    std::cout << "Visited vertices => ";
+    for (int i = 0; i<num_of_vertices; i++) std::cout << visited_vertices[i] << " ";
+    std::cout << "\n";
+}
+
+void Mesh::print_vis_faces(){
+    std::cout << "Visited face => ";
+    for (int i = 0; i<num_of_faces; i++) std::cout << visited_vertices[i] << " ";
+    std::cout << "\n";
+}
+
+void Mesh::print_VL(){
+    std::cout <<"FACES\n";
+    for(int i = 0; i < num_of_faces; i++){
+        std::cout << "\t [" << triangles[i].x << ", " << triangles[i].y << ", " << triangles[i].z << "]\n";
+    }
+    std::cout <<"VERTICES\n";
+    for(int i = 0; i < num_of_faces; i++){
+        std::cout << "\t\t [" << vertices[i].x << ", " << vertices[i].y << ", " << vertices[i].z << "]\n";
+    }
+}
+
 void Mesh::update_VFlist(){   
     for(int i = 0; i < num_of_vertices; i++){
         if(!visited_vertices[i]){
+            std::cout << v2v[i] <<"\t" << v2v[i]->index << "\n";
             dfs(v2v[i], nullptr, nullptr, true, true);
         }
     }
@@ -586,13 +610,35 @@ void rehead(Face* face, Vertex *vertex){
     face->halfedge = he;
 }
 
-void reconnect_to_vtx(Face* face, Vertex* vertex){
+void reconnect_to_vtx(Face* face, Vertex* vertex, Mesh* mesh){
+    int old = face->halfedge->head->index;
     face->halfedge->head = vertex;
+    if(mesh->triangles[face->index].x == old){
+        mesh->triangles[face->index].x = vertex->index;
+    }
+    if(mesh->triangles[face->index].y == old){
+        mesh->triangles[face->index].y = vertex->index;
+    }
+    if(mesh->triangles[face->index].z == old){
+        mesh->triangles[face->index].z = vertex->index;
+    }
 }
 
-void reconnect_vertex(Vertex* a, Vertex* b){
+void reindex(Face* face, Vertex* vertex, Mesh* mesh){
+    if(mesh->triangles[face->index].x == face->halfedge->head->index){
+        mesh->triangles[face->index].x = vertex->index;
+    }
+    else if(mesh->triangles[face->index].y == face->halfedge->head->index){
+        mesh->triangles[face->index].y = vertex->index;
+    }
+    else if(mesh->triangles[face->index].z == face->halfedge->head->index){
+        mesh->triangles[face->index].z = vertex->index;
+    }
+}
+
+void reconnect_vertex(Vertex* a, Vertex* b, Mesh *mesh){
     a->traverse(rehead, a);
-    a->traverse(reconnect_to_vtx, b);
+    a->traverse(reconnect_to_vtx, b, mesh);
 }
 
 void Mesh::collapse_edge(HalfEdge* halfedge){
@@ -606,49 +652,53 @@ void Mesh::collapse_edge(HalfEdge* halfedge){
 
     v1->position = position;
     v1->normal = normal;
-    reconnect_vertex(v2, v1);
+    // print_VL();
+    cout<<"reconnect "<<v2->index<<" to "<<v1->index<<"\n";
+    reconnect_vertex(v2, v1, this);
     delete_vertex(v2->index);
-
-    HalfEdge *neHE = nullptr;
+    // print_VL();
     
-    if(halfedge->next->pair && halfedge->next->next->pair){
-        HalfEdge *temp = halfedge->next->pair;
-        halfedge->next->pair->pair = halfedge->next->next->pair;
-        halfedge->next->next->pair->pair = temp;
-        neHE = temp;
-    }
-    else if(halfedge->next->next->pair){
-        halfedge->next->next->pair->pair = nullptr;
-        neHE = halfedge->next->next->pair;
-    }
-    else if(halfedge->next->pair){
-        halfedge->next->pair->pair = nullptr;
-        neHE = halfedge->next->pair;
-    }
-    delete_face(halfedge->left->index);
+    // HalfEdge *neHE = nullptr;
     
-    if(halfedge->pair){
-        if(halfedge->pair->next->pair && halfedge->pair->next->next->pair){
-            HalfEdge *temp = halfedge->next->pair;
-            halfedge->pair->next->pair->pair = halfedge->pair->next->next->pair;
-            halfedge->pair->next->next->pair->pair = temp;
-            if(!neHE)
-            neHE = halfedge->pair->next->pair;
-        }
-        else if(halfedge->pair->next->next->pair){
-            halfedge->pair->next->next->pair->pair = nullptr;
-            if(!neHE)
-            neHE = halfedge->pair->next->next->pair;
-        }
-        else if(halfedge->pair->next->pair){
-            halfedge->pair->next->pair->pair = nullptr;
-            if(!neHE)
-            neHE = halfedge->pair->next->pair;
-        }
-        delete_face(halfedge->pair->left->index);
-    }
+    // if(halfedge->next->pair && halfedge->next->next->pair){
+    //     HalfEdge *temp = halfedge->next->pair;
+    //     halfedge->next->pair->pair = halfedge->next->next->pair;
+    //     halfedge->next->next->pair->pair = temp;
+    //     neHE = temp;
+    // }
+    // else if(halfedge->next->next->pair){
+    //     halfedge->next->next->pair->pair = nullptr;
+    //     neHE = halfedge->next->next->pair;
+    // }
+    // else if(halfedge->next->pair){
+    //     halfedge->next->pair->pair = nullptr;
+    //     neHE = halfedge->next->pair;
+    // }
+    // // delete_face(halfedge->left->index);
+    
+    // if(halfedge->pair){
+    //     if(halfedge->pair->next->pair && halfedge->pair->next->next->pair){
+    //         HalfEdge *temp = halfedge->next->pair;
+    //         halfedge->pair->next->pair->pair = halfedge->pair->next->next->pair;
+    //         halfedge->pair->next->next->pair->pair = temp;
+    //         if(!neHE)
+    //         neHE = halfedge->pair->next->pair;
+    //     }
+    //     else if(halfedge->pair->next->next->pair){
+    //         halfedge->pair->next->next->pair->pair = nullptr;
+    //         if(!neHE)
+    //         neHE = halfedge->pair->next->next->pair;
+    //     }
+    //     else if(halfedge->pair->next->pair){
+    //         halfedge->pair->next->pair->pair = nullptr;
+    //         if(!neHE)
+    //         neHE = halfedge->pair->next->pair;
+    //     }
+    //     // delete_face(halfedge->pair->left->index);
+    // }
 
-    v1->halfedge = neHE;
+    // v1->halfedge = neHE;
+    update_VFlist();
 }
 
 void Mesh::delete_face(int index){
@@ -669,6 +719,10 @@ void Mesh::delete_face(int index){
 }
 
 void Mesh::delete_vertex(int index){
+    cout<<"inside delete_vertex\n";
+
+    v2v[num_of_vertices-1]->traverse(rehead, v2v[num_of_vertices-1]);
+    v2v[num_of_vertices-1]->traverse(reindex, v2v[index], this);
     vertices[index] = vertices[num_of_vertices-1];
     normals[index] = normals[num_of_vertices-1];
     v2v[num_of_vertices-1]->index = index;
@@ -676,37 +730,57 @@ void Mesh::delete_vertex(int index){
 
     num_of_vertices--;
 
-    vec3 temp[num_of_vertices];
-    copy(vertices, vertices + num_of_vertices, temp);
-    vertices = temp;
-    copy(normals, normals + num_of_vertices, temp);
-    normals = temp;
+    // vec3 temp[num_of_vertices];
+    // copy(vertices, vertices + num_of_vertices, temp);
+    // vertices = temp;
+    // copy(normals, normals + num_of_vertices, temp);
+    // normals = temp;
     // delete temp;
 
-    Vertex *temp2[num_of_vertices];
-    copy(v2v, v2v + num_of_vertices, temp2);
-    // delete temp;
+    // Vertex *temp22[num_of_vertices];
+    // copy(v2v, v2v + num_of_vertices, temp22);
+    // v2v = temp2;
+    // // delete temp;
+    cout<<"outside delete_vertex\n";
 }
 
-void insert_edge(Face* face, set<HalfEdge*> &initial_edges){
-    HalfEdge* he = face->halfedge;
-    while (he != face->halfedge){
-        if (!he->pair) initial_edges.insert(he);
-        else{
-            if (initial_edges.find(he->pair) != initial_edges.end()){
-                initial_edges.insert(he);
-            }
-        }
-        he = he->next;
-    }
-}
+// void insert_edge(Face* face, set<HalfEdge*> &initial_edges){
+//     HalfEdge* he = face->halfedge;
+//     while (he != face->halfedge){
+//         if (!he->pair) initial_edges.insert(he);
+//         else{
+//             if (initial_edges.find(he->pair) != initial_edges.end()){
+//                 initial_edges.insert(he);
+//             }
+//         }
+//         he = he->next;
+//     }
+// }
 
-void Mesh::subdivide_mesh(){
-    Vertex* starting_vertex = v2v[0];
-    set<HalfEdge*> initial_edges = {};
-    for (int i = 0; i<num_of_vertices; i++){
-        if (!visited_vertices[i]){
-            dfs(v2v[i], nullptr, insert_edge, true, true);
-        }
-    }
+// void Mesh::subdivide_mesh(){
+//     Vertex* starting_vertex = v2v[0];
+//     set<HalfEdge*> initial_edges = {};
+//     for (int i = 0; i<num_of_vertices; i++){
+//         if (!visited_vertices[i]){
+//             dfs(v2v[i], nullptr, insert_edge, true, true);
+//         }
+//     }
+// }
+
+void Mesh::give_new_vertex(int i1, int i2){
+    vec3 pos1 = vertices[i1];
+    vec3 pos2 = vertices[i2];
+    vec3 norm1 = normals[i1];
+    vec3 norm2 = normals[i2];
+    vec3 pos = pos1 + pos2;
+    pos /= 2;
+    vec3 norm = norm1 + norm2;
+    norm /= 2;
+    
+    num_of_vertices++;
+    unordered_map<int, vector<int>> new_to_old;
+    new_to_old[num_of_vertices-1] = {i1, i2};
+
+    unordered_map<int, int> new_vert_to_edge;
+    new_vert_to_edge[num_of_vertices-1] = num_of_vertices-1; 
 }
