@@ -894,6 +894,61 @@ bool Mesh::valid_connectivity(){
         }
     }
     visited_vertices = std::vector<bool>(num_of_vertices, false);
+    unordered_map<int,int> edge_face_count;
+    for(int i = 0; i < num_of_faces; i++){
+        int hsh = hash_func(triangles[i].x, triangles[i].y, num_of_faces);
+        if(edge_face_count.find(hsh) == edge_face_count.end())
+            edge_face_count[hsh] = 0;
+        edge_face_count[hsh]++;
+        if(edge_face_count[hsh] > 2) return false;
+        hsh = hash_func(triangles[i].y, triangles[i].z, num_of_faces);
+        if(edge_face_count.find(hsh) == edge_face_count.end())
+            edge_face_count[hsh] = 0;
+        edge_face_count[hsh]++;
+        if(edge_face_count[hsh] > 2) return false;
+        hsh = hash_func(triangles[i].z, triangles[i].x, num_of_faces);
+        if(edge_face_count.find(hsh) == edge_face_count.end())
+            edge_face_count[hsh] = 0;
+        edge_face_count[hsh]++;
+        if(edge_face_count[hsh] > 2) return false;
+    }
+    vector<vector<bool>> nb_faces(num_of_vertices, vector<bool>(num_of_faces));
+    for(int i = 0; i < num_of_faces; i++){
+        nb_faces[triangles[i].x][i] = true;
+        nb_faces[triangles[i].y][i] = true;
+        nb_faces[triangles[i].z][i] = true;
+    }
+    for(int i = 0; i < num_of_vertices; i++){
+        HalfEdge *he = v2v[i]->halfedge;
+        bool boundary = false;
+        do{
+            Face *face = he->left;
+            nb_faces[i][face->index] = false;
+            //check for boundary
+            if(he->next->pair){
+                he = he->next->pair;
+            }
+            else{
+                boundary = true;
+                break;
+            }
+
+        }while(he != v2v[i]->halfedge);
+
+        if(!v2v[i]->halfedge->pair) return;
+        he = v2v[i]->halfedge->pair->next->next;
+        // reverse traversal for opposite of boundary
+        while(he && boundary){
+            Face *face = he->left;
+            nb_faces[i][face->index] = false;
+            if(!he->pair) return;
+            he = he->pair->next->next;
+        }
+
+        for(int j = 0; j < num_of_faces; j++){
+            if(nb_faces[i][j]) return false;
+        }
+    }
     return true;
 }
 
