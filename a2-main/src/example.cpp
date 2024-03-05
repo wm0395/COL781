@@ -15,9 +15,9 @@ int main() {
     int m = 3, n = 3;
     Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
     square_grid(mesh, m, n);
-    // mesh->flip_edge(6,9);    // to flip the middle diagonal of the 3*3 grid
-    // mesh->split_edge(6,9);    // to spli the middle diagonal of the 3*3 grid
-    // mesh->collapse_edge(6,9);   // to collapse the middle diagonal of the 3*3 grid
+    // mesh->flip_edge(6,9);    // to flip the middle diagonal of the 3*3 grid, (we are providing the vertex indices as our inputs)
+    // mesh->split_edge(6,9);    // to spli the middle diagonal of the 3*3 grid, (we are providing the vertex indices as our inputs)
+    // mesh->collapse_edge(6,9);   // to collapse the middle diagonal of the 3*3 grid, (we are providing the vertex indices as our inputs)
 
     // To make the sphere, run the following  =>
     // int m = 4, n = 4;
