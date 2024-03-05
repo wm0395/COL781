@@ -45,7 +45,7 @@ class Mesh{
     void split_edge(int i1, int i2);
     void collapse_edge(HalfEdge *halfedge);
 
-    void subdivide_mesh();
+    Mesh* loop_subdivide();
 
     void give_new_vertex(int i1, int i2);
 

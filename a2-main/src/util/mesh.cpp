@@ -767,20 +767,104 @@ void Mesh::delete_vertex(int index){
 //     }
 // }
 
-void Mesh::give_new_vertex(int i1, int i2){
-    vec3 pos1 = vertices[i1];
-    vec3 pos2 = vertices[i2];
-    vec3 norm1 = normals[i1];
-    vec3 norm2 = normals[i2];
-    vec3 pos = pos1 + pos2;
-    pos /= 2;
-    vec3 norm = norm1 + norm2;
-    norm /= 2;
-    
-    num_of_vertices++;
-    unordered_map<int, vector<int>> new_to_old;
-    new_to_old[num_of_vertices-1] = {i1, i2};
-
-    unordered_map<int, int> new_vert_to_edge;
-    new_vert_to_edge[num_of_vertices-1] = num_of_vertices-1; 
+void divide_mesh(Mesh* mesh, unordered_map<int, Vertex*> &new_vtx, unordered_map<int, pair<int,int>> &old_vtx_pair){
+    set<int> covered_edge;
+    int n = mesh->num_of_vertices;
+    for(int i = 0; i < mesh->num_of_faces; i++){
+        int j = hash_func(mesh->triangles[i].x, mesh->triangles[i].y, mesh->num_of_vertices);
+        if(covered_edge.find(j) == covered_edge.end()){
+            new_vtx[j] = new Vertex();
+            new_vtx[j]->position = mesh->vertices[mesh->triangles[i].x] + mesh->vertices[mesh->triangles[i].y];
+            new_vtx[j]->normal = mesh->normals[mesh->triangles[i].x] + mesh->normals[mesh->triangles[i].y];
+            new_vtx[j]->position /=2;
+            new_vtx[j]->normal /=2;
+            new_vtx[j]->index = n++;
+            old_vtx_pair[n-1] = {std::min(mesh->triangles[i].x, mesh->triangles[i].y), std::max(mesh->triangles[i].x, mesh->triangles[i].y)};
+            covered_edge.insert(j);
+        }
+        j = hash_func(mesh->triangles[i].y, mesh->triangles[i].z, mesh->num_of_vertices);
+        if(covered_edge.find(j) == covered_edge.end()){
+            new_vtx[j] = new Vertex();
+            new_vtx[j]->position = mesh->vertices[mesh->triangles[i].y] + mesh->vertices[mesh->triangles[i].z];
+            new_vtx[j]->normal = mesh->normals[mesh->triangles[i].y] + mesh->normals[mesh->triangles[i].z];
+            new_vtx[j]->position /=2;
+            new_vtx[j]->normal /=2;
+            new_vtx[j]->index = n++;
+            old_vtx_pair[n-1] = {std::min(mesh->triangles[i].z, mesh->triangles[i].y), std::max(mesh->triangles[i].z, mesh->triangles[i].y)};
+            covered_edge.insert(j);
+        }
+        j = hash_func(mesh->triangles[i].x, mesh->triangles[i].z, mesh->num_of_vertices);
+        if(covered_edge.find(j) == covered_edge.end()){
+            new_vtx[j] = new Vertex();
+            new_vtx[j]->position = mesh->vertices[mesh->triangles[i].x] + mesh->vertices[mesh->triangles[i].z];
+            new_vtx[j]->normal = mesh->normals[mesh->triangles[i].x] + mesh->normals[mesh->triangles[i].z];
+            new_vtx[j]->position /=2;
+            new_vtx[j]->normal /=2;
+            new_vtx[j]->index = n++;
+            old_vtx_pair[n-1] = {std::min(mesh->triangles[i].z, mesh->triangles[i].x), std::max(mesh->triangles[i].z, mesh->triangles[i].x)};
+            covered_edge.insert(j);
+        }
+    } 
 }
+
+void connect_mesh(Mesh* mesh, unordered_map<int, Vertex*>& new_vtx, unordered_map<int, pair<int,int>>& old_vtx_pair, vector<Vertex*> &updated_vtx, vector<ivec3> &updated_fac){
+    for(int i = 0; i < mesh->num_of_vertices; i++){
+        updated_vtx[i] = mesh->v2v[i];
+    }
+    for(auto &pair: new_vtx){
+        updated_vtx[pair.second->index] = pair.second;
+    }
+    
+    for(int i = 0; i < mesh->num_of_faces; i++){
+        int v1 = mesh->triangles[i].x, v2 = mesh->triangles[i].y, v3 = mesh->triangles[i].z;
+        int v4 = new_vtx[hash_func(v1,v2,mesh->num_of_vertices)]->index;
+        int v5 = new_vtx[hash_func(v2,v3,mesh->num_of_vertices)]->index;
+        int v6 = new_vtx[hash_func(v1,v3,mesh->num_of_vertices)]->index;
+        updated_fac[4*i] = ivec3(v1,v4,v6);
+        updated_fac[4*i + 1] = ivec3(v4,v2,v5);
+        updated_fac[4*i + 2] = ivec3(v4,v5,v6);
+        updated_fac[4*i + 3] = ivec3(v5,v3,v6);
+    }
+
+}
+
+Mesh* Mesh::loop_subdivide(){
+//     vec3 pos1 = vertices[i1];
+//     vec3 pos2 = vertices[i2];
+//     vec3 norm1 = normals[i1];
+//     vec3 norm2 = normals[i2];
+//     vec3 pos = pos1 + pos2;
+//     pos /= 2;
+//     vec3 norm = norm1 + norm2;
+//     norm /= 2;
+    
+//     num_of_vertices++;
+//     unordered_map<int, vector<int>> new_to_old;
+//     new_to_old[num_of_vertices-1] = {i1, i2};
+
+//     unordered_map<int, int> new_vert_to_edge;
+//     new_vert_to_edge[num_of_vertices-1] = num_of_vertices-1;
+
+    unordered_map<int, Vertex*> new_vtx;
+    unordered_map<int, pair<int,int>> old_vtx_pair;
+
+    divide_mesh(this, new_vtx, old_vtx_pair);
+    int num_of_edges = new_vtx.size();
+
+    vector<Vertex*> updated_vtx(num_of_vertices + num_of_edges, nullptr);
+    vector<ivec3> updated_fac(4*num_of_faces, ivec3(0,0,0));
+
+    connect_mesh(this, new_vtx, old_vtx_pair, updated_vtx, updated_fac);
+    // flip_mesh(mesh);
+    Mesh* mesh = new Mesh(updated_vtx.size(), updated_fac.size());
+    for(int i = 0; i < mesh->num_of_vertices; i++){
+        mesh->vertices[i] = updated_vtx[i]->position;
+        mesh->normals[i] = updated_vtx[i]->normal;
+    }
+    for(int i = 0; i < mesh->num_of_faces; i++){
+        mesh->triangles[i] = updated_fac[i];
+    }
+    mesh->update_HElist();
+    return mesh;
+}
+
