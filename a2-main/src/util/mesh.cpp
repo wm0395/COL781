@@ -744,6 +744,38 @@ void Mesh::delete_vertex(int index){
     cout<<"outside delete_vertex\n";
 }
 
+bool valid_face(Face* face){
+    HalfEdge* he = face->halfedge;
+    if (he->left != face){ cout << "he->left != face\n"; return false;};
+    if (he->pair){
+        if (he->pair->pair != he) { cout << "he->pair->pair != he"; return false;};
+    }
+    else{
+        if (he->next->next->head != he->pair->head) {
+            cout << "he->next->next->head != he->pair->head\n"; 
+            // cout << he->pair->head->index
+            return false;
+        }
+        if (he != he->next->next->next) { cout << "he != he->next->next->next\n"; return false;};
+    }
+    return true;
+}
+
+bool Mesh::valid_connectivity(){
+    for (int i = 0; i<num_of_vertices; i++){
+        if (!visited_vertices[i]){
+            visited_vertices[i] = true;
+            Vertex* v = v2v[i];
+            HalfEdge* he = v->halfedge;
+            if (v != he->head){ cout << "v != he->head\n"; return false;};
+            Face* face = he->left;
+            if (!v->traverse(valid_face)) return false;
+        }
+    }
+    visited_vertices = std::vector<bool>(num_of_vertices, false);
+    return true;
+}
+
 // void insert_edge(Face* face, set<HalfEdge*> &initial_edges){
 //     HalfEdge* he = face->halfedge;
 //     while (he != face->halfedge){
@@ -828,22 +860,9 @@ void connect_mesh(Mesh* mesh, unordered_map<int, Vertex*>& new_vtx, unordered_ma
 
 }
 
-Mesh* Mesh::loop_subdivide(){
-//     vec3 pos1 = vertices[i1];
-//     vec3 pos2 = vertices[i2];
-//     vec3 norm1 = normals[i1];
-//     vec3 norm2 = normals[i2];
-//     vec3 pos = pos1 + pos2;
-//     pos /= 2;
-//     vec3 norm = norm1 + norm2;
-//     norm /= 2;
-    
-//     num_of_vertices++;
-//     unordered_map<int, vector<int>> new_to_old;
-//     new_to_old[num_of_vertices-1] = {i1, i2};
+// void flip_mesh()
 
-//     unordered_map<int, int> new_vert_to_edge;
-//     new_vert_to_edge[num_of_vertices-1] = num_of_vertices-1;
+Mesh* Mesh::loop_subdivide(){
 
     unordered_map<int, Vertex*> new_vtx;
     unordered_map<int, pair<int,int>> old_vtx_pair;

@@ -50,15 +50,16 @@ int main() {
 
 
     // To run the example files =>
-    // string file = "meshes/noisycube.obj";
+    // string file = "meshes/teapot.obj";
     // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
-    mesh = mesh->loop_subdivide();
+    // mesh = mesh->loop_subdivide();
     // mesh->taubin_smoothing(5, 0.33, -0.23);
     // mesh = mesh->loop_subdivide();
     // mesh->taubin_smoothing(5, 0.33, -0.23);
     // mesh->recompute_normals();
 
+    if (!mesh->valid_connectivity()) cout << "Invalid Mesh\n";
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {

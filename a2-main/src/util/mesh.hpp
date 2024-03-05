@@ -41,13 +41,13 @@ class Mesh{
 
     void taubin_smoothing(int iter, float lambda, float mu);
 
+    bool valid_connectivity();
+
     void flip_edge(int i1, int i2);
     void split_edge(int i1, int i2);
     void collapse_edge(HalfEdge *halfedge);
 
     Mesh* loop_subdivide();
-
-    void give_new_vertex(int i1, int i2);
 
     private:
     std::vector<bool> visited_vertices;
@@ -93,6 +93,7 @@ class Vertex{
     vec3 normal;
 
     void traverse(void (*func)(Face *face));
+    bool traverse(bool (*func)(Face *face));
     int traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex);
     int traverse(void (*func)(Face *face, Vertex *vertex, Mesh *mesh), Vertex *vertex, Mesh *mesh);
     void traverse(void (Mesh::*func)(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update), Mesh &mesh, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
