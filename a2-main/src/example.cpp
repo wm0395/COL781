@@ -27,9 +27,10 @@ int main() {
 
 
     // To run the example files =>
-    // string file = "meshes/bunny-1k.obj";
+    // string file = "meshes/noisycube.obj";
     // Mesh *mesh = new Mesh(file);
-    // mesh->recompute_normals();     // if you want to recompute normals
+    // mesh->recompute_normals();     // if you want to recompute normals without weights associated with neibhouring faces
+    // mesh->recompute_normals_weighted();    // if you want to compute normals with weights of neighbouring faces as their areas
     // mesh->naive_smoothing(5, 0.02);    // to carry out naive smoothing
     // mesh->taubin_smoothing(2, 0.33, -0.34);    // to carry out taubin_smoothing
     // mesh = mesh->loop_subdivide();     // to carry out loop subdivision

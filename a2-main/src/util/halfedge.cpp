@@ -202,3 +202,10 @@ bool check_same_face(ivec3 v1, ivec3 v2){
     if (a==z && b==x && c==y) return true;
     return false;
 }
+
+float Face::calculate_area(){
+    vec3 e1 = halfedge->next->head->position - halfedge->head->position;
+    vec3 e2 = halfedge->next->next->head->position - halfedge->head->position;
+    float area = glm::length(glm::cross(e1,e2))/2.0f;
+    return area;
+}

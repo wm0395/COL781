@@ -37,6 +37,7 @@ class Mesh{
     void dfs(Vertex *v, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
     void give_initial_mesh();
     void recompute_normals();
+    void recompute_normals_weighted();
 
     void naive_smoothing(int iter, float lambda);
     void taubin_smoothing(int iter, float lambda, float mu);
@@ -109,6 +110,7 @@ class Face{
     std::vector<Vertex*> face_vertices();
     ivec3 get_face_vertices_indices();
     vec3 calculate_normal();
+    float calculate_area();
 };
 
 bool check_same_face(ivec3 v1, ivec3 v2);

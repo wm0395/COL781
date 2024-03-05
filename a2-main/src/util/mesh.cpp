@@ -318,6 +318,32 @@ void Mesh::recompute_normals(){
     visited_faces = std::vector<bool>(num_of_faces, false);
 }
 
+void add_face_normal_weighted(Face *face, Vertex *vertex){
+    vec3 temp = face->calculate_normal();
+    float area = face->calculate_area();
+    temp *= area;
+    vertex->normal += temp;
+    vertex->normal.t += area;
+}
+
+void wht_normals(Vertex *vertex){
+    vertex->normal = vec3(0,0,0);
+    int n = vertex->traverse(add_face_normal_weighted, vertex);
+    vertex->normal /= vertex->normal.t;
+    vertex->normal.t = 0;
+}
+
+void Mesh::recompute_normals_weighted(){
+    for(int i = 0; i < num_of_vertices; i++){
+        if(!visited_vertices[i]){
+            dfs(v2v[i], wht_normals, nullptr, true, true);
+        }
+    }
+    visited_vert_count = 0;
+    visited_vertices = std::vector<bool>(num_of_vertices, false);
+    visited_faces = std::vector<bool>(num_of_faces, false);
+}
+
 void add_nbv(Face *face, Vertex *vertex){
     HalfEdge *he = face->halfedge;
     while(he->head != vertex){
