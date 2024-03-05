@@ -7,7 +7,7 @@ using namespace glm;
 using namespace std;
 
 void sphere_grid(Mesh* mesh, int m, int n){
-    float r = 0.5;   //yeh doubtful hai abhi !!
+    float r = 0.5;   // the radius of the sphere, could be changed according to user's wish
 
     int vert_cnt = m*(n-1)+2;
     int tri_cnt = 2*m*(n-1);

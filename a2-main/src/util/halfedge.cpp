@@ -80,14 +80,14 @@ int Vertex::traverse(void (*func)(Face *face, Vertex *vertex), Vertex *vertex){
 
     }while(he != halfedge);
 
-    if(!halfedge->pair) return n;
+    if(!halfedge->pair) return n + boundary;
     he = halfedge->pair->next->next;
     // reverse traversal for opposite of boundary
     while(he && boundary){
         n++;
         Face *face = he->left;
         func(face, vertex);
-        if(!he->pair) return n;
+        if(!he->pair) return n+1;
         he = he->pair->next->next;
     }
     return n;
@@ -181,11 +181,6 @@ vector<Vertex*> Face::face_vertices(){
 ivec3 Face::get_face_vertices_indices(){
     std::vector<Vertex*> vert = face_vertices();
     return ivec3(vert[0]->index, vert[1]->index, vert[2]->index);
-}
-
-void Face::print_face_vertices(){
-    ivec3 v = get_face_vertices_indices();
-    std::cout << "Face vertices => " << v.x << " " << v.y << " " << v.z << "\n";
 }
 
 vec3 Face::calculate_normal(){

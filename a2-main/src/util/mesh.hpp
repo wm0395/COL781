@@ -29,7 +29,6 @@ class Mesh{
     int num_of_vertices;
     int num_of_faces;
 
-    // set<HalfEdge*> initial_edges;
 
     void update_VFlist(); 
     void update_HElist();
@@ -75,7 +74,6 @@ class Mesh{
     void edge_collapse_helper(HalfEdge* halfedge);
 
     void taubin_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
-    // void insert_edge(Face* face);
 };
 
 
@@ -110,7 +108,6 @@ class Face{
     void traverse(void (*func)(Vertex *vertex));
     std::vector<Vertex*> face_vertices();
     ivec3 get_face_vertices_indices();
-    void print_face_vertices();
     vec3 calculate_normal();
 };
 

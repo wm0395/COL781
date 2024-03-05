@@ -11,56 +11,30 @@ using namespace std;
 
 int main() {
 
-    // To run the example given initially, decomment the lines giving the values of vertices, normals, triangles
-
-    // vec3 vertices[] = {
-    //     vec3(-0.5, -0.5, 0.0),
-    //     vec3( 0.5, -0.5, 0.0),
-    //     vec3(-0.5,  0.5, 0.0),
-    //     vec3( 0.5,  0.5, 0.0)
-    // };
-    // vec3 normals[] = {
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 1.0)
-    // };
-    // ivec3 triangles[] = {
-    //     ivec3(0, 1, 2),
-    //     ivec3(1, 2, 3),
-    // };
-
-    // Mesh *mesh = new Mesh(4, 2, vertices, normals, triangles);
-
-    // Make the square grid, run the following =>
+    // To make the square grid, run the following =>
     int m = 3, n = 3;
     Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
     square_grid(mesh, m, n);
-    // mesh->flip_edge(6,9);
-    // mesh->split_edge(6,9);
-    mesh->collapse_edge(6,9);
+    // mesh->flip_edge(6,9);    // to flip the middle diagonal of the 3*3 grid
+    // mesh->split_edge(6,9);    // to spli the middle diagonal of the 3*3 grid
+    // mesh->collapse_edge(6,9);   // to collapse the middle diagonal of the 3*3 grid
 
-    // Make the sphere usign the following command =>
-    // int m = 10, n = 10;
+    // To make the sphere, run the following  =>
+    // int m = 4, n = 4;
     // int vert_cnt = m*(n-1)+2;
     // int tri_cnt = 2*m*(n-1);
     // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
     // sphere_grid(mesh, m, n);
-    // mesh->split_edge(0,1);
 
 
     // To run the example files =>
-    // string file = "meshes/noisycube.obj";
+    // string file = "meshes/bunny-1k.obj";
     // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
-    // mesh->loop_subdivide();
-    // mesh->naive_smoothing(5, 0.02);
-    // mesh->taubin_smoothing(2, 0.33, -0.34);
-    // mesh = mesh->loop_subdivide();
-    // mesh->taubin_smoothing(5, 0.33, -0.23);
-    // mesh->recompute_normals();
+    // mesh->naive_smoothing(5, 0.02);    // to carry out naive smoothing
+    // mesh->taubin_smoothing(2, 0.33, -0.34);    // to carry out taubin_smoothing
+    // mesh = mesh->loop_subdivide();     // to carry out loop subdivision
 
-    // if (!mesh->valid_connectivity()) cout << "Invalid Mesh\n";
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {

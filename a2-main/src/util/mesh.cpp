@@ -197,7 +197,6 @@ void Mesh::print_VL(){
 void Mesh::update_VFlist(){   
     for(int i = 0; i < num_of_vertices; i++){
         if(!visited_vertices[i]){
-            std::cout << v2v[i] <<"\t" << v2v[i]->index << "\n";
             dfs(v2v[i], nullptr, nullptr, true, true);
         }
     }
@@ -258,18 +257,13 @@ void Mesh::update_HElist(){
 }
 
 void Mesh::dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update){
-    // face->print_face_vertices();
     if (!visited_faces[face->index]){
         if(fac_opr){
             fac_opr(face);
         }
         visited_faces[face->index] = true;
 
-        // std::cout << "printing face vertices => ";
-        // print_vis_faces();
         std::vector<Vertex*> vert = face->face_vertices();
-        // std::cout << "doabara => ";
-        // std::cout << vert[0]->index << " " << vert[1]->index << " " << vert[2]->index << "\n";
         ivec3 v = face->get_face_vertices_indices();
         triangles[face->index] = v;
         dfs(vert[0], vtx_opr, fac_opr, VL_update, HE_update);
@@ -322,7 +316,6 @@ void Mesh::recompute_normals(){
     visited_vert_count = 0;
     visited_vertices = std::vector<bool>(num_of_vertices, false);
     visited_faces = std::vector<bool>(num_of_faces, false);
-    // update_VFlist();
 }
 
 void add_nbv(Face *face, Vertex *vertex){
@@ -331,15 +324,25 @@ void add_nbv(Face *face, Vertex *vertex){
         he = he->next;
     }
     vertex->position += he->next->next->head->position;
+    vertex->normal += he->next->next->head->normal;
+    if(!he->next->pair){
+        vertex->position += he->next->head->position;
+    vertex->normal += he->next->head->normal;
+    }
 }
 
 void umbrella(Vertex* vertex){
-    vec3 temp = vertex->position; 
+    vec3 tempP = vertex->position; 
+    vec3 tempN = vertex->normal;
     vertex->position = vec3(0,0,0);
+    vertex->normal = vec3(0,0,0);
     int n = vertex->traverse(add_nbv, vertex);
-    temp *= n;
-    vertex->position -= temp;
+    tempP *= n;
+    tempN *= n;
+    vertex->position -= tempP;
     vertex->position /= n;
+    vertex->normal -= tempN;
+    vertex->normal /= n;
 }
 
 HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
@@ -417,10 +420,7 @@ bool isPointInsideTriangle(glm::vec3& point, glm::vec3& A, glm::vec3& B, glm::ve
 
 
 void Mesh::edge_flip_helper(HalfEdge* halfedge){
-    if (!halfedge->pair){
-        // flipping = false;
-        return;
-    } 
+    if (!halfedge->pair) return;
 
     Vertex* one = halfedge->head;
     Vertex* two = halfedge->next->head;
@@ -429,23 +429,12 @@ void Mesh::edge_flip_helper(HalfEdge* halfedge){
 
     vec3 pos = two->position + three->position;
     pos/=2;
-    if (one->position == pos || four->position == pos){
-        // flipping = false;
-        return;
-    }
-    if (isPointInsideTriangle(four->position, one->position, two->position, three->position)){
-        // flipping = false;
-        return;
-    }
-    if (isPointInsideTriangle(one->position, two->position, four->position, three->position)){
-        // flipping = false;
-        return;
-    }
+    if (one->position == pos || four->position == pos) return;
+    if (isPointInsideTriangle(four->position, one->position, two->position, three->position)) return;
+    if (isPointInsideTriangle(one->position, two->position, four->position, three->position)) return;
 
     Face* f1 = halfedge->left;
     Face* f2 = halfedge->pair->left;
-
-    // cout << "before splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n";
 
     Face* f1new = new Face();
     Face* f2new = new Face();
@@ -492,7 +481,6 @@ void Mesh::edge_flip_helper(HalfEdge* halfedge){
 
     triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
     triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
-    // cout << "after splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n\n";
 }
 
 void Mesh::edge_flip_helper(HalfEdge* halfedge, bool &flipping){
@@ -524,8 +512,6 @@ void Mesh::edge_flip_helper(HalfEdge* halfedge, bool &flipping){
     Face* f1 = halfedge->left;
     Face* f2 = halfedge->pair->left;
 
-    cout << "before splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n";
-
     Face* f1new = new Face();
     Face* f2new = new Face();
     f1new->halfedge = new HalfEdge();
@@ -571,7 +557,6 @@ void Mesh::edge_flip_helper(HalfEdge* halfedge, bool &flipping){
 
     triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
     triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
-    cout << "after splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n\n";
 }
 
 
@@ -778,52 +763,8 @@ void Mesh::edge_collapse_helper(HalfEdge* halfedge){
 
     v1->position = position;
     v1->normal = normal;
-    // print_VL();
-    cout<<"reconnect "<<v2->index<<" to "<<v1->index<<"\n";
     reconnect_vertex(v2, v1, this);
     delete_vertex(v2->index);
-    // print_VL();
-    
-    // HalfEdge *neHE = nullptr;
-    
-    // if(halfedge->next->pair && halfedge->next->next->pair){
-    //     HalfEdge *temp = halfedge->next->pair;
-    //     halfedge->next->pair->pair = halfedge->next->next->pair;
-    //     halfedge->next->next->pair->pair = temp;
-    //     neHE = temp;
-    // }
-    // else if(halfedge->next->next->pair){
-    //     halfedge->next->next->pair->pair = nullptr;
-    //     neHE = halfedge->next->next->pair;
-    // }
-    // else if(halfedge->next->pair){
-    //     halfedge->next->pair->pair = nullptr;
-    //     neHE = halfedge->next->pair;
-    // }
-    // // delete_face(halfedge->left->index);
-    
-    // if(halfedge->pair){
-    //     if(halfedge->pair->next->pair && halfedge->pair->next->next->pair){
-    //         HalfEdge *temp = halfedge->next->pair;
-    //         halfedge->pair->next->pair->pair = halfedge->pair->next->next->pair;
-    //         halfedge->pair->next->next->pair->pair = temp;
-    //         if(!neHE)
-    //         neHE = halfedge->pair->next->pair;
-    //     }
-    //     else if(halfedge->pair->next->next->pair){
-    //         halfedge->pair->next->next->pair->pair = nullptr;
-    //         if(!neHE)
-    //         neHE = halfedge->pair->next->next->pair;
-    //     }
-    //     else if(halfedge->pair->next->pair){
-    //         halfedge->pair->next->pair->pair = nullptr;
-    //         if(!neHE)
-    //         neHE = halfedge->pair->next->pair;
-    //     }
-    //     // delete_face(halfedge->pair->left->index);
-    // }
-
-    // v1->halfedge = neHE;
     update_VFlist();
 }
 
@@ -837,16 +778,12 @@ void Mesh::delete_face(int index){
     ivec3 temp[num_of_faces];
     copy(triangles, triangles + num_of_faces, temp);
     triangles = temp;
-    // delete temp;
 
     Face *temp2[num_of_faces];
     copy(f2f, f2f + num_of_faces, temp2);
-    // delete temp;
 }
 
 void Mesh::delete_vertex(int index){
-    cout<<"inside delete_vertex\n";
-
     v2v[num_of_vertices-1]->traverse(rehead, v2v[num_of_vertices-1]);
     v2v[num_of_vertices-1]->traverse(reindex, v2v[index], this);
     vertices[index] = vertices[num_of_vertices-1];
@@ -855,19 +792,6 @@ void Mesh::delete_vertex(int index){
     v2v[index] = v2v[num_of_vertices-1];
 
     num_of_vertices--;
-
-    // vec3 temp[num_of_vertices];
-    // copy(vertices, vertices + num_of_vertices, temp);
-    // vertices = temp;
-    // copy(normals, normals + num_of_vertices, temp);
-    // normals = temp;
-    // delete temp;
-
-    // Vertex *temp22[num_of_vertices];
-    // copy(v2v, v2v + num_of_vertices, temp22);
-    // v2v = temp2;
-    // // delete temp;
-    cout<<"outside delete_vertex\n";
 }
 
 
@@ -929,62 +853,104 @@ bool Mesh::valid_connectivity(){
     return true;
 }
 
-// void insert_edge(Face* face, set<HalfEdge*> &initial_edges){
-//     HalfEdge* he = face->halfedge;
-//     while (he != face->halfedge){
-//         if (!he->pair) initial_edges.insert(he);
-//         else{
-//             if (initial_edges.find(he->pair) != initial_edges.end()){
-//                 initial_edges.insert(he);
-//             }
-//         }
-//         he = he->next;
-//     }
-// }
-
-// void Mesh::subdivide_mesh(){
-//     Vertex* starting_vertex = v2v[0];
-//     set<HalfEdge*> initial_edges = {};
-//     for (int i = 0; i<num_of_vertices; i++){
-//         if (!visited_vertices[i]){
-//             dfs(v2v[i], nullptr, insert_edge, true, true);
-//         }
-//     }
-// }
 
 void divide_mesh(Mesh* mesh, unordered_map<int, Vertex*> &new_vtx, unordered_map<int, pair<int,int>> &old_vtx_pair){
     set<int> covered_edge;
     int n = mesh->num_of_vertices;
     for(int i = 0; i < mesh->num_of_faces; i++){
         int j = hash_func(mesh->triangles[i].x, mesh->triangles[i].y, mesh->num_of_vertices);
+        HalfEdge* he = mesh->f2f[i]->halfedge;
+        while(he->head->index != mesh->triangles[i].y) he = he->next;
         if(covered_edge.find(j) == covered_edge.end()){
             new_vtx[j] = new Vertex();
             new_vtx[j]->position = mesh->vertices[mesh->triangles[i].x] + mesh->vertices[mesh->triangles[i].y];
             new_vtx[j]->normal = mesh->normals[mesh->triangles[i].x] + mesh->normals[mesh->triangles[i].y];
-            new_vtx[j]->position /=2;
-            new_vtx[j]->normal /=2;
+            new_vtx[j]->position /=2.0f;
+            new_vtx[j]->normal /=2.0f;
+            if(he->pair){
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].z] + mesh->vertices[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].z] + mesh->normals[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->normal += temp;
+            }
+            else{
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].z];
+                temp *= 1.0f/4;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].z];
+                temp *= 1.0f/4;
+                new_vtx[j]->normal += temp;
+            }
             new_vtx[j]->index = n++;
             old_vtx_pair[n-1] = {std::min(mesh->triangles[i].x, mesh->triangles[i].y), std::max(mesh->triangles[i].x, mesh->triangles[i].y)};
             covered_edge.insert(j);
         }
         j = hash_func(mesh->triangles[i].y, mesh->triangles[i].z, mesh->num_of_vertices);
+        while(he->head->index != mesh->triangles[i].z) he = he->next;
         if(covered_edge.find(j) == covered_edge.end()){
             new_vtx[j] = new Vertex();
             new_vtx[j]->position = mesh->vertices[mesh->triangles[i].y] + mesh->vertices[mesh->triangles[i].z];
             new_vtx[j]->normal = mesh->normals[mesh->triangles[i].y] + mesh->normals[mesh->triangles[i].z];
-            new_vtx[j]->position /=2;
-            new_vtx[j]->normal /=2;
+            new_vtx[j]->position /=2.0f;
+            new_vtx[j]->normal /=2.0f;
+            if(he->pair){
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].x] + mesh->vertices[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].x] + mesh->normals[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->normal += temp;
+            }
+            else{
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].x];
+                temp *= 1.0f/4;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].x];
+                temp *= 1.0f/4;
+                new_vtx[j]->normal += temp;
+            }
             new_vtx[j]->index = n++;
             old_vtx_pair[n-1] = {std::min(mesh->triangles[i].z, mesh->triangles[i].y), std::max(mesh->triangles[i].z, mesh->triangles[i].y)};
             covered_edge.insert(j);
         }
         j = hash_func(mesh->triangles[i].x, mesh->triangles[i].z, mesh->num_of_vertices);
+        while(he->head->index != mesh->triangles[i].x) he = he->next;
         if(covered_edge.find(j) == covered_edge.end()){
             new_vtx[j] = new Vertex();
             new_vtx[j]->position = mesh->vertices[mesh->triangles[i].x] + mesh->vertices[mesh->triangles[i].z];
             new_vtx[j]->normal = mesh->normals[mesh->triangles[i].x] + mesh->normals[mesh->triangles[i].z];
-            new_vtx[j]->position /=2;
-            new_vtx[j]->normal /=2;
+            new_vtx[j]->position /=2.0f;
+            new_vtx[j]->normal /=2.0f;
+            if(he->pair){
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].y] + mesh->vertices[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].y] + mesh->normals[he->pair->next->head->index];
+                temp *= 1.0f/8;
+                new_vtx[j]->normal += temp;
+            }
+            else{
+                new_vtx[j]->position *= 3.0f/4;
+                new_vtx[j]->normal *= 3.0f/4;
+                vec3 temp = mesh->vertices[mesh->triangles[i].y];
+                temp *= 1.0f/4;
+                new_vtx[j]->position += temp;
+                temp = mesh->normals[mesh->triangles[i].y];
+                temp *= 1.0f/4;
+                new_vtx[j]->normal += temp;
+            }
             new_vtx[j]->index = n++;
             old_vtx_pair[n-1] = {std::min(mesh->triangles[i].z, mesh->triangles[i].x), std::max(mesh->triangles[i].z, mesh->triangles[i].x)};
             covered_edge.insert(j);
@@ -994,7 +960,28 @@ void divide_mesh(Mesh* mesh, unordered_map<int, Vertex*> &new_vtx, unordered_map
 
 void connect_mesh(Mesh* mesh, unordered_map<int, Vertex*>& new_vtx, unordered_map<int, pair<int,int>>& old_vtx_pair, vector<Vertex*> &updated_vtx, vector<ivec3> &updated_fac){
     for(int i = 0; i < mesh->num_of_vertices; i++){
-        updated_vtx[i] = mesh->v2v[i];
+
+        vec3 vpos = mesh->v2v[i]->position, vnor = mesh->v2v[i]->normal;
+        mesh->v2v[i]->position = vec3(0.0f,0.0f,0.0f);
+        mesh->v2v[i]->normal = vec3(0.0f,0.0f,0.0f);
+        int n = mesh->v2v[i]->traverse(add_nbv, mesh->v2v[i]);
+
+        float u = 3.0f/16.0f;
+        if(n > 3) u = 3.0f/(8.0f*n);
+        mesh->v2v[i]->position *= u;
+        mesh->v2v[i]->normal *= u;
+        vpos *= (1.0f-n*u);
+        vnor *= (1.0f-n*u);
+        mesh->v2v[i]->position += vpos;
+        mesh->v2v[i]->normal += vnor;
+
+        updated_vtx[i] = new Vertex();
+        updated_vtx[i]->index = mesh->v2v[i]->index;
+        updated_vtx[i]->position = mesh->v2v[i]->position;
+        updated_vtx[i]->normal = mesh->v2v[i]->normal;
+
+        mesh->v2v[i]->position = mesh->vertices[i];
+        mesh->v2v[i]->normal = mesh->normals[i];
     }
     for(auto &pair: new_vtx){
         updated_vtx[pair.second->index] = pair.second;
@@ -1013,8 +1000,6 @@ void connect_mesh(Mesh* mesh, unordered_map<int, Vertex*>& new_vtx, unordered_ma
 
 }
 
-// void flip_mesh()
-
 void Mesh::loop_subdivide(){
     unordered_map<int, Vertex*> new_vtx;
     unordered_map<int, pair<int,int>> old_vtx_pair;
@@ -1029,16 +1014,12 @@ void Mesh::loop_subdivide(){
     vertices = new vec3[num_of_vertices + num_of_edges];
     normals = new vec3[num_of_vertices + num_of_edges];
     triangles = new ivec3[4*num_of_faces];
-    // Vertex* v2vnew[num_of_vertices + num_of_edges];
-    // Face* f2fnew[4*num_of_faces];
     v2v = new Vertex*[num_of_vertices+num_of_edges];
     f2f = new Face*[4*num_of_faces];
 
-    // Mesh* mesh = new Mesh(updated_vtx.size(), updated_fac.size());
     for(int i = 0; i < num_of_vertices + num_of_edges; i++){
         vertices[i] = updated_vtx[i]->position;
         normals[i] = updated_vtx[i]->normal;
-        // v2vnew[i] = update_v
     }
     for(int i = 0; i < 4*num_of_faces; i++){
         triangles[i] = updated_fac[i];
@@ -1047,43 +1028,5 @@ void Mesh::loop_subdivide(){
     num_of_vertices += num_of_edges;
     num_of_faces *= 4;
 
-    // copy(v2v, v2v)
     update_HElist();
-    // vector<bool> in_queue(num_of_faces, false);
-    // queue<int> q;
-    // for(int i = 0; i < num_of_faces; i++){
-    //     q.push(i);
-    //     in_queue[i] = true;
-    // }
-    // int t = 0;
-    // while(!q.empty()){
-    //     int id = q.front();
-    //     q.pop();
-    //     Face* fac = f2f[id];
-    //     in_queue[id] = false;
-    //     HalfEdge* he = fac->halfedge;
-    //     for(int p = 0; p < 3; p++){
-    //         int a = he->head->index, b = he->next->next->head->index;
-    //         if((a>=old_V && b < old_V) || (a<old_V && b >= old_V)){
-    //             if(he->pair){
-    //                 t++;
-    //                 int f1 = fac->index, f2 = he->pair->left->index;
-    //                 bool flipping = true;
-    //                 edge_flip_helper(he, flipping);
-    //                 if(!in_queue[f1] && flipping){
-    //                     q.push(f1);
-    //                     in_queue[f1] = true;
-    //                 }
-    //                 if(!in_queue[f2] && flipping){
-    //                     q.push(f2);
-    //                     in_queue[f2] = true;
-    //                 }
-    //                 break;
-    //             }
-    //         }
-    //         he = he->next;
-    //     }
-    // }
-    // return mesh;
 }
-
