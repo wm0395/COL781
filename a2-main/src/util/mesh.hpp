@@ -39,15 +39,16 @@ class Mesh{
     void give_initial_mesh();
     void recompute_normals();
 
+    void naive_smoothing(int iter, float lambda);
     void taubin_smoothing(int iter, float lambda, float mu);
 
     bool valid_connectivity();
 
     void flip_edge(int i1, int i2);
     void split_edge(int i1, int i2);
-    void collapse_edge(HalfEdge *halfedge);
+    void collapse_edge(int i1, int i2);
 
-    Mesh* loop_subdivide();
+    void loop_subdivide();
 
     private:
     std::vector<bool> visited_vertices;
@@ -69,7 +70,9 @@ class Mesh{
     void print_VL();
 
     void edge_flip_helper(HalfEdge *halfedge);
+    void edge_flip_helper(HalfEdge *halfedge, bool &flipping);
     void edge_split_helper(HalfEdge *halfedge);
+    void edge_collapse_helper(HalfEdge* halfedge);
 
     void taubin_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
     // void insert_edge(Face* face);

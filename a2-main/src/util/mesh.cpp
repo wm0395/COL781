@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -368,6 +369,16 @@ HalfEdge* give_halfedge(Vertex* v1, Vertex* v2){
     return nullptr;
 }
 
+void Mesh::naive_smoothing(int iter, float lambda){
+    for(int i = 0; i < iter; i++){
+        dfs(v2v[0], umbrella, nullptr, true, false);
+        for(int v = 0; v < num_of_vertices; v++){
+            vertices[v] *= lambda;
+            v2v[v]->position += vertices[v];
+            vertices[v] = v2v[v]->position;
+        }
+    }
+}
 
 void Mesh::taubin_smoothing(int iter, float lambda, float mu){
     for(int i = 0; i < iter; i++){
@@ -386,32 +397,86 @@ void Mesh::taubin_smoothing(int iter, float lambda, float mu){
     }
 }
 
+bool isPointInsideTriangle(glm::vec3& point, glm::vec3& A, glm::vec3& B, glm::vec3& C) {
+    glm::vec3 v0 = C - A;
+    glm::vec3 v1 = B - A;
+    glm::vec3 v2 = point - A;
+
+    float dot00 = glm::dot(v0, v0);
+    float dot01 = glm::dot(v0, v1);
+    float dot02 = glm::dot(v0, v2);
+    float dot11 = glm::dot(v1, v1);
+    float dot12 = glm::dot(v1, v2);
+
+    float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+    float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+    return (u >= 0) && (v >= 0) && (u + v <= 1);
+}
+
+
 void Mesh::edge_flip_helper(HalfEdge* halfedge){
-    if (!halfedge->pair) return;
+    if (!halfedge->pair){
+        // flipping = false;
+        return;
+    } 
+
+    Vertex* one = halfedge->head;
+    Vertex* two = halfedge->next->head;
+    Vertex* three = halfedge->pair->next->head;
+    Vertex* four = halfedge->pair->head;
+
+    vec3 pos = two->position + three->position;
+    pos/=2;
+    if (one->position == pos || four->position == pos){
+        // flipping = false;
+        return;
+    }
+    if (isPointInsideTriangle(four->position, one->position, two->position, three->position)){
+        // flipping = false;
+        return;
+    }
+    if (isPointInsideTriangle(one->position, two->position, four->position, three->position)){
+        // flipping = false;
+        return;
+    }
 
     Face* f1 = halfedge->left;
     Face* f2 = halfedge->pair->left;
+
+    // cout << "before splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n";
 
     Face* f1new = new Face();
     Face* f2new = new Face();
     f1new->halfedge = new HalfEdge();
     f2new->halfedge = new HalfEdge();
     HalfEdge* f11 = halfedge->next->next;
+    f11->head->halfedge = f11;
     HalfEdge* f12 = halfedge->pair->next;
+    f12->head->halfedge = f12;
     HalfEdge* f21 = halfedge->pair->next->next;
+    f21->head->halfedge = f21;
     HalfEdge* f22 = halfedge->next;
+    f22->head->halfedge = f22;
 
     f1new->halfedge->next = f11;
     f1new->halfedge->next->next = f12;
     f1new->halfedge->next->next->next = f1new->halfedge;
     f1new->halfedge->head = f22->head;
     int v1 = f1new->halfedge->head->index;
+    f1new->halfedge->left = f1new;
+    f1new->halfedge->next->left = f1new;
+    f1new->halfedge->next->next->left = f1new;
 
     f2new->halfedge->next = f21;
     f2new->halfedge->next->next = f22;
     f2new->halfedge->next->next->next = f2new->halfedge;
     f2new->halfedge->head = f12->head;
     int v2 = f2new->halfedge->head->index;
+    f2new->halfedge->left = f2new;
+    f2new->halfedge->next->left = f2new;
+    f2new->halfedge->next->next->left = f2new;
 
     v2v[v1]->halfedge = f1new->halfedge;
     v2v[v2]->halfedge = f2new->halfedge;
@@ -427,6 +492,86 @@ void Mesh::edge_flip_helper(HalfEdge* halfedge){
 
     triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
     triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
+    // cout << "after splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n\n";
+}
+
+void Mesh::edge_flip_helper(HalfEdge* halfedge, bool &flipping){
+    if (!halfedge->pair){
+        flipping = false;
+        return;
+    } 
+
+    Vertex* one = halfedge->head;
+    Vertex* two = halfedge->next->head;
+    Vertex* three = halfedge->pair->next->head;
+    Vertex* four = halfedge->pair->head;
+
+    vec3 pos = two->position + three->position;
+    pos/=2;
+    if (one->position == pos || four->position == pos){
+        flipping = false;
+        return;
+    }
+    if (isPointInsideTriangle(four->position, one->position, two->position, three->position)){
+        flipping = false;
+        return;
+    }
+    if (isPointInsideTriangle(one->position, two->position, four->position, three->position)){
+        flipping = false;
+        return;
+    }
+
+    Face* f1 = halfedge->left;
+    Face* f2 = halfedge->pair->left;
+
+    cout << "before splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n";
+
+    Face* f1new = new Face();
+    Face* f2new = new Face();
+    f1new->halfedge = new HalfEdge();
+    f2new->halfedge = new HalfEdge();
+    HalfEdge* f11 = halfedge->next->next;
+    f11->head->halfedge = f11;
+    HalfEdge* f12 = halfedge->pair->next;
+    f12->head->halfedge = f12;
+    HalfEdge* f21 = halfedge->pair->next->next;
+    f21->head->halfedge = f21;
+    HalfEdge* f22 = halfedge->next;
+    f22->head->halfedge = f22;
+
+    f1new->halfedge->next = f11;
+    f1new->halfedge->next->next = f12;
+    f1new->halfedge->next->next->next = f1new->halfedge;
+    f1new->halfedge->head = f22->head;
+    int v1 = f1new->halfedge->head->index;
+    f1new->halfedge->left = f1new;
+    f1new->halfedge->next->left = f1new;
+    f1new->halfedge->next->next->left = f1new;
+
+    f2new->halfedge->next = f21;
+    f2new->halfedge->next->next = f22;
+    f2new->halfedge->next->next->next = f2new->halfedge;
+    f2new->halfedge->head = f12->head;
+    int v2 = f2new->halfedge->head->index;
+    f2new->halfedge->left = f2new;
+    f2new->halfedge->next->left = f2new;
+    f2new->halfedge->next->next->left = f2new;
+
+    v2v[v1]->halfedge = f1new->halfedge;
+    v2v[v2]->halfedge = f2new->halfedge;
+
+    f1new->index = f1->index;
+    f2new->index = f2->index;
+
+    f2f[f1new->index] = f1new;
+    f2f[f2new->index] = f2new;
+
+    f1new->halfedge->pair = f2new->halfedge;
+    f2new->halfedge->pair = f1new->halfedge;
+
+    triangles[f1new->index] = ivec3(f1new->halfedge->head->index, f1new->halfedge->next->head->index, f1new->halfedge->next->next->head->index);
+    triangles[f2new->index] = ivec3(f2new->halfedge->head->index, f2new->halfedge->next->head->index, f2new->halfedge->next->next->head->index);
+    cout << "after splitting: [" << triangles[f1->index].x << ", " << triangles[f1->index].y << ", " << triangles[f1->index].z << "] & [" << triangles[f2->index].x << ", " << triangles[f2->index].y << ", " << triangles[f2->index].z << "]\n\n";
 }
 
 
@@ -583,25 +728,6 @@ void Mesh::edge_split_helper(HalfEdge* halfedge){
     }
 }
 
-
-void Mesh::flip_edge(int i1, int i2){
-    Vertex* v1 = v2v[i1];
-    Vertex* v2 = v2v[i2];
-    HalfEdge* he = give_halfedge(v1, v2);
-    if (!he) he = give_halfedge(v2, v1);
-    if (!he) return;
-    edge_flip_helper(he);
-}
-
-void Mesh::split_edge(int i1, int i2){
-    Vertex* v1 = v2v[i1];
-    Vertex* v2 = v2v[i2];
-    HalfEdge* he = give_halfedge(v1, v2);
-    if (!he) he = give_halfedge(v2, v1);
-    if (!he) return;
-    edge_split_helper(he);
-}
-
 void rehead(Face* face, Vertex *vertex){
     HalfEdge* he = face->halfedge;
     while(he->head != vertex){
@@ -641,7 +767,7 @@ void reconnect_vertex(Vertex* a, Vertex* b, Mesh *mesh){
     a->traverse(reconnect_to_vtx, b, mesh);
 }
 
-void Mesh::collapse_edge(HalfEdge* halfedge){
+void Mesh::edge_collapse_helper(HalfEdge* halfedge){
     Face *f1 = halfedge->left;
     Vertex *v1 = halfedge->head, *v2 = halfedge->next->next->head;
 
@@ -744,19 +870,46 @@ void Mesh::delete_vertex(int index){
     cout<<"outside delete_vertex\n";
 }
 
+
+void Mesh::flip_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    if (!he) he = give_halfedge(v2, v1);
+    if (!he) return;
+    edge_flip_helper(he);
+}
+
+void Mesh::split_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    if (!he) he = give_halfedge(v2, v1);
+    if (!he) return;
+    edge_split_helper(he);
+}
+
+void Mesh::collapse_edge(int i1, int i2){
+    Vertex* v1 = v2v[i1];
+    Vertex* v2 = v2v[i2];
+    HalfEdge* he = give_halfedge(v1, v2);
+    if (!he) he = give_halfedge(v2, v1);
+    if (!he) return;
+    edge_collapse_helper(he);
+}
+
 bool valid_face(Face* face){
     HalfEdge* he = face->halfedge;
-    if (he->left != face){ cout << "he->left != face\n"; return false;};
+    if (he->left != face){cout << "he->left != face\n"; return false;}
     if (he->pair){
-        if (he->pair->pair != he) { cout << "he->pair->pair != he"; return false;};
+        if (he->pair->pair != he) { cout << "he->pair->pair != he"; return false;}
     }
     else{
         if (he->next->next->head != he->pair->head) {
             cout << "he->next->next->head != he->pair->head\n"; 
-            // cout << he->pair->head->index
             return false;
         }
-        if (he != he->next->next->next) { cout << "he != he->next->next->next\n"; return false;};
+        if (he != he->next->next->next) {cout << "he != he->next->next->next\n"; return false;}
     }
     return true;
 }
@@ -767,7 +920,7 @@ bool Mesh::valid_connectivity(){
             visited_vertices[i] = true;
             Vertex* v = v2v[i];
             HalfEdge* he = v->halfedge;
-            if (v != he->head){ cout << "v != he->head\n"; return false;};
+            if (v != he->head){ cout << "v != he->head\n"; return false;}
             Face* face = he->left;
             if (!v->traverse(valid_face)) return false;
         }
@@ -862,8 +1015,7 @@ void connect_mesh(Mesh* mesh, unordered_map<int, Vertex*>& new_vtx, unordered_ma
 
 // void flip_mesh()
 
-Mesh* Mesh::loop_subdivide(){
-
+void Mesh::loop_subdivide(){
     unordered_map<int, Vertex*> new_vtx;
     unordered_map<int, pair<int,int>> old_vtx_pair;
 
@@ -874,16 +1026,64 @@ Mesh* Mesh::loop_subdivide(){
     vector<ivec3> updated_fac(4*num_of_faces, ivec3(0,0,0));
 
     connect_mesh(this, new_vtx, old_vtx_pair, updated_vtx, updated_fac);
-    // flip_mesh(mesh);
-    Mesh* mesh = new Mesh(updated_vtx.size(), updated_fac.size());
-    for(int i = 0; i < mesh->num_of_vertices; i++){
-        mesh->vertices[i] = updated_vtx[i]->position;
-        mesh->normals[i] = updated_vtx[i]->normal;
+    vertices = new vec3[num_of_vertices + num_of_edges];
+    normals = new vec3[num_of_vertices + num_of_edges];
+    triangles = new ivec3[4*num_of_faces];
+    // Vertex* v2vnew[num_of_vertices + num_of_edges];
+    // Face* f2fnew[4*num_of_faces];
+    v2v = new Vertex*[num_of_vertices+num_of_edges];
+    f2f = new Face*[4*num_of_faces];
+
+    // Mesh* mesh = new Mesh(updated_vtx.size(), updated_fac.size());
+    for(int i = 0; i < num_of_vertices + num_of_edges; i++){
+        vertices[i] = updated_vtx[i]->position;
+        normals[i] = updated_vtx[i]->normal;
+        // v2vnew[i] = update_v
     }
-    for(int i = 0; i < mesh->num_of_faces; i++){
-        mesh->triangles[i] = updated_fac[i];
+    for(int i = 0; i < 4*num_of_faces; i++){
+        triangles[i] = updated_fac[i];
     }
-    mesh->update_HElist();
-    return mesh;
+    int old_V = num_of_vertices, old_N = num_of_faces;
+    num_of_vertices += num_of_edges;
+    num_of_faces *= 4;
+
+    // copy(v2v, v2v)
+    update_HElist();
+    // vector<bool> in_queue(num_of_faces, false);
+    // queue<int> q;
+    // for(int i = 0; i < num_of_faces; i++){
+    //     q.push(i);
+    //     in_queue[i] = true;
+    // }
+    // int t = 0;
+    // while(!q.empty()){
+    //     int id = q.front();
+    //     q.pop();
+    //     Face* fac = f2f[id];
+    //     in_queue[id] = false;
+    //     HalfEdge* he = fac->halfedge;
+    //     for(int p = 0; p < 3; p++){
+    //         int a = he->head->index, b = he->next->next->head->index;
+    //         if((a>=old_V && b < old_V) || (a<old_V && b >= old_V)){
+    //             if(he->pair){
+    //                 t++;
+    //                 int f1 = fac->index, f2 = he->pair->left->index;
+    //                 bool flipping = true;
+    //                 edge_flip_helper(he, flipping);
+    //                 if(!in_queue[f1] && flipping){
+    //                     q.push(f1);
+    //                     in_queue[f1] = true;
+    //                 }
+    //                 if(!in_queue[f2] && flipping){
+    //                     q.push(f2);
+    //                     in_queue[f2] = true;
+    //                 }
+    //                 break;
+    //             }
+    //         }
+    //         he = he->next;
+    //     }
+    // }
+    // return mesh;
 }
 

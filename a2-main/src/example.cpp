@@ -33,33 +33,34 @@ int main() {
     // Mesh *mesh = new Mesh(4, 2, vertices, normals, triangles);
 
     // Make the square grid, run the following =>
-    // int m = 3, n = 3;
-    // Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
-    // square_grid(mesh, m, n);
+    int m = 3, n = 3;
+    Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
+    square_grid(mesh, m, n);
+    // mesh->flip_edge(6,9);
     // mesh->split_edge(6,9);
-    // mesh->collapse_edge(mesh->f2f[9]->halfedge);
-    // mesh->collapse_edge(mesh->f2f[5]->halfedge);
+    mesh->collapse_edge(6,9);
 
     // Make the sphere usign the following command =>
-    int m = 4, n = 3;
-    int vert_cnt = m*(n-1)+2;
-    int tri_cnt = 2*m*(n-1);
-    Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
-    sphere_grid(mesh, m, n);
+    // int m = 10, n = 10;
+    // int vert_cnt = m*(n-1)+2;
+    // int tri_cnt = 2*m*(n-1);
+    // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
+    // sphere_grid(mesh, m, n);
     // mesh->split_edge(0,1);
 
 
     // To run the example files =>
-    // string file = "meshes/teapot.obj";
+    // string file = "meshes/noisycube.obj";
     // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
-    // mesh = mesh->loop_subdivide();
-    // mesh->taubin_smoothing(5, 0.33, -0.23);
+    // mesh->loop_subdivide();
+    // mesh->naive_smoothing(5, 0.02);
+    // mesh->taubin_smoothing(2, 0.33, -0.34);
     // mesh = mesh->loop_subdivide();
     // mesh->taubin_smoothing(5, 0.33, -0.23);
     // mesh->recompute_normals();
 
-    if (!mesh->valid_connectivity()) cout << "Invalid Mesh\n";
+    // if (!mesh->valid_connectivity()) cout << "Invalid Mesh\n";
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {
