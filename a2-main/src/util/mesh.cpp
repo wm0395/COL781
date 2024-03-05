@@ -170,18 +170,6 @@ void Mesh::parse_OBJ(const char *filename){
 
 }
 
-void Mesh::print_vis_vert(){
-    std::cout << "Visited vertices => ";
-    for (int i = 0; i<num_of_vertices; i++) std::cout << visited_vertices[i] << " ";
-    std::cout << "\n";
-}
-
-void Mesh::print_vis_faces(){
-    std::cout << "Visited face => ";
-    for (int i = 0; i<num_of_faces; i++) std::cout << visited_vertices[i] << " ";
-    std::cout << "\n";
-}
-
 void Mesh::update_VFlist(){   
     for(int i = 0; i < num_of_vertices; i++){
         if(!visited_vertices[i]){
@@ -375,6 +363,8 @@ void Mesh::taubin_smoothing(int iter, float lambda, float mu){
 }
 
 void Mesh::edge_flip_helper(HalfEdge* halfedge){
+    if (!halfedge->pair) return;
+
     Face* f1 = halfedge->left;
     Face* f2 = halfedge->pair->left;
 
@@ -671,11 +661,11 @@ void Mesh::delete_face(int index){
     ivec3 temp[num_of_faces];
     copy(triangles, triangles + num_of_faces, temp);
     triangles = temp;
-    delete temp;
+    // delete temp;
 
-    Face *temp[num_of_faces];
-    copy(f2f, f2f + num_of_faces, temp);
-    delete temp;
+    Face *temp2[num_of_faces];
+    copy(f2f, f2f + num_of_faces, temp2);
+    // delete temp;
 }
 
 void Mesh::delete_vertex(int index){
@@ -691,9 +681,32 @@ void Mesh::delete_vertex(int index){
     vertices = temp;
     copy(normals, normals + num_of_vertices, temp);
     normals = temp;
-    delete temp;
+    // delete temp;
 
-    Vertex *temp[num_of_vertices];
-    copy(v2v, v2v + num_of_vertices, temp);
-    delete temp;
+    Vertex *temp2[num_of_vertices];
+    copy(v2v, v2v + num_of_vertices, temp2);
+    // delete temp;
+}
+
+void insert_edge(Face* face, set<HalfEdge*> &initial_edges){
+    HalfEdge* he = face->halfedge;
+    while (he != face->halfedge){
+        if (!he->pair) initial_edges.insert(he);
+        else{
+            if (initial_edges.find(he->pair) != initial_edges.end()){
+                initial_edges.insert(he);
+            }
+        }
+        he = he->next;
+    }
+}
+
+void Mesh::subdivide_mesh(){
+    Vertex* starting_vertex = v2v[0];
+    set<HalfEdge*> initial_edges = {};
+    for (int i = 0; i<num_of_vertices; i++){
+        if (!visited_vertices[i]){
+            dfs(v2v[i], nullptr, insert_edge, true, true);
+        }
+    }
 }

@@ -25,10 +25,11 @@ class Mesh{
     ivec3* triangles;
     Vertex** v2v; //vertex-list to vertex pointer
     Face** f2f;//face-list to face pointer
-
-    
+   
     int num_of_vertices;
     int num_of_faces;
+
+    // set<HalfEdge*> initial_edges;
 
     void update_VFlist(); 
     void update_HElist();
@@ -43,6 +44,8 @@ class Mesh{
     void flip_edge(int i1, int i2);
     void split_edge(int i1, int i2);
     void collapse_edge(HalfEdge *halfedge);
+
+    void subdivide_mesh();
 
     private:
     std::vector<bool> visited_vertices;
@@ -59,13 +62,12 @@ class Mesh{
 
 
     void dfs_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face), bool VL_update, bool HE_update);
-    void print_vis_vert();
-    void print_vis_faces();
 
     void edge_flip_helper(HalfEdge *halfedge);
     void edge_split_helper(HalfEdge *halfedge);
 
     void taubin_helper(Face *face, void (*vtx_opr)(Vertex *vertex), void (*fac_opr)(Face *face));
+    // void insert_edge(Face* face);
 };
 
 

@@ -33,39 +33,28 @@ int main() {
     // Mesh *mesh = new Mesh(4, 2, vertices, normals, triangles);
 
     // Make the square grid, run the following =>
-    // int m = 3, n = 3;
-    // Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
-    // square_grid(mesh, m, n);
-    // // mesh->split_edge(6,9);
+    int m = 3, n = 3;
+    Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
+    square_grid(mesh, m, n);
+    // mesh->collapse_edge(mesh->f2f[9]->halfedge);
+    // mesh->split_edge(6,9);
     // mesh->flip_edge(6,9);
 
     // Make the sphere usign the following command =>
-    int m = 5, n = 3;
-    int vert_cnt = m*(n-1)+2;
-    int tri_cnt = 2*m*(n-1);
-    Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
-    sphere_grid(mesh, m, n);
+    // int m = 5, n = 3;
+    // int vert_cnt = m*(n-1)+2;
+    // int tri_cnt = 2*m*(n-1);
+    // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
+    // sphere_grid(mesh, m, n);
+    // mesh->split_edge(0,1);
 
 
     // To run the example files =>
-    // string file = "meshes/noisycube.obj";
+    // string file = "meshes/teapot.obj";
     // Mesh *mesh = new Mesh(file);
     // mesh->recompute_normals();     // if you want to recompute normals
+    // mesh->taubin_smoothing(2, 0.33, -0.34);
 
-    // int m = 4, n = 4;
-    // Mesh *mesh = new Mesh((m+1)*(n+1), 2*m*n);
-    // square_grid(mesh, m, n);
-
-    // mesh->taubin_smoothing(100, 0.33, -0.245);
-    // int vert_cnt = m*(n-1)+2;
-    // int tri_cnt = 2*m*(n-1);
-
-    // vec3 vertices[vert_cnt];
-    // vec3 normals[vert_cnt];
-    // ivec3 triangles[tri_cnt];
-
-    // Mesh *mesh = new Mesh(vert_cnt, tri_cnt);
-    // sphere_grid(mesh, m, n);
 
     V::Viewer v;
     if (!v.initialize("Mesh viewer", 640, 480)) {
