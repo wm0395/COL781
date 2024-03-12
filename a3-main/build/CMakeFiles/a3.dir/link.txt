@@ -1,0 +1,2 @@
+/usr/bin/ar qc liba3.a CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o CMakeFiles/a3.dir/deps/src/gl.c.o
+/usr/bin/ranlib liba3.a

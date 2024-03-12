@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(a3)
+set(CMAKE_CXX_STANDARD 11)
+
+find_package(glm REQUIRED)
+find_package(SDL2 REQUIRED)
+
+add_library(a3 src/Basic_Ray_Tracer.hpp src/Basic_Ray_Tracer.cpp deps/src/gl.c)
+target_include_directories(a3 PUBLIC deps/include)
+target_link_libraries(a3 glm::glm SDL2::SDL2)
+
+add_executable(example examples/example.cpp)
+target_link_libraries(example a3)
