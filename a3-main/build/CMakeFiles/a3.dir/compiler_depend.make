@@ -68,9 +68,9 @@ CMakeFiles/a3.dir/deps/src/gl.c.o: ../deps/src/gl.c \
   /usr/include/dlfcn.h \
   /usr/include/x86_64-linux-gnu/bits/dlfcn.h
 
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
+CMakeFiles/a3.dir/src/Scene.cpp.o: ../src/Scene.cpp \
   /usr/include/stdc-predef.h \
-  ../src/Basic_Ray_Tracer.hpp \
+  ../src/Scene.hpp \
   /usr/include/c++/11/string \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -369,11 +369,337 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/glm/glm.hpp \
+  /usr/include/glm/detail/_fixes.hpp \
+  /usr/include/glm/detail/setup.hpp \
+  /usr/include/c++/11/cassert \
+  /usr/include/assert.h \
+  /usr/include/c++/11/cstddef \
+  /usr/include/glm/simd/platform.h \
+  /usr/include/c++/11/climits \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
+  /usr/include/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+  /usr/include/linux/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+  /usr/include/c++/11/cfloat \
+  /usr/include/c++/11/limits \
+  /usr/include/glm/fwd.hpp \
+  /usr/include/glm/detail/qualifier.hpp \
+  /usr/include/glm/detail/setup.hpp \
+  /usr/include/glm/vec2.hpp \
+  /usr/include/glm/ext/vector_bool2.hpp \
+  /usr/include/glm/detail/type_vec2.hpp \
+  /usr/include/glm/detail/type_vec2.inl \
+  /usr/include/glm/detail/compute_vector_relational.hpp \
+  /usr/include/glm/ext/vector_bool2_precision.hpp \
+  /usr/include/glm/ext/vector_float2.hpp \
+  /usr/include/glm/ext/vector_float2_precision.hpp \
+  /usr/include/glm/ext/vector_double2.hpp \
+  /usr/include/glm/ext/vector_double2_precision.hpp \
+  /usr/include/glm/ext/vector_int2.hpp \
+  /usr/include/glm/ext/vector_int2_sized.hpp \
+  /usr/include/glm/ext/scalar_int_sized.hpp \
+  /usr/include/glm/detail/setup.hpp \
+  /usr/include/glm/ext/vector_uint2.hpp \
+  /usr/include/glm/ext/vector_uint2_sized.hpp \
+  /usr/include/glm/ext/scalar_uint_sized.hpp \
+  /usr/include/glm/vec3.hpp \
+  /usr/include/glm/ext/vector_bool3.hpp \
+  /usr/include/glm/detail/type_vec3.hpp \
+  /usr/include/glm/detail/type_vec3.inl \
+  /usr/include/glm/ext/vector_bool3_precision.hpp \
+  /usr/include/glm/ext/vector_float3.hpp \
+  /usr/include/glm/ext/vector_float3_precision.hpp \
+  /usr/include/glm/ext/vector_double3.hpp \
+  /usr/include/glm/ext/vector_double3_precision.hpp \
+  /usr/include/glm/ext/vector_int3.hpp \
+  /usr/include/glm/ext/vector_int3_sized.hpp \
+  /usr/include/glm/ext/vector_uint3.hpp \
+  /usr/include/glm/ext/vector_uint3_sized.hpp \
+  /usr/include/glm/vec4.hpp \
+  /usr/include/glm/ext/vector_bool4.hpp \
+  /usr/include/glm/detail/type_vec4.hpp \
+  /usr/include/glm/detail/type_vec4.inl \
+  /usr/include/glm/ext/vector_bool4_precision.hpp \
+  /usr/include/glm/ext/vector_float4.hpp \
+  /usr/include/glm/ext/vector_float4_precision.hpp \
+  /usr/include/glm/ext/vector_double4.hpp \
+  /usr/include/glm/ext/vector_double4_precision.hpp \
+  /usr/include/glm/ext/vector_int4.hpp \
+  /usr/include/glm/ext/vector_int4_sized.hpp \
+  /usr/include/glm/ext/vector_uint4.hpp \
+  /usr/include/glm/ext/vector_uint4_sized.hpp \
+  /usr/include/glm/mat2x2.hpp \
+  /usr/include/glm/ext/matrix_double2x2.hpp \
+  /usr/include/glm/detail/type_mat2x2.hpp \
+  /usr/include/glm/detail/type_mat2x2.inl \
+  /usr/include/glm/matrix.hpp \
+  /usr/include/glm/mat2x3.hpp \
+  /usr/include/glm/ext/matrix_double2x3.hpp \
+  /usr/include/glm/detail/type_mat2x3.hpp \
+  /usr/include/glm/detail/type_mat2x3.inl \
+  /usr/include/glm/ext/matrix_double2x3_precision.hpp \
+  /usr/include/glm/ext/matrix_float2x3.hpp \
+  /usr/include/glm/ext/matrix_float2x3_precision.hpp \
+  /usr/include/glm/mat2x4.hpp \
+  /usr/include/glm/ext/matrix_double2x4.hpp \
+  /usr/include/glm/detail/type_mat2x4.hpp \
+  /usr/include/glm/detail/type_mat2x4.inl \
+  /usr/include/glm/ext/matrix_double2x4_precision.hpp \
+  /usr/include/glm/ext/matrix_float2x4.hpp \
+  /usr/include/glm/ext/matrix_float2x4_precision.hpp \
+  /usr/include/glm/mat3x2.hpp \
+  /usr/include/glm/ext/matrix_double3x2.hpp \
+  /usr/include/glm/detail/type_mat3x2.hpp \
+  /usr/include/glm/detail/type_mat3x2.inl \
+  /usr/include/glm/ext/matrix_double3x2_precision.hpp \
+  /usr/include/glm/ext/matrix_float3x2.hpp \
+  /usr/include/glm/ext/matrix_float3x2_precision.hpp \
+  /usr/include/glm/mat3x3.hpp \
+  /usr/include/glm/ext/matrix_double3x3.hpp \
+  /usr/include/glm/detail/type_mat3x3.hpp \
+  /usr/include/glm/detail/type_mat3x3.inl \
+  /usr/include/glm/ext/matrix_double3x3_precision.hpp \
+  /usr/include/glm/ext/matrix_float3x3.hpp \
+  /usr/include/glm/ext/matrix_float3x3_precision.hpp \
+  /usr/include/glm/mat3x4.hpp \
+  /usr/include/glm/ext/matrix_double3x4.hpp \
+  /usr/include/glm/detail/type_mat3x4.hpp \
+  /usr/include/glm/detail/type_mat3x4.inl \
+  /usr/include/glm/ext/matrix_double3x4_precision.hpp \
+  /usr/include/glm/ext/matrix_float3x4.hpp \
+  /usr/include/glm/ext/matrix_float3x4_precision.hpp \
+  /usr/include/glm/mat4x2.hpp \
+  /usr/include/glm/ext/matrix_double4x2.hpp \
+  /usr/include/glm/detail/type_mat4x2.hpp \
+  /usr/include/glm/detail/type_mat4x2.inl \
+  /usr/include/glm/ext/matrix_double4x2_precision.hpp \
+  /usr/include/glm/ext/matrix_float4x2.hpp \
+  /usr/include/glm/ext/matrix_float4x2_precision.hpp \
+  /usr/include/glm/mat4x3.hpp \
+  /usr/include/glm/ext/matrix_double4x3.hpp \
+  /usr/include/glm/detail/type_mat4x3.hpp \
+  /usr/include/glm/detail/type_mat4x3.inl \
+  /usr/include/glm/ext/matrix_double4x3_precision.hpp \
+  /usr/include/glm/ext/matrix_float4x3.hpp \
+  /usr/include/glm/ext/matrix_float4x3_precision.hpp \
+  /usr/include/glm/mat4x4.hpp \
+  /usr/include/glm/ext/matrix_double4x4.hpp \
+  /usr/include/glm/detail/type_mat4x4.hpp \
+  /usr/include/glm/detail/type_mat4x4.inl \
+  /usr/include/glm/ext/matrix_double4x4_precision.hpp \
+  /usr/include/glm/ext/matrix_float4x4.hpp \
+  /usr/include/glm/ext/matrix_float4x4_precision.hpp \
+  /usr/include/glm/detail/func_matrix.inl \
+  /usr/include/glm/geometric.hpp \
+  /usr/include/glm/detail/func_geometric.inl \
+  /usr/include/glm/exponential.hpp \
+  /usr/include/glm/detail/type_vec1.hpp \
+  /usr/include/glm/detail/type_vec1.inl \
+  /usr/include/glm/detail/func_exponential.inl \
+  /usr/include/glm/vector_relational.hpp \
+  /usr/include/glm/detail/func_vector_relational.inl \
+  /usr/include/glm/detail/_vectorize.hpp \
+  /usr/include/glm/common.hpp \
+  /usr/include/glm/detail/func_common.inl \
+  /usr/include/glm/detail/compute_common.hpp \
+  /usr/include/glm/ext/matrix_double2x2_precision.hpp \
+  /usr/include/glm/ext/matrix_float2x2.hpp \
+  /usr/include/glm/ext/matrix_float2x2_precision.hpp \
+  /usr/include/glm/trigonometric.hpp \
+  /usr/include/glm/detail/func_trigonometric.inl \
+  /usr/include/glm/packing.hpp \
+  /usr/include/glm/detail/func_packing.inl \
+  /usr/include/glm/detail/type_half.hpp \
+  /usr/include/glm/detail/type_half.inl \
+  /usr/include/glm/integer.hpp \
+  /usr/include/glm/detail/func_integer.inl \
   /usr/include/SDL2/SDL_image.h \
-  /usr/include/SDL2/SDL.h
+  /usr/include/SDL2/SDL.h \
+  /usr/include/glm/gtc/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_projection.hpp \
+  /usr/include/glm/gtc/constants.hpp \
+  /usr/include/glm/ext/scalar_constants.hpp \
+  /usr/include/glm/ext/scalar_constants.inl \
+  /usr/include/glm/gtc/constants.inl \
+  /usr/include/glm/ext/matrix_projection.inl \
+  /usr/include/glm/ext/matrix_clip_space.hpp \
+  /usr/include/glm/ext/matrix_clip_space.inl \
+  /usr/include/glm/ext/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_transform.inl \
+  /usr/include/glm/gtc/matrix_transform.inl
 
+
+/usr/include/glm/ext/scalar_constants.inl:
+
+/usr/include/glm/gtc/constants.hpp:
 
 /usr/include/SDL2/SDL_image.h:
+
+/usr/include/glm/integer.hpp:
+
+/usr/include/glm/detail/type_half.inl:
+
+/usr/include/glm/packing.hpp:
+
+/usr/include/glm/detail/func_trigonometric.inl:
+
+/usr/include/glm/trigonometric.hpp:
+
+/usr/include/glm/ext/matrix_double2x2_precision.hpp:
+
+/usr/include/glm/detail/func_common.inl:
+
+/usr/include/glm/detail/func_vector_relational.inl:
+
+/usr/include/glm/detail/type_vec1.inl:
+
+/usr/include/glm/detail/type_vec1.hpp:
+
+/usr/include/glm/geometric.hpp:
+
+/usr/include/glm/detail/func_matrix.inl:
+
+/usr/include/glm/ext/matrix_float4x4.hpp:
+
+/usr/include/glm/ext/matrix_double4x4_precision.hpp:
+
+/usr/include/glm/detail/type_mat4x4.inl:
+
+/usr/include/glm/ext/matrix_float4x3.hpp:
+
+/usr/include/glm/ext/matrix_double4x3_precision.hpp:
+
+/usr/include/glm/ext/matrix_double4x2_precision.hpp:
+
+/usr/include/glm/detail/type_mat4x2.inl:
+
+/usr/include/glm/detail/type_mat4x2.hpp:
+
+/usr/include/glm/ext/matrix_double4x2.hpp:
+
+/usr/include/glm/mat4x3.hpp:
+
+/usr/include/glm/mat4x2.hpp:
+
+/usr/include/glm/ext/matrix_float3x4.hpp:
+
+/usr/include/glm/ext/matrix_double3x4_precision.hpp:
+
+/usr/include/glm/detail/type_mat3x4.hpp:
+
+/usr/include/glm/ext/matrix_double3x4.hpp:
+
+/usr/include/glm/mat3x4.hpp:
+
+/usr/include/glm/ext/matrix_float3x3_precision.hpp:
+
+/usr/include/glm/ext/matrix_transform.inl:
+
+/usr/include/glm/ext/matrix_float3x3.hpp:
+
+/usr/include/glm/ext/matrix_double3x3_precision.hpp:
+
+/usr/include/glm/detail/type_mat3x3.hpp:
+
+/usr/include/glm/ext/matrix_float3x2_precision.hpp:
+
+/usr/include/glm/ext/matrix_double3x2_precision.hpp:
+
+/usr/include/glm/detail/type_mat3x2.inl:
+
+/usr/include/glm/ext/matrix_float2x4_precision.hpp:
+
+/usr/include/glm/ext/matrix_float2x4.hpp:
+
+/usr/include/glm/detail/type_mat2x4.inl:
+
+/usr/include/glm/detail/type_mat2x4.hpp:
+
+/usr/include/glm/ext/matrix_double2x4.hpp:
+
+/usr/include/glm/ext/matrix_float2x3_precision.hpp:
+
+/usr/include/glm/ext/matrix_float2x3.hpp:
+
+/usr/include/glm/mat2x3.hpp:
+
+/usr/include/glm/detail/type_mat2x2.inl:
+
+/usr/include/glm/detail/type_mat2x2.hpp:
+
+/usr/include/glm/ext/matrix_double2x2.hpp:
+
+/usr/include/glm/mat2x2.hpp:
+
+/usr/include/glm/detail/type_mat3x3.inl:
+
+/usr/include/glm/ext/vector_uint4_sized.hpp:
+
+/usr/include/glm/ext/vector_int4.hpp:
+
+/usr/include/glm/ext/vector_double4_precision.hpp:
+
+/usr/include/glm/ext/matrix_double2x4_precision.hpp:
+
+/usr/include/glm/vec4.hpp:
+
+/usr/include/glm/ext/vector_int3.hpp:
+
+/usr/include/glm/ext/vector_double3_precision.hpp:
+
+/usr/include/glm/ext/vector_float3_precision.hpp:
+
+/usr/include/glm/ext/vector_bool3_precision.hpp:
+
+/usr/include/glm/detail/type_vec3.inl:
+
+/usr/include/glm/vec3.hpp:
+
+/usr/include/glm/ext/vector_int2_sized.hpp:
+
+/usr/include/glm/ext/vector_int2.hpp:
+
+/usr/include/glm/ext/vector_float2_precision.hpp:
+
+/usr/include/glm/ext/vector_float2.hpp:
+
+/usr/include/glm/detail/type_mat2x3.inl:
+
+/usr/include/glm/detail/type_vec2.hpp:
+
+/usr/include/glm/ext/vector_bool2.hpp:
+
+/usr/include/glm/fwd.hpp:
+
+/usr/include/c++/11/limits:
+
+/usr/include/glm/detail/type_vec2.inl:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/glm/ext/scalar_constants.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/include/glm/ext/matrix_double3x3.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/limits.h:
+
+/usr/include/glm/ext/matrix_clip_space.inl:
+
+/usr/include/glm/detail/setup.hpp:
+
+/usr/include/glm/detail/_fixes.hpp:
 
 /usr/include/SDL2/SDL_locale.h:
 
@@ -383,11 +709,21 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/SDL2/SDL_messagebox.h:
 
+/usr/include/c++/11/cstddef:
+
 /usr/include/SDL2/SDL_hidapi.h:
+
+/usr/include/glm/ext/matrix_float2x2.hpp:
 
 /usr/include/SDL2/SDL_haptic.h:
 
+/usr/include/glm/ext/matrix_double4x3.hpp:
+
+/usr/include/glm/ext/matrix_double3x2.hpp:
+
 /usr/include/SDL2/SDL_filesystem.h:
+
+/usr/include/glm/ext/matrix_projection.hpp:
 
 /usr/include/SDL2/SDL_touch.h:
 
@@ -396,6 +732,10 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/include/SDL2/SDL_quit.h:
 
 /usr/include/SDL2/SDL_sensor.h:
+
+/usr/include/glm/ext/vector_int3_sized.hpp:
+
+/usr/include/assert.h:
 
 /usr/include/SDL2/SDL_joystick.h:
 
@@ -407,9 +747,13 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/SDL2/SDL_keyboard.h:
 
+/usr/include/glm/detail/func_geometric.inl:
+
 /usr/include/SDL2/SDL_blendmode.h:
 
 /usr/include/SDL2/SDL_rect.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
 
 /usr/include/SDL2/SDL_pixels.h:
 
@@ -423,6 +767,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/amxtileintrin.h:
 
+/usr/include/glm/ext/matrix_float3x2.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bf16intrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bf16vlintrin.h:
@@ -430,6 +776,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/include/SDL2/SDL_loadso.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/vaesintrin.h:
+
+/usr/include/glm/glm.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/gfniintrin.h:
 
@@ -451,6 +799,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
 
+/usr/include/glm/detail/func_exponential.inl:
+
 /usr/include/sched.h:
 
 /usr/include/SDL2/SDL_hints.h:
@@ -461,15 +811,27 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/lwpintrin.h:
 
+/usr/include/linux/limits.h:
+
 /usr/include/c++/11/bits/basic_string.h:
+
+/usr/include/glm/ext/vector_float4_precision.hpp:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
+/usr/include/glm/detail/type_vec3.hpp:
+
 /usr/include/c++/11/backward/binders.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h:
+
+/usr/include/glm/ext/vector_uint2_sized.hpp:
+
+/usr/include/c++/11/ext/alloc_traits.h:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
 
@@ -483,7 +845,11 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/c++/11/clocale:
 
+/usr/include/c++/11/climits:
+
 /usr/include/c++/11/new:
+
+/usr/include/glm/detail/type_mat4x3.inl:
 
 /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
 
@@ -521,17 +887,15 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
-/usr/include/x86_64-linux-gnu/bits/sched.h:
-
-/usr/include/c++/11/ext/alloc_traits.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/movdirintrin.h:
-
 /usr/include/x86_64-linux-gnu/bits/dlfcn.h:
+
+/usr/include/glm/detail/type_vec4.hpp:
 
 /usr/include/locale.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+
+/usr/include/glm/ext/vector_uint4.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx5124fmapsintrin.h:
 
@@ -545,11 +909,17 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
+/usr/include/glm/detail/type_mat3x2.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/pmmintrin.h:
 
 ../deps/include/KHR/khrplatform.h:
 
+/usr/include/glm/ext/vector_double2.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/usr/include/glm/ext/vector_int4_sized.hpp:
 
 /usr/include/SDL2/SDL_surface.h:
 
@@ -559,13 +929,17 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/c++/11/bits/functexcept.h:
 
+/usr/include/glm/ext/vector_bool4.hpp:
+
 /usr/include/c++/11/bits/concept_check.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
-../src/Basic_Ray_Tracer.hpp:
+/usr/include/glm/mat4x4.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/ia32intrin.h:
+
+/usr/include/glm/detail/func_integer.inl:
 
 /usr/include/stdlib.h:
 
@@ -591,11 +965,15 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
+/usr/include/glm/ext/matrix_double2x3.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xsaveoptintrin.h:
 
 /usr/include/SDL2/SDL_gesture.h:
 
 /usr/include/ctype.h:
+
+/usr/include/glm/ext/vector_uint3_sized.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xsavesintrin.h:
 
@@ -609,11 +987,15 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/rdseedintrin.h:
 
+/usr/include/glm/gtc/constants.inl:
+
 /usr/include/SDL2/SDL_timer.h:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/glm/detail/type_mat4x4.hpp:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
 
@@ -623,6 +1005,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
+/usr/include/glm/ext/vector_double2_precision.hpp:
+
 /usr/include/SDL2/SDL_version.h:
 
 /usr/include/SDL2/begin_code.h:
@@ -631,9 +1015,9 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
-/usr/include/c++/11/math.h:
+/usr/include/glm/ext/vector_uint2.hpp:
 
-../src/Basic_Ray_Tracer.cpp:
+/usr/include/c++/11/math.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/enqcmdintrin.h:
 
@@ -641,17 +1025,25 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/fxsrintrin.h:
 
+/usr/include/glm/mat3x3.hpp:
+
 /usr/include/c++/11/bits/predefined_ops.h:
 
 /usr/include/x86_64-linux-gnu/bits/typesizes.h:
 
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
+/usr/include/glm/ext/scalar_uint_sized.hpp:
+
 /usr/include/c++/11/debug/assertions.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
 
+/usr/include/glm/detail/compute_common.hpp:
+
 /usr/include/strings.h:
+
+/usr/include/glm/ext/matrix_double4x4.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
@@ -667,17 +1059,33 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
+../src/Scene.hpp:
+
+/usr/include/glm/ext/vector_float4.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/x86gprintrin.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/vpclmulqdqintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
+/usr/include/c++/11/cassert:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/pconfigintrin.h:
+
+/usr/include/glm/matrix.hpp:
+
+/usr/include/glm/ext/vector_bool3.hpp:
 
 /usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
+/usr/include/glm/exponential.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+/usr/include/glm/ext/matrix_float4x3_precision.hpp:
 
 /usr/include/c++/11/initializer_list:
 
@@ -689,7 +1097,11 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avxintrin.h:
 
+/usr/include/glm/ext/matrix_clip_space.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h:
 
 /usr/include/c++/11/debug/debug.h:
 
@@ -699,9 +1111,13 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/SDL2/SDL_main.h:
 
+/usr/include/glm/detail/type_half.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/clflushoptintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vnniintrin.h:
+
+/usr/include/glm/detail/type_mat4x3.hpp:
 
 /usr/include/SDL2/SDL_gamecontroller.h:
 
@@ -717,7 +1133,11 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xsaveintrin.h:
 
+/usr/include/c++/11/cfloat:
+
 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+
+/usr/include/glm/detail/func_packing.inl:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/bmiintrin.h:
 
@@ -731,9 +1151,13 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/c++/11/bits/allocator.h:
 
+/usr/include/glm/ext/matrix_double2x3_precision.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/amxint8intrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/glm/detail/compute_vector_relational.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/waitpkgintrin.h:
 
@@ -745,9 +1169,13 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
+/usr/include/glm/ext/vector_float3.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
+
+/usr/include/glm/detail/type_vec4.inl:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
@@ -756,6 +1184,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/timex.h:
+
+/usr/include/glm/vector_relational.hpp:
 
 /usr/include/SDL2/SDL_config.h:
 
@@ -769,9 +1199,13 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h:
 
+/usr/include/glm/ext/matrix_float2x2_precision.hpp:
+
 /usr/include/stdc-predef.h:
 
 /usr/include/c++/11/bits/alloc_traits.h:
+
+/usr/include/glm/ext/scalar_int_sized.hpp:
 
 /usr/include/c++/11/bits/stl_construct.h:
 
@@ -784,6 +1218,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/include/c++/11/bits/std_abs.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/sgxintrin.h:
+
+/usr/include/glm/ext/matrix_float3x4_precision.hpp:
 
 /usr/include/c++/11/cstdio:
 
@@ -799,6 +1235,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/asm-generic/errno.h:
 
+/usr/include/glm/mat2x4.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
@@ -813,6 +1251,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/c++/11/bits/basic_string.tcc:
 
+/usr/include/glm/ext/matrix_float4x4_precision.hpp:
+
 /usr/include/SDL2/SDL.h:
 
 /usr/include/SDL2/SDL_stdinc.h:
@@ -825,17 +1265,27 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/SDL2/close_code.h:
 
+/usr/include/glm/ext/vector_bool2_precision.hpp:
+
 /usr/include/c++/11/stdlib.h:
+
+/usr/include/glm/ext/matrix_float4x2.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/bmi2intrin.h:
 
+/usr/include/glm/ext/matrix_projection.inl:
+
 /usr/include/inttypes.h:
+
+/usr/include/glm/common.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
 /usr/include/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/glm/ext/matrix_transform.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512cdintrin.h:
 
@@ -849,6 +1299,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
 
+/usr/include/glm/detail/_vectorize.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls.h:
@@ -859,9 +1311,15 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
+/usr/include/glm/ext/vector_uint3.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
+/usr/include/glm/vec2.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
+
+/usr/include/glm/detail/type_mat3x4.inl:
 
 /usr/include/c++/11/cstdlib:
 
@@ -881,7 +1339,7 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/include/SDL2/SDL_cpuinfo.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/x86gprintrin.h:
+/usr/include/glm/ext/vector_double3.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/adxintrin.h:
 
@@ -891,15 +1349,25 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/tsxldtrkintrin.h:
 
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+../src/Scene.cpp:
+
 /usr/include/c++/11/string:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/clwbintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/clzerointrin.h:
 
+/usr/include/glm/gtc/matrix_transform.hpp:
+
+/usr/include/glm/simd/platform.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/lzcntintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/movdirintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/mwaitintrin.h:
 
@@ -914,6 +1382,10 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/11/include/popcntintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/pkuintrin.h:
+
+/usr/include/glm/ext/matrix_float4x2_precision.hpp:
+
+/usr/include/glm/ext/vector_double4.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/rtmintrin.h:
 
@@ -943,6 +1415,12 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:
 
+/usr/include/glm/gtc/matrix_transform.inl:
+
+/usr/include/glm/detail/type_mat2x3.hpp:
+
+/usr/include/glm/detail/qualifier.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/tmmintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/wmmintrin.h:
@@ -959,6 +1437,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512erintrin.h:
 
+/usr/include/glm/mat3x2.hpp:
+
 /usr/include/wchar.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bwintrin.h:
@@ -968,6 +1448,8 @@ CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp \
 /usr/include/x86_64-linux-gnu/c++/11/bits/gthr-default.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vlbwintrin.h:
+
+/usr/include/glm/ext/vector_bool4_precision.hpp:
 
 /usr/include/alloca.h:
 

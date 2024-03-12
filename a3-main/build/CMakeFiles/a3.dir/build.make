@@ -69,19 +69,19 @@ include CMakeFiles/a3.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/a3.dir/flags.make
 
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: CMakeFiles/a3.dir/flags.make
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: ../src/Basic_Ray_Tracer.cpp
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o: CMakeFiles/a3.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kanav/COL781/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o -MF CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o.d -o CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o -c /home/kanav/COL781/COL781_Assignments/a3-main/src/Basic_Ray_Tracer.cpp
+CMakeFiles/a3.dir/src/Scene.cpp.o: CMakeFiles/a3.dir/flags.make
+CMakeFiles/a3.dir/src/Scene.cpp.o: ../src/Scene.cpp
+CMakeFiles/a3.dir/src/Scene.cpp.o: CMakeFiles/a3.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kanav/COL781/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/a3.dir/src/Scene.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/a3.dir/src/Scene.cpp.o -MF CMakeFiles/a3.dir/src/Scene.cpp.o.d -o CMakeFiles/a3.dir/src/Scene.cpp.o -c /home/kanav/COL781/COL781_Assignments/a3-main/src/Scene.cpp
 
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kanav/COL781/COL781_Assignments/a3-main/src/Basic_Ray_Tracer.cpp > CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.i
+CMakeFiles/a3.dir/src/Scene.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/a3.dir/src/Scene.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kanav/COL781/COL781_Assignments/a3-main/src/Scene.cpp > CMakeFiles/a3.dir/src/Scene.cpp.i
 
-CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kanav/COL781/COL781_Assignments/a3-main/src/Basic_Ray_Tracer.cpp -o CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.s
+CMakeFiles/a3.dir/src/Scene.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/a3.dir/src/Scene.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kanav/COL781/COL781_Assignments/a3-main/src/Scene.cpp -o CMakeFiles/a3.dir/src/Scene.cpp.s
 
 CMakeFiles/a3.dir/deps/src/gl.c.o: CMakeFiles/a3.dir/flags.make
 CMakeFiles/a3.dir/deps/src/gl.c.o: ../deps/src/gl.c
@@ -99,13 +99,13 @@ CMakeFiles/a3.dir/deps/src/gl.c.s: cmake_force
 
 # Object files for target a3
 a3_OBJECTS = \
-"CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o" \
+"CMakeFiles/a3.dir/src/Scene.cpp.o" \
 "CMakeFiles/a3.dir/deps/src/gl.c.o"
 
 # External object files for target a3
 a3_EXTERNAL_OBJECTS =
 
-liba3.a: CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o
+liba3.a: CMakeFiles/a3.dir/src/Scene.cpp.o
 liba3.a: CMakeFiles/a3.dir/deps/src/gl.c.o
 liba3.a: CMakeFiles/a3.dir/build.make
 liba3.a: CMakeFiles/a3.dir/link.txt

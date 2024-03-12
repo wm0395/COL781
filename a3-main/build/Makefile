@@ -190,29 +190,29 @@ examples/example.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/examples/example.cpp.s
 .PHONY : examples/example.cpp.s
 
-src/Basic_Ray_Tracer.o: src/Basic_Ray_Tracer.cpp.o
-.PHONY : src/Basic_Ray_Tracer.o
+src/Scene.o: src/Scene.cpp.o
+.PHONY : src/Scene.o
 
 # target to build an object file
-src/Basic_Ray_Tracer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.o
-.PHONY : src/Basic_Ray_Tracer.cpp.o
+src/Scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Scene.cpp.o
+.PHONY : src/Scene.cpp.o
 
-src/Basic_Ray_Tracer.i: src/Basic_Ray_Tracer.cpp.i
-.PHONY : src/Basic_Ray_Tracer.i
+src/Scene.i: src/Scene.cpp.i
+.PHONY : src/Scene.i
 
 # target to preprocess a source file
-src/Basic_Ray_Tracer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.i
-.PHONY : src/Basic_Ray_Tracer.cpp.i
+src/Scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Scene.cpp.i
+.PHONY : src/Scene.cpp.i
 
-src/Basic_Ray_Tracer.s: src/Basic_Ray_Tracer.cpp.s
-.PHONY : src/Basic_Ray_Tracer.s
+src/Scene.s: src/Scene.cpp.s
+.PHONY : src/Scene.s
 
 # target to generate assembly for a file
-src/Basic_Ray_Tracer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Basic_Ray_Tracer.cpp.s
-.PHONY : src/Basic_Ray_Tracer.cpp.s
+src/Scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Scene.cpp.s
+.PHONY : src/Scene.cpp.s
 
 # Help Target
 help:
@@ -230,9 +230,9 @@ help:
 	@echo "... examples/example.o"
 	@echo "... examples/example.i"
 	@echo "... examples/example.s"
-	@echo "... src/Basic_Ray_Tracer.o"
-	@echo "... src/Basic_Ray_Tracer.i"
-	@echo "... src/Basic_Ray_Tracer.s"
+	@echo "... src/Scene.o"
+	@echo "... src/Scene.i"
+	@echo "... src/Scene.s"
 .PHONY : help
 
 
