@@ -8,7 +8,7 @@ bool Ray_Tracer::initialize(const std::string &title, int width, int height, int
             printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
             success = false;
         }
-        } else {
+        else {
             this->frameHeight = height;
             this->frameWidth = width;
             this->displayScale = 1;
@@ -22,7 +22,6 @@ bool Ray_Tracer::initialize(const std::string &title, int width, int height, int
             } else {
                 this->windowSurface = SDL_GetWindowSurface(window);
                 this->framebuffer = SDL_CreateRGBSurface(0, this->frameWidth, this->frameHeight, 32, 0, 0, 0, 0);
-                this->pointBuffer = std::vector<std::vector<Attribs>>(this->frameWidth, std::vector<Attribs>(this->frameHeight, Attribs()));
             }
         }
         return success;
