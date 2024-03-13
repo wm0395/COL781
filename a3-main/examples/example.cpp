@@ -7,19 +7,28 @@ using namespace glm;
 
 int main(){
 
-    Scene *scene;
-    Camera *cam;
+    Scene *scene = new Scene();
+    Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     scene->camera = cam;
 
+
     vector<Shape*> objects = {};
-    Sphere sphere1(1.0f, vec4(0, 0, -2, 1));
-    objects.push_back(&sphere1);
+
+    vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
+    float r1 = 1.0f;
+    Sphere *sphere1 = new Sphere(r1, center1);
+    objects.push_back(sphere1);
+
+    vec4 center2 = vec4(0.0f, -101.0f, -2.0f, 1.0f);
+    float r2 = 100.0f;
+    Sphere *sphere2 = new Sphere(r2, center2);
+    objects.push_back(sphere2);
     
     scene->objects = objects;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 100, 200)){
+    if (!r.initialize("Example 1", 800, 800)){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }

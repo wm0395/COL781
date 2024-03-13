@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace glm;
 using namespace std;
@@ -66,6 +67,8 @@ class Sphere : public Shape {
 struct Scene{
     Camera* camera;
     vector<Shape*> objects;
+    float near_plane;
+    float far_plane;
 };
 
 class Ray_Tracer{

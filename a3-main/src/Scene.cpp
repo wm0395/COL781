@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <iostream>
 
 
 
@@ -83,10 +83,11 @@ void Ray_Tracer::draw(Scene *scene){
             // Calculate the index of the current pixel
             int pixelIndex = y * pitch + x;
 
-            float center_x = (x + 0.5f)/framebuffer->w;
-            float center_y = (y + 0.5f)/framebuffer->h;
+            float center_x = (x + 0.5f);///framebuffer->w;
+            float center_y = (y + 0.5f);///framebuffer->h;
 
             vec4 color = sample(scene, center_x, center_y);
+            pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
             Uint32 pixelValue = pixels[pixelIndex];
@@ -94,38 +95,32 @@ void Ray_Tracer::draw(Scene *scene){
             // // Extract individual color components (if needed)
             // Uint8 red, green, blue, alpha;
             // SDL_GetRGBA(pixelValue, pixelFormat, &red, &green, &blue, &alpha);
-
-            // Calculate the center coordinates of the pixel
-            
-            // Print the center coordinates
-            // printf("Center coordinates of pixel (%d, %d): (%.2f, %.2f)\n", x, y, center_x, center_y);
-
-            Ray ray;
-            ray.o = vec4(0.0, 0.0, 0.0, 1.0);  // needs to be corrected
-            ray.d = vec4(center_x, center_y, ray.t_near, 0.0f);    // here also t_near needs to be seen
-
-            // Sphere.hit()
+            // return;
 
         }
     }
-    pixels[0] = SDL_MapRGBA(pixelFormat, 0,0,0,0);
-    pixels[1] = SDL_MapRGBA(pixelFormat, 255,0,0,0);
-    // Unlock the surface when done
+    
     SDL_UnlockSurface(framebuffer);
 }
 
 vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
-    Ray* ray;
-    float b_prime = 1/sqrt(3);
-    float h_prime = b_prime;
-    float x_prime = 2 * b_prime * (x - (framebuffer->w / 2)) / framebuffer -> w;
-    float y_prime = 2 * h_prime * (-y + (framebuffer->h / 2)) / framebuffer -> h;
-    ray->o = vec4(x_prime, y_prime, -1.0f, 0.0f);
+    
+    Ray* ray = new Ray();
+    float h_prime = 1/sqrt(3);
+    float b_prime = h_prime * framebuffer->w / float(framebuffer->h);
+    float x_prime = 2 * b_prime * (x - (float(framebuffer->w) / 2)) / float(framebuffer -> w);
+    float y_prime = 2 * h_prime * (-y + (float(framebuffer->h) / 2)) / float(framebuffer -> h);
+    ray->o = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    ray->d = vec4(x_prime, y_prime, -1.0f, 0.0f);
+    // cout << ray->d.x << " " << ray->d.y << " " << ray->d.z << " " << ray->d.w << " \n";
+    ray->t_near = 0.01f;
+    ray->t_far = 1000.0f;
     float t = INT32_MAX;
     vec4 color = vec4(0,0,0,0);
     for(int i = 0; i < scene->objects.size(); i++){
         ray->t = 0;
         pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
+        // std::cout << ray->t << "\n";
         if(ray->t > 0 && ray->t < t){
             t = ray->t;
             // color = get_color();
@@ -134,4 +129,5 @@ vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
             color /= 2;
         }
     }
+    return color;
 }

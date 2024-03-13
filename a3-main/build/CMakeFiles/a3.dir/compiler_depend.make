@@ -524,6 +524,35 @@ CMakeFiles/a3.dir/src/Camera.cpp.o: ../src/Camera.cpp \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/c++/11/iostream \
+  /usr/include/c++/11/ostream \
+  /usr/include/c++/11/ios \
+  /usr/include/c++/11/exception \
+  /usr/include/c++/11/bits/exception_ptr.h \
+  /usr/include/c++/11/bits/cxxabi_init_exception.h \
+  /usr/include/c++/11/typeinfo \
+  /usr/include/c++/11/bits/nested_exception.h \
+  /usr/include/c++/11/bits/ios_base.h \
+  /usr/include/c++/11/bits/locale_classes.h \
+  /usr/include/c++/11/bits/locale_classes.tcc \
+  /usr/include/c++/11/system_error \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
+  /usr/include/c++/11/stdexcept \
+  /usr/include/c++/11/streambuf \
+  /usr/include/c++/11/bits/streambuf.tcc \
+  /usr/include/c++/11/bits/basic_ios.h \
+  /usr/include/c++/11/bits/locale_facets.h \
+  /usr/include/c++/11/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
+  /usr/include/c++/11/bits/streambuf_iterator.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
+  /usr/include/c++/11/bits/locale_facets.tcc \
+  /usr/include/c++/11/bits/basic_ios.tcc \
+  /usr/include/c++/11/bits/ostream.tcc \
+  /usr/include/c++/11/istream \
+  /usr/include/c++/11/bits/istream.tcc \
   /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
@@ -995,6 +1024,35 @@ CMakeFiles/a3.dir/src/Scene.cpp.o: ../src/Scene.cpp \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/c++/11/iostream \
+  /usr/include/c++/11/ostream \
+  /usr/include/c++/11/ios \
+  /usr/include/c++/11/exception \
+  /usr/include/c++/11/bits/exception_ptr.h \
+  /usr/include/c++/11/bits/cxxabi_init_exception.h \
+  /usr/include/c++/11/typeinfo \
+  /usr/include/c++/11/bits/nested_exception.h \
+  /usr/include/c++/11/bits/ios_base.h \
+  /usr/include/c++/11/bits/locale_classes.h \
+  /usr/include/c++/11/bits/locale_classes.tcc \
+  /usr/include/c++/11/system_error \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
+  /usr/include/c++/11/stdexcept \
+  /usr/include/c++/11/streambuf \
+  /usr/include/c++/11/bits/streambuf.tcc \
+  /usr/include/c++/11/bits/basic_ios.h \
+  /usr/include/c++/11/bits/locale_facets.h \
+  /usr/include/c++/11/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
+  /usr/include/c++/11/bits/streambuf_iterator.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
+  /usr/include/c++/11/bits/locale_facets.tcc \
+  /usr/include/c++/11/bits/basic_ios.tcc \
+  /usr/include/c++/11/bits/ostream.tcc \
+  /usr/include/c++/11/istream \
+  /usr/include/c++/11/bits/istream.tcc \
   /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
@@ -1465,7 +1523,36 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
-  /usr/include/c++/11/bits/vector.tcc
+  /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/c++/11/iostream \
+  /usr/include/c++/11/ostream \
+  /usr/include/c++/11/ios \
+  /usr/include/c++/11/exception \
+  /usr/include/c++/11/bits/exception_ptr.h \
+  /usr/include/c++/11/bits/cxxabi_init_exception.h \
+  /usr/include/c++/11/typeinfo \
+  /usr/include/c++/11/bits/nested_exception.h \
+  /usr/include/c++/11/bits/ios_base.h \
+  /usr/include/c++/11/bits/locale_classes.h \
+  /usr/include/c++/11/bits/locale_classes.tcc \
+  /usr/include/c++/11/system_error \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
+  /usr/include/c++/11/stdexcept \
+  /usr/include/c++/11/streambuf \
+  /usr/include/c++/11/bits/streambuf.tcc \
+  /usr/include/c++/11/bits/basic_ios.h \
+  /usr/include/c++/11/bits/locale_facets.h \
+  /usr/include/c++/11/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
+  /usr/include/c++/11/bits/streambuf_iterator.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
+  /usr/include/c++/11/bits/locale_facets.tcc \
+  /usr/include/c++/11/bits/basic_ios.tcc \
+  /usr/include/c++/11/bits/ostream.tcc \
+  /usr/include/c++/11/istream \
+  /usr/include/c++/11/bits/istream.tcc
 
 
 ../src/Shape.cpp:
@@ -1476,11 +1563,39 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/SDL2/SDL_image.h:
 
+/usr/include/c++/11/bits/istream.tcc:
+
+/usr/include/c++/11/istream:
+
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
+
+/usr/include/c++/11/cwctype:
+
+/usr/include/c++/11/bits/basic_ios.h:
+
+/usr/include/c++/11/streambuf:
+
+/usr/include/c++/11/bits/locale_classes.tcc:
+
+/usr/include/c++/11/bits/ios_base.h:
+
+/usr/include/c++/11/bits/cxxabi_init_exception.h:
+
+/usr/include/c++/11/bits/exception_ptr.h:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h:
+
+/usr/include/c++/11/ios:
+
+/usr/include/c++/11/ostream:
+
 /usr/include/c++/11/bits/stl_uninitialized.h:
 
 /usr/include/c++/11/vector:
 
 /usr/include/glm/integer.hpp:
+
+/usr/include/c++/11/bits/nested_exception.h:
 
 /usr/include/glm/detail/type_half.inl:
 
@@ -1546,6 +1661,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/glm/detail/type_mat3x3.hpp:
 
+/usr/include/c++/11/stdexcept:
+
 /usr/include/glm/ext/matrix_float3x2_precision.hpp:
 
 /usr/include/glm/ext/matrix_double3x2_precision.hpp:
@@ -1558,6 +1675,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/glm/detail/type_mat2x4.inl:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h:
+
 /usr/include/glm/detail/type_mat2x4.hpp:
 
 /usr/include/glm/ext/matrix_double2x4.hpp:
@@ -1565,6 +1684,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/glm/ext/matrix_float2x3_precision.hpp:
 
 /usr/include/glm/ext/matrix_float2x3.hpp:
+
+/usr/include/c++/11/bits/locale_classes.h:
 
 /usr/include/glm/mat2x3.hpp:
 
@@ -1680,6 +1801,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/SDL2/SDL_joystick.h:
 
+/usr/include/c++/11/bits/ostream.tcc:
+
 /usr/include/SDL2/SDL_mouse.h:
 
 /usr/include/SDL2/SDL_scancode.h:
@@ -1699,6 +1822,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/SDL2/SDL_pixels.h:
 
 /usr/include/SDL2/SDL_video.h:
+
+/usr/include/c++/11/bits/basic_ios.tcc:
 
 /usr/include/SDL2/SDL_events.h:
 
@@ -1739,6 +1864,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bitalgintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/wctype.h:
 
 /usr/include/glm/detail/func_exponential.inl:
 
@@ -1822,6 +1949,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/c++/11/bits/memoryfwd.h:
 
+/usr/include/c++/11/bits/locale_facets.tcc:
+
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h:
@@ -1848,7 +1977,11 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
+/usr/include/c++/11/exception:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vpopcntdqvlintrin.h:
+
+/usr/include/c++/11/bits/locale_facets.h:
 
 /usr/include/c++/11/bits/exception.h:
 
@@ -1905,6 +2038,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/c++/11/ext/numeric_traits.h:
 
 /usr/include/features.h:
+
+/usr/include/c++/11/typeinfo:
 
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
@@ -2056,6 +2191,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h:
+
 /usr/include/SDL2/SDL_main.h:
 
 /usr/include/glm/detail/type_half.hpp:
@@ -2089,6 +2226,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/11/include/bmiintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/c++/11/bits/streambuf.tcc:
 
 /usr/include/string.h:
 
@@ -2132,6 +2271,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
+/usr/include/c++/11/bits/streambuf_iterator.h:
+
 /usr/include/glm/vector_relational.hpp:
 
 /usr/include/SDL2/SDL_config.h:
@@ -2157,6 +2298,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/glm/ext/scalar_int_sized.hpp:
 
 /usr/include/c++/11/bits/stl_construct.h:
+
+/usr/include/c++/11/system_error:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h:
 
@@ -2247,6 +2390,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
+/usr/include/c++/11/iostream:
 
 /usr/include/glm/detail/_vectorize.hpp:
 
