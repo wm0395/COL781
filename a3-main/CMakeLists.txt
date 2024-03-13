@@ -10,5 +10,8 @@ add_library(a3 src/Scene.hpp src/Scene.cpp src/Shape.cpp src/Camera.cpp deps/src
 target_include_directories(a3 PUBLIC deps/include)
 target_link_libraries(a3 glm::glm SDL2::SDL2)
 
-add_executable(example examples/example.cpp)
-target_link_libraries(example a3)
+add_executable(example1.1 examples/example1.1.cpp)
+target_link_libraries(example1.1 a3)
+
+add_executable(example1.2 examples/example1.2.cpp)
+target_link_libraries(example1.2 a3)

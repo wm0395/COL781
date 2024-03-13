@@ -64,6 +64,18 @@ class Sphere : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
+class Plane : public Shape {
+    public:
+    Plane(const vec4 &normal, const vec4 &point_on_plane);
+    std::pair<Ray*, vec4> hit(Ray *ray) override;
+
+    private:
+    vec4 normal;
+    vec4 point_on_plane;
+
+    pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
+};
+
 struct Scene{
     Camera* camera;
     vector<Shape*> objects;

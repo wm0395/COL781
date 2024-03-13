@@ -130,17 +130,30 @@ a3/fast:
 .PHONY : a3/fast
 
 #=============================================================================
-# Target rules for targets named example
+# Target rules for targets named example1.1
 
 # Build rule for target.
-example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example
-.PHONY : example
+example1.1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example1.1
+.PHONY : example1.1
 
 # fast build rule for target.
-example/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/build
-.PHONY : example/fast
+example1.1/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.1.dir/build.make CMakeFiles/example1.1.dir/build
+.PHONY : example1.1/fast
+
+#=============================================================================
+# Target rules for targets named example1.2
+
+# Build rule for target.
+example1.2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example1.2
+.PHONY : example1.2
+
+# fast build rule for target.
+example1.2/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/build
+.PHONY : example1.2/fast
 
 deps/src/gl.o: deps/src/gl.c.o
 .PHONY : deps/src/gl.o
@@ -166,29 +179,53 @@ deps/src/gl.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/deps/src/gl.c.s
 .PHONY : deps/src/gl.c.s
 
-examples/example.o: examples/example.cpp.o
-.PHONY : examples/example.o
+examples/example1.1.o: examples/example1.1.cpp.o
+.PHONY : examples/example1.1.o
 
 # target to build an object file
-examples/example.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/examples/example.cpp.o
-.PHONY : examples/example.cpp.o
+examples/example1.1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.1.dir/build.make CMakeFiles/example1.1.dir/examples/example1.1.cpp.o
+.PHONY : examples/example1.1.cpp.o
 
-examples/example.i: examples/example.cpp.i
-.PHONY : examples/example.i
+examples/example1.1.i: examples/example1.1.cpp.i
+.PHONY : examples/example1.1.i
 
 # target to preprocess a source file
-examples/example.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/examples/example.cpp.i
-.PHONY : examples/example.cpp.i
+examples/example1.1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.1.dir/build.make CMakeFiles/example1.1.dir/examples/example1.1.cpp.i
+.PHONY : examples/example1.1.cpp.i
 
-examples/example.s: examples/example.cpp.s
-.PHONY : examples/example.s
+examples/example1.1.s: examples/example1.1.cpp.s
+.PHONY : examples/example1.1.s
 
 # target to generate assembly for a file
-examples/example.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/examples/example.cpp.s
-.PHONY : examples/example.cpp.s
+examples/example1.1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.1.dir/build.make CMakeFiles/example1.1.dir/examples/example1.1.cpp.s
+.PHONY : examples/example1.1.cpp.s
+
+examples/example1.2.o: examples/example1.2.cpp.o
+.PHONY : examples/example1.2.o
+
+# target to build an object file
+examples/example1.2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/examples/example1.2.cpp.o
+.PHONY : examples/example1.2.cpp.o
+
+examples/example1.2.i: examples/example1.2.cpp.i
+.PHONY : examples/example1.2.i
+
+# target to preprocess a source file
+examples/example1.2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/examples/example1.2.cpp.i
+.PHONY : examples/example1.2.cpp.i
+
+examples/example1.2.s: examples/example1.2.cpp.s
+.PHONY : examples/example1.2.s
+
+# target to generate assembly for a file
+examples/example1.2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/examples/example1.2.cpp.s
+.PHONY : examples/example1.2.cpp.s
 
 src/Camera.o: src/Camera.cpp.o
 .PHONY : src/Camera.o
@@ -271,13 +308,17 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... a3"
-	@echo "... example"
+	@echo "... example1.1"
+	@echo "... example1.2"
 	@echo "... deps/src/gl.o"
 	@echo "... deps/src/gl.i"
 	@echo "... deps/src/gl.s"
-	@echo "... examples/example.o"
-	@echo "... examples/example.i"
-	@echo "... examples/example.s"
+	@echo "... examples/example1.1.o"
+	@echo "... examples/example1.1.i"
+	@echo "... examples/example1.1.s"
+	@echo "... examples/example1.2.o"
+	@echo "... examples/example1.2.i"
+	@echo "... examples/example1.2.s"
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"
