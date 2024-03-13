@@ -4,9 +4,9 @@ Material* Shape::get_material(){
     return material;
 }
 
-// Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
+Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 
-// }
+}
 
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     float x1 = dot(ray->d, ray->o - centre);
@@ -36,5 +36,4 @@ pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     float norm = length(normal);
     normal /= (norm * norm);
     return {nullptr, normal};
-    return 
 }

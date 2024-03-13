@@ -214,6 +214,30 @@ src/Scene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Scene.cpp.s
 .PHONY : src/Scene.cpp.s
 
+src/Shape.o: src/Shape.cpp.o
+.PHONY : src/Shape.o
+
+# target to build an object file
+src/Shape.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Shape.cpp.o
+.PHONY : src/Shape.cpp.o
+
+src/Shape.i: src/Shape.cpp.i
+.PHONY : src/Shape.i
+
+# target to preprocess a source file
+src/Shape.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Shape.cpp.i
+.PHONY : src/Shape.cpp.i
+
+src/Shape.s: src/Shape.cpp.s
+.PHONY : src/Shape.s
+
+# target to generate assembly for a file
+src/Shape.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Shape.cpp.s
+.PHONY : src/Shape.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -233,6 +257,9 @@ help:
 	@echo "... src/Scene.o"
 	@echo "... src/Scene.i"
 	@echo "... src/Scene.s"
+	@echo "... src/Shape.o"
+	@echo "... src/Shape.i"
+	@echo "... src/Shape.s"
 .PHONY : help
 
 
