@@ -21,12 +21,15 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     t2 /= norm_d_sq;
 
     if(t2 <= ray->t_near){
+        ray->t = -1;
         return {nullptr, vec4(0,0,0,0)};
     }
     else if(t1 <= ray->t_near){
+        ray->t = t2;
         return reflected_ray(ray, t2);
     }
     else{
+        ray->t = t1;
         return reflected_ray(ray, t1);
     }
 }
@@ -35,5 +38,5 @@ pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     vec4 normal = ray->o + t * ray->d - centre;
     float norm = length(normal);
     normal /= (norm * norm);
-    return {nullptr, normal};
+    return {new Ray(), normal};
 }

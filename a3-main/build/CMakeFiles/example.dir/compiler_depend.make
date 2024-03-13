@@ -482,6 +482,11 @@ CMakeFiles/example.dir/examples/example.cpp.o: ../examples/example.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/c++/11/vector \
+  /usr/include/c++/11/bits/stl_uninitialized.h \
+  /usr/include/c++/11/bits/stl_vector.h \
+  /usr/include/c++/11/bits/stl_bvector.h \
+  /usr/include/c++/11/bits/vector.tcc \
   /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
@@ -503,6 +508,10 @@ CMakeFiles/example.dir/examples/example.cpp.o: ../examples/example.cpp \
 /usr/include/glm/gtc/constants.hpp:
 
 /usr/include/SDL2/SDL_image.h:
+
+/usr/include/c++/11/bits/stl_uninitialized.h:
+
+/usr/include/c++/11/vector:
 
 /usr/include/SDL2/SDL_locale.h:
 
@@ -820,6 +829,8 @@ CMakeFiles/example.dir/examples/example.cpp.o: ../examples/example.cpp \
 
 /usr/include/glm/ext/vector_int2_sized.hpp:
 
+/usr/include/c++/11/bits/vector.tcc:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xsaveoptintrin.h:
 
 /usr/include/glm/ext/matrix_double2x3.hpp:
@@ -887,6 +898,8 @@ CMakeFiles/example.dir/examples/example.cpp.o: ../examples/example.cpp \
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/glm/detail/type_mat2x4.inl:
+
+/usr/include/c++/11/bits/stl_vector.h:
 
 /usr/include/SDL2/SDL_hidapi.h:
 
@@ -987,6 +1000,8 @@ CMakeFiles/example.dir/examples/example.cpp.o: ../examples/example.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
 
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/c++/11/bits/stl_bvector.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 

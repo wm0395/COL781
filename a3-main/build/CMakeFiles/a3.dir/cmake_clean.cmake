@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/a3.dir/deps/src/gl.c.o"
   "CMakeFiles/a3.dir/deps/src/gl.c.o.d"
+  "CMakeFiles/a3.dir/src/Camera.cpp.o"
+  "CMakeFiles/a3.dir/src/Camera.cpp.o.d"
   "CMakeFiles/a3.dir/src/Scene.cpp.o"
   "CMakeFiles/a3.dir/src/Scene.cpp.o.d"
   "CMakeFiles/a3.dir/src/Shape.cpp.o"

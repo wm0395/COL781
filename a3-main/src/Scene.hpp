@@ -2,30 +2,10 @@
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 #include <string>
+#include <vector>
 
 using namespace glm;
 using namespace std;
-
-class Ray_Tracer{
-    public:
-    bool initialize(const std::string &title, int width, int height, int spp = 1);
-    bool shouldQuit();
-    void clear(vec4 color);
-    void show();
-    void draw(Camera &cam);
-
-    private:
-    SDL_Window *window;
-    bool quit;
-    SDL_Surface* framebuffer = NULL;
-    SDL_Surface *windowSurface = NULL; 
-    int frameWidth;
-    int frameHeight;
-    int displayScale;
-    int spp; // Samples-per-pixel
-
-};
-
 
 class Camera {
     public:
@@ -50,6 +30,7 @@ class Camera {
 struct Ray{
     vec4 o;
     vec4 d;
+    float t;
     float t_near;
     float t_far;
 };
@@ -81,3 +62,30 @@ class Sphere : public Shape {
 
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
+
+struct Scene{
+    Camera* camera;
+    vector<Shape*> objects;
+};
+
+class Ray_Tracer{
+    public:
+    bool initialize(const std::string &title, int width, int height, int spp = 1);
+    bool shouldQuit();
+    void clear(vec4 color);
+    void show();
+    void draw(Scene *scene);
+
+    private:
+    SDL_Window *window;
+    bool quit;
+    SDL_Surface* framebuffer = NULL;
+    SDL_Surface *windowSurface = NULL;
+    vec4 sample(Scene *scene, float x, float y);
+
+    int frameWidth;
+    int frameHeight;
+    int displayScale;
+    int spp; // Samples-per-pixel
+};
+
