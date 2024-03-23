@@ -37,17 +37,15 @@ struct Ray{
 };
 
 struct Material{
-
+    vec3 albedo;
+    vec4 (*emmission)(vec4 position, vec4 omega);
+    vec4 (*diffuse)(vec4 position, vec4 omega);
 };
 
 class Shape {
     public:
     Shape();
     virtual std::pair<Ray*, vec4> hit(Ray *ray) = 0;
-    Material* get_material();
-
-
-    private:
     Material* material;
 };
 
@@ -76,11 +74,34 @@ class Plane : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
+class Light{
+    public:
+    vec4 Intensity;
+    vec4 position;
+};
+
 struct Scene{
     Camera* camera;
     vector<Shape*> objects;
+    vector<Light*> lights;
     float near_plane;
     float far_plane;
+};
+
+class Renderer{
+    public:
+    const int MAX_BOUNCES;
+    const int PATHS;
+    const int SAMPLES;
+    const string SAMPLING;
+    Scene* scene;
+    Renderer(int bounces, int paths, int samples, string sampling);
+
+    vec4 MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth);
+    private:
+    vec4 path_trace(int obj_id, vec4 position, vec4 out_dir, int depth);
+    vec4 rand_hemisphere();
+    pair<int, vec4> incident_ray(vec4 position, vec4 direction);
 };
 
 class Ray_Tracer{
@@ -102,4 +123,5 @@ class Ray_Tracer{
     int frameHeight;
     int displayScale;
     int spp; // Samples-per-pixel
+    Renderer* renderer;
 };

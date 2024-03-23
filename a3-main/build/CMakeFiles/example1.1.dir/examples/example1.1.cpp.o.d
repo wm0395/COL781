@@ -1,5 +1,5 @@
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.o: \
- /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp \
+ /home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp \
  /usr/include/stdc-predef.h /usr/include/glm/glm.hpp \
  /usr/include/glm/detail/_fixes.hpp /usr/include/c++/11/cmath \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
@@ -279,8 +279,8 @@ CMakeFiles/example1.1.dir/examples/example1.1.cpp.o: \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
  /usr/include/c++/11/bits/istream.tcc \
- /home/kanav/COL781/COL781_Assignments/a3-main/examples/../src/Scene.cpp \
- /home/kanav/COL781/COL781_Assignments/a3-main/examples/../src/Scene.hpp \
+ /home/wm0395/COL781_Assignments/a3-main/examples/../src/Scene.cpp \
+ /home/wm0395/COL781_Assignments/a3-main/examples/../src/Scene.hpp \
  /usr/include/SDL2/SDL.h /usr/include/SDL2/SDL_main.h \
  /usr/include/SDL2/SDL_stdinc.h /usr/include/SDL2/SDL_config.h \
  /usr/include/x86_64-linux-gnu/SDL2/_real_SDL_config.h \

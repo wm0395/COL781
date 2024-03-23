@@ -1,12 +1,9 @@
 #include "Scene.hpp"
 #include <iostream>
 
-Material* Shape::get_material(){
-    return material;
-}
 
 Shape::Shape(){
-
+    
 }
 
 Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
