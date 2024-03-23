@@ -6,7 +6,7 @@
 
 
 
-bool Ray_Tracer::initialize(const std::string &title, int width, int height, int spp){
+bool Ray_Tracer::initialize(const std::string &title, int width, int height, int bounces, int paths, int samples, string sampling){
     bool success = true;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
@@ -26,6 +26,7 @@ bool Ray_Tracer::initialize(const std::string &title, int width, int height, int
         } else {
             this->windowSurface = SDL_GetWindowSurface(window);
             this->framebuffer = SDL_CreateRGBSurface(0, this->frameWidth, this->frameHeight, 32, 0, 0, 0, 0);
+            this->renderer = new Renderer(bounces, paths, samples, sampling);
         }
     }
     return success;
@@ -117,17 +118,6 @@ vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
     ray->t_far = 1000.0f;
     float t = INT32_MAX;
     vec4 color = vec4(0,0,0,0);
-    for(int i = 0; i < scene->objects.size(); i++){
-        ray->t = 0;
-        pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
-        // std::cout << ray->t << "\n";
-        if(ray->t > 0 && ray->t < t){
-            t = ray->t;
-            // color = get_color();
-            vec4 normal = hit.second;
-            color = (normal + vec4(1.0f, 1.0f, 1.0f, 1.0f));    // if hit
-            color /= 2;
-        }
-    }
+    
     return color;
 }
