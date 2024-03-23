@@ -103,4 +103,3 @@ class Ray_Tracer{
     int displayScale;
     int spp; // Samples-per-pixel
 };
-

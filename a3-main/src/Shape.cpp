@@ -14,7 +14,6 @@ Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 }
 
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {
-    
     float x1 = dot(ray->d, ray->o - centre);
     float norm_d_sq = length(ray->d);
     norm_d_sq *= norm_d_sq;
