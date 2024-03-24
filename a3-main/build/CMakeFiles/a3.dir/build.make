@@ -111,10 +111,24 @@ CMakeFiles/a3.dir/src/Camera.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/a3.dir/src/Camera.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wm0395/COL781_Assignments/a3-main/src/Camera.cpp -o CMakeFiles/a3.dir/src/Camera.cpp.s
 
+CMakeFiles/a3.dir/src/Lighting.cpp.o: CMakeFiles/a3.dir/flags.make
+CMakeFiles/a3.dir/src/Lighting.cpp.o: ../src/Lighting.cpp
+CMakeFiles/a3.dir/src/Lighting.cpp.o: CMakeFiles/a3.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/a3.dir/src/Lighting.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/a3.dir/src/Lighting.cpp.o -MF CMakeFiles/a3.dir/src/Lighting.cpp.o.d -o CMakeFiles/a3.dir/src/Lighting.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Lighting.cpp
+
+CMakeFiles/a3.dir/src/Lighting.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/a3.dir/src/Lighting.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wm0395/COL781_Assignments/a3-main/src/Lighting.cpp > CMakeFiles/a3.dir/src/Lighting.cpp.i
+
+CMakeFiles/a3.dir/src/Lighting.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/a3.dir/src/Lighting.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wm0395/COL781_Assignments/a3-main/src/Lighting.cpp -o CMakeFiles/a3.dir/src/Lighting.cpp.s
+
 CMakeFiles/a3.dir/deps/src/gl.c.o: CMakeFiles/a3.dir/flags.make
 CMakeFiles/a3.dir/deps/src/gl.c.o: ../deps/src/gl.c
 CMakeFiles/a3.dir/deps/src/gl.c.o: CMakeFiles/a3.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/a3.dir/deps/src/gl.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/a3.dir/deps/src/gl.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/a3.dir/deps/src/gl.c.o -MF CMakeFiles/a3.dir/deps/src/gl.c.o.d -o CMakeFiles/a3.dir/deps/src/gl.c.o -c /home/wm0395/COL781_Assignments/a3-main/deps/src/gl.c
 
 CMakeFiles/a3.dir/deps/src/gl.c.i: cmake_force
@@ -130,6 +144,7 @@ a3_OBJECTS = \
 "CMakeFiles/a3.dir/src/Scene.cpp.o" \
 "CMakeFiles/a3.dir/src/Shape.cpp.o" \
 "CMakeFiles/a3.dir/src/Camera.cpp.o" \
+"CMakeFiles/a3.dir/src/Lighting.cpp.o" \
 "CMakeFiles/a3.dir/deps/src/gl.c.o"
 
 # External object files for target a3
@@ -138,10 +153,11 @@ a3_EXTERNAL_OBJECTS =
 liba3.a: CMakeFiles/a3.dir/src/Scene.cpp.o
 liba3.a: CMakeFiles/a3.dir/src/Shape.cpp.o
 liba3.a: CMakeFiles/a3.dir/src/Camera.cpp.o
+liba3.a: CMakeFiles/a3.dir/src/Lighting.cpp.o
 liba3.a: CMakeFiles/a3.dir/deps/src/gl.c.o
 liba3.a: CMakeFiles/a3.dir/build.make
 liba3.a: CMakeFiles/a3.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library liba3.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library liba3.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/a3.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/a3.dir/link.txt --verbose=$(VERBOSE)
 

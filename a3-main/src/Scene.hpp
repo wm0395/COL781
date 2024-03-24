@@ -37,7 +37,7 @@ struct Ray{
 };
 
 struct Material{
-    vec3 albedo;
+    vec4 albedo;
     vec4 (*emmission)(vec4 position, vec4 omega);
     vec4 (*diffuse)(vec4 position, vec4 omega);
 };
@@ -82,6 +82,7 @@ class Light{
 
 struct Scene{
     Camera* camera;
+    vec4 sky = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vector<Shape*> objects;
     vector<Light*> lights;
     float near_plane;
@@ -96,17 +97,23 @@ class Renderer{
     const string SAMPLING;
     Scene* scene;
     Renderer(int bounces, int paths, int samples, string sampling);
+    
+    vec4 render(Ray *ray);
 
-    vec4 MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth);
     private:
     vec4 path_trace(int obj_id, vec4 position, vec4 out_dir, int depth);
     vec4 rand_hemisphere();
     pair<int, vec4> incident_ray(vec4 position, vec4 direction);
+    int shadow_ray(int light_id, vec4 position);
+    
+    vec4 point_lambert(Ray *ray);
+    vec4 normal_map(Ray *ray);
+    vec4 MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth);
 };
 
 class Ray_Tracer{
     public:
-    bool initialize(const std::string &title, int width, int height, int spp = 1);
+    bool initialize(const std::string &title, int width, int height, int bounces=1, int paths=1, int samples=1, string sampling="normal_map");
     bool shouldQuit();
     void clear(vec4 color);
     void show();
@@ -117,7 +124,7 @@ class Ray_Tracer{
     bool quit;
     SDL_Surface* framebuffer = NULL;
     SDL_Surface *windowSurface = NULL;
-    vec4 sample(Scene *scene, float x, float y);
+    vec4 sample(float x, float y);
 
     int frameWidth;
     int frameHeight;

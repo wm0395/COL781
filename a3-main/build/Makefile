@@ -155,6 +155,19 @@ example1.2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/build
 .PHONY : example1.2/fast
 
+#=============================================================================
+# Target rules for targets named example1.3
+
+# Build rule for target.
+example1.3: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example1.3
+.PHONY : example1.3
+
+# fast build rule for target.
+example1.3/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/build
+.PHONY : example1.3/fast
+
 deps/src/gl.o: deps/src/gl.c.o
 .PHONY : deps/src/gl.o
 
@@ -227,6 +240,30 @@ examples/example1.2.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.2.dir/build.make CMakeFiles/example1.2.dir/examples/example1.2.cpp.s
 .PHONY : examples/example1.2.cpp.s
 
+examples/example1.3.o: examples/example1.3.cpp.o
+.PHONY : examples/example1.3.o
+
+# target to build an object file
+examples/example1.3.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/examples/example1.3.cpp.o
+.PHONY : examples/example1.3.cpp.o
+
+examples/example1.3.i: examples/example1.3.cpp.i
+.PHONY : examples/example1.3.i
+
+# target to preprocess a source file
+examples/example1.3.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/examples/example1.3.cpp.i
+.PHONY : examples/example1.3.cpp.i
+
+examples/example1.3.s: examples/example1.3.cpp.s
+.PHONY : examples/example1.3.s
+
+# target to generate assembly for a file
+examples/example1.3.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/examples/example1.3.cpp.s
+.PHONY : examples/example1.3.cpp.s
+
 src/Camera.o: src/Camera.cpp.o
 .PHONY : src/Camera.o
 
@@ -250,6 +287,30 @@ src/Camera.s: src/Camera.cpp.s
 src/Camera.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Camera.cpp.s
 .PHONY : src/Camera.cpp.s
+
+src/Lighting.o: src/Lighting.cpp.o
+.PHONY : src/Lighting.o
+
+# target to build an object file
+src/Lighting.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Lighting.cpp.o
+.PHONY : src/Lighting.cpp.o
+
+src/Lighting.i: src/Lighting.cpp.i
+.PHONY : src/Lighting.i
+
+# target to preprocess a source file
+src/Lighting.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Lighting.cpp.i
+.PHONY : src/Lighting.cpp.i
+
+src/Lighting.s: src/Lighting.cpp.s
+.PHONY : src/Lighting.s
+
+# target to generate assembly for a file
+src/Lighting.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/src/Lighting.cpp.s
+.PHONY : src/Lighting.cpp.s
 
 src/Scene.o: src/Scene.cpp.o
 .PHONY : src/Scene.o
@@ -310,6 +371,7 @@ help:
 	@echo "... a3"
 	@echo "... example1.1"
 	@echo "... example1.2"
+	@echo "... example1.3"
 	@echo "... deps/src/gl.o"
 	@echo "... deps/src/gl.i"
 	@echo "... deps/src/gl.s"
@@ -319,9 +381,15 @@ help:
 	@echo "... examples/example1.2.o"
 	@echo "... examples/example1.2.i"
 	@echo "... examples/example1.2.s"
+	@echo "... examples/example1.3.o"
+	@echo "... examples/example1.3.i"
+	@echo "... examples/example1.3.s"
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"
+	@echo "... src/Lighting.o"
+	@echo "... src/Lighting.i"
+	@echo "... src/Lighting.s"
 	@echo "... src/Scene.o"
 	@echo "... src/Scene.i"
 	@echo "... src/Scene.s"

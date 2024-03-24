@@ -27,6 +27,63 @@ pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
         }
     }
     vec4 p = position + ray->t*ray->d;
+    return {hit_id, p};
+}
+
+int Renderer::shadow_ray(int light_id, vec4 position){
+    Ray *ray = new Ray();
+    ray->o = scene->lights[light_id]->position;
+    ray->d = position - scene->lights[light_id]->position;
+    ray->t_near = -0.01f;
+    ray->t_far = 1000.0f;
+    // int bias = 0.0
+    float t = INT32_MAX;
+    int hit_id = -1;
+    for(int i = 0; i < scene->objects.size(); i++){
+        ray->t = 0;
+        pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
+        if(ray->t >= 0 && ray->t < t){
+            t = ray->t;
+            hit_id = i;
+        }
+    }
+    return hit_id;
+}
+
+vec4 Renderer::point_lambert(Ray *ray){
+    pair<int, vec4> hit = incident_ray(ray->o, ray->d);
+    // pair<*Ray, vec4> reflect = scene->objects[hit.first]->hit(ray);
+    if(hit.first == -1) return scene->sky;
+    vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    int N = 0;
+    for(int i = 0; i < scene->lights.size(); i++){
+        if(shadow_ray(i, hit.second) != hit.first){ 
+            cout<<"Ray Blocked\n";
+            continue;
+        }
+
+        N++;
+        vec4 irradiace = scene->lights[i]->Intensity;
+        irradiace /= (4*M_PI*glm::length(scene->lights[i]->position - hit.second));
+        color += scene->objects[hit.first]->material->albedo * irradiace;
+        if(scene->objects[hit.first]->material->emmission)
+            color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);
+    }
+    if(N == 0)
+    return color;
+    color *= (2/N);
+    return color;
+}
+
+vec4 Renderer::normal_map(Ray *ray){
+    pair<int, vec4> i_ray = incident_ray(ray->o, ray->d);
+    if(i_ray.first == -1) return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    pair<Ray*, vec4> hit = scene->objects[i_ray.first]->hit(ray);
+    vec4 normal = hit.second;
+    vec4 color = (normal + vec4(1.0f, 1.0f, 1.0f, 1.0f));    // if hit
+    color /= 2;
+    return color;
 }
 
 vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
@@ -42,5 +99,14 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
 vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 color = scene->objects[obj_id]->material->emmission(position, -out_dir);
-    
+
+}
+
+vec4 Renderer::render(Ray* ray){
+    if(SAMPLING.compare("normal_map") == 0)
+        return normal_map(ray);
+    else if(SAMPLING.compare("point_lambert") == 0)
+        return point_lambert(ray);
+    else 
+        return vec4(0,0,0,0);
 }

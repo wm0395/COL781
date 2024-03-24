@@ -6,7 +6,7 @@
 
 
 
-bool Ray_Tracer::initialize(const std::string &title, int width, int height, int spp){
+bool Ray_Tracer::initialize(const std::string &title, int width, int height, int bounces, int paths, int samples, string sampling){
     bool success = true;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s", SDL_GetError());
@@ -26,6 +26,7 @@ bool Ray_Tracer::initialize(const std::string &title, int width, int height, int
         } else {
             this->windowSurface = SDL_GetWindowSurface(window);
             this->framebuffer = SDL_CreateRGBSurface(0, this->frameWidth, this->frameHeight, 32, 0, 0, 0, 0);
+            this->renderer = new Renderer(bounces, paths, samples, sampling);
         }
     }
     return success;
@@ -67,6 +68,9 @@ void Ray_Tracer::draw(Scene *scene){
         return;
     }
 
+    // Set Scene in renderer
+    renderer->scene = scene;
+
     // Get the pixel format of the surface
     SDL_PixelFormat* pixelFormat = framebuffer->format;
 
@@ -86,7 +90,7 @@ void Ray_Tracer::draw(Scene *scene){
             float center_x = (x + 0.5f);///framebuffer->w;
             float center_y = (y + 0.5f);///framebuffer->h;
 
-            vec4 color = sample(scene, center_x, center_y);
+            vec4 color = sample(center_x, center_y);
             pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
@@ -103,7 +107,7 @@ void Ray_Tracer::draw(Scene *scene){
     SDL_UnlockSurface(framebuffer);
 }
 
-vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
+vec4 Ray_Tracer::sample(float x, float y){
     
     Ray* ray = new Ray();
     float h_prime = 1/sqrt(3);
@@ -116,18 +120,7 @@ vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
     ray->t_near = 0.01f;
     ray->t_far = 1000.0f;
     float t = INT32_MAX;
-    vec4 color = vec4(0,0,0,0);
-    for(int i = 0; i < scene->objects.size(); i++){
-        ray->t = 0;
-        pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
-        // std::cout << ray->t << "\n";
-        if(ray->t > 0 && ray->t < t){
-            t = ray->t;
-            // color = get_color();
-            vec4 normal = hit.second;
-            color = (normal + vec4(1.0f, 1.0f, 1.0f, 1.0f));    // if hit
-            color /= 2;
-        }
-    }
+
+    vec4 color = renderer->render(ray);
     return color;
 }
