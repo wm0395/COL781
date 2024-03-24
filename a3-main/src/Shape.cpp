@@ -3,11 +3,10 @@
 
 
 Shape::Shape(){
-    
+    material = new Material();
 }
 
 Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
-
 }
 
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {

@@ -124,7 +124,7 @@ class Ray_Tracer{
     bool quit;
     SDL_Surface* framebuffer = NULL;
     SDL_Surface *windowSurface = NULL;
-    vec4 sample(Scene *scene, float x, float y);
+    vec4 sample(float x, float y);
 
     int frameWidth;
     int frameHeight;

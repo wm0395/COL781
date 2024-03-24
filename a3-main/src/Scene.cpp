@@ -68,6 +68,9 @@ void Ray_Tracer::draw(Scene *scene){
         return;
     }
 
+    // Set Scene in renderer
+    renderer->scene = scene;
+
     // Get the pixel format of the surface
     SDL_PixelFormat* pixelFormat = framebuffer->format;
 
@@ -87,7 +90,7 @@ void Ray_Tracer::draw(Scene *scene){
             float center_x = (x + 0.5f);///framebuffer->w;
             float center_y = (y + 0.5f);///framebuffer->h;
 
-            vec4 color = sample(scene, center_x, center_y);
+            vec4 color = sample(center_x, center_y);
             pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
@@ -104,7 +107,7 @@ void Ray_Tracer::draw(Scene *scene){
     SDL_UnlockSurface(framebuffer);
 }
 
-vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
+vec4 Ray_Tracer::sample(float x, float y){
     
     Ray* ray = new Ray();
     float h_prime = 1/sqrt(3);
@@ -117,7 +120,7 @@ vec4 Ray_Tracer::sample(Scene *scene, float x, float y){
     ray->t_near = 0.01f;
     ray->t_far = 1000.0f;
     float t = INT32_MAX;
-    vec4 color = vec4(0,0,0,0);
-    
+
+    vec4 color = renderer->render(ray);
     return color;
 }

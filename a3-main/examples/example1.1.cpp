@@ -28,7 +28,7 @@ int main(){
     scene->objects = objects;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480)){
+    if (!r.initialize("Example 1", 640, 480, 1, 1, 1, "normal_map")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
