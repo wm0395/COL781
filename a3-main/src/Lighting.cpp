@@ -26,7 +26,7 @@ pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
             hit_id = i;
         }
     }
-    vec4 p = position + ray->t*ray->d;
+    vec4 p = position + t * ray->d;
     return {hit_id, p};
 }
 
@@ -34,7 +34,7 @@ int Renderer::shadow_ray(int light_id, vec4 position){
     Ray *ray = new Ray();
     ray->o = scene->lights[light_id]->position;
     ray->d = position - scene->lights[light_id]->position;
-    ray->t_near = -0.01f;
+    ray->t_near = 0.0f;
     ray->t_far = 1000.0f;
     // int bias = 0.0
     float t = INT32_MAX;
@@ -42,7 +42,7 @@ int Renderer::shadow_ray(int light_id, vec4 position){
     for(int i = 0; i < scene->objects.size(); i++){
         ray->t = 0;
         pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
-        if(ray->t >= 0 && ray->t < t){
+        if(ray->t > 0.01f && ray->t < t){
             t = ray->t;
             hit_id = i;
         }
@@ -54,23 +54,34 @@ vec4 Renderer::point_lambert(Ray *ray){
     pair<int, vec4> hit = incident_ray(ray->o, ray->d);
     // pair<*Ray, vec4> reflect = scene->objects[hit.first]->hit(ray);
     if(hit.first == -1) return scene->sky;
-    vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    if(scene->objects[hit.first]->material->emmission){
+        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);}
+    
     int N = 0;
+    
     for(int i = 0; i < scene->lights.size(); i++){
         if(shadow_ray(i, hit.second) != hit.first){ 
-            cout<<"Ray Blocked\n";
+            // cout<<hit.first<<"Ray Blocked\n";
             continue;
         }
 
         N++;
         vec4 irradiace = scene->lights[i]->Intensity;
-        irradiace /= (4*M_PI*glm::length(scene->lights[i]->position - hit.second));
-        color += scene->objects[hit.first]->material->albedo * irradiace;
-        if(scene->objects[hit.first]->material->emmission)
-            color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);
+        float fall_off = 4*M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
+        irradiace /= fall_off;
+        vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        if(scene->objects[hit.first]->material->diffuse)
+            temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
+        color = color + temp * (scene->objects[hit.first]->material->albedo * irradiace);
+        
     }
-    if(N == 0)
-    return color;
+    if(N == 0){
+        cout<< hit.first <<"no light intersect\n";
+        return color;
+    }
     color *= (2/N);
     return color;
 }
