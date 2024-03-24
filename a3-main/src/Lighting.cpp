@@ -42,7 +42,7 @@ int Renderer::shadow_ray(int light_id, vec4 position){
     for(int i = 0; i < scene->objects.size(); i++){
         ray->t = 0;
         pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
-        if(ray->t > 0.01f && ray->t < t){
+        if(ray->t > 0.01f && ray->t < t && ray->t < INT32_MAX){
             t = ray->t;
             hit_id = i;
         }
@@ -75,11 +75,11 @@ vec4 Renderer::point_lambert(Ray *ray){
         vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
         if(scene->objects[hit.first]->material->diffuse)
             temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
-        color = color + temp * (scene->objects[hit.first]->material->albedo * irradiace);
+        color = color + (temp * (scene->objects[hit.first]->material->albedo * irradiace));
         
     }
     if(N == 0){
-        cout<< hit.first <<"no light intersect\n";
+        // cout<< hit.first <<"no light intersect\n";
         return color;
     }
     color *= (2/N);

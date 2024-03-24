@@ -6,7 +6,7 @@ using namespace std;
 using namespace glm;
 
 vec4 iso_blue(vec4 position, vec4 omega){
-    return vec4(0.0f, 0.0f, 0.1f, 0.0f);
+    return vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 vec4 iso_white(vec4 position, vec4 omega){
@@ -22,8 +22,8 @@ int main(){
 
     vector<Shape*> objects = {};
 
-    vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-    float r1 = 0.1f;
+    vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
+    float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
     sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     sphere1->material->diffuse = iso_white;
@@ -33,7 +33,7 @@ int main(){
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
     Plane *plane1 = new Plane(normal1, point1);
     plane1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    plane1->material->emmission = iso_blue;
+    plane1->material->diffuse = iso_blue;
     objects.push_back(plane1);
     
     scene->objects = objects;
@@ -41,18 +41,25 @@ int main(){
     vector<Light*> lights = {};
 
     vec4 position1 = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    vec4 intensity1 = vec4(10.0f, 0.0f, 0.0f, 1.0f);
+    vec4 intensity1 = vec4(15.0f, 0.0f, 0.0f, 1.0f);
     Light *light1 = new Light();
     light1->Intensity = intensity1;
     light1->position = position1;
     lights.push_back(light1);
 
-    vec4 position2 = vec4(1.0f, 1.0f, -2.5f, 1.0f);
-    vec4 intensity2 = vec4(0.0f, 5.0f, 5.0f, 1.0f);
+    vec4 position2 = vec4(1.0f, 1.0f, -3.0f, 1.0f);
+    vec4 intensity2 = vec4(0.0f, 7.5f, 7.5f, 1.0f);
     Light *light2 = new Light();
     light2->Intensity = intensity2;
     light2->position = position2;
     lights.push_back(light2);
+
+    vec4 position3 = vec4(-1.0f, 1.0f, -5.0f, 1.0f);
+    vec4 intensity3 = vec4(7.0f, 7.5f, 7.5f, 1.0f);
+    Light *light3 = new Light();
+    light3->Intensity = intensity3;
+    light3->position = position3;
+    lights.push_back(light3);
     
     scene->lights = lights;
 

@@ -36,9 +36,13 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
         ray->t = t2;
         return reflected_ray(ray, t2);
     }
-    else{
+    else if(t1 >=0){
         ray->t = t1;
         return reflected_ray(ray, t1);
+    }
+    else {
+        ray->t = INT32_MAX;
+        return {nullptr, vec4(0,0,0,0)};
     }
 }
 
