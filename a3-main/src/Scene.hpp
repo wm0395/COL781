@@ -36,10 +36,12 @@ struct Ray{
     float t_far;
 };
 
-struct Material{
+class Material{
+    public:
     vec4 albedo;
     vec4 (*emmission)(vec4 position, vec4 omega);
     vec4 (*diffuse)(vec4 position, vec4 omega);
+    vec4 (*reflectance)(vec4 position, vec4 omega);
 };
 
 class Shape {
@@ -47,7 +49,7 @@ class Shape {
     Shape();
     virtual std::pair<Ray*, vec4> hit(Ray *ray) = 0;
     virtual vec4 normal_ray(vec4 position) = 0;
-    Material* material;
+    Material *material;
 };
 
 
@@ -111,6 +113,7 @@ class Renderer{
     
     vec4 point_lambert(Ray *ray);
     vec4 normal_map(Ray *ray);
+    vec4 ray_trace(Ray *ray);
     vec4 MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth);
 };
 

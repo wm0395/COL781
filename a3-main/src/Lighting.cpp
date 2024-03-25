@@ -86,20 +86,24 @@ vec4 Renderer::point_lambert(Ray *ray){
         // float cos_theta = glm::dot(hit.second - scene->lights[i]->position, -(ray->d))/ (sqrt(glm::dot(hit.second - scene->lights[i]->position, hit.second - scene->lights[i]->position)) * sqrt(glm::dot(ray->d, ray->d)));
         // float cos_theta = 1.0f;
         irradiace *= (cos_theta/ fall_off);
+        irradiace.w /= (cos_theta/ fall_off);
         intensity += irradiace;
     }
     
-    intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
+    intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
 
+    if(N == 0.0f){
+        // cout<< hit.first <<"no light intersect\n";
+        return color;
+    }
+
+    intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
+    intensity *= (2.0f/pow(N,1.0f/4.0f));
     vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     // if(scene->objects[hit.first]->material->diffuse)
     //     temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
     color = color + ((scene->objects[hit.first]->material->albedo * intensity));
-    if(N == 0){
-        // cout<< hit.first <<"no light intersect\n";
-        return color;
-    }
-    color *= (2.0f/sqrt(N));
+    
     color = vec4(glm::min(1.0f, color.x), glm::min(1.0f, color.y), glm::min(1.0f, color.z), glm::min(1.0f, color.w));
     return color;
 }
@@ -116,19 +120,61 @@ vec4 Renderer::normal_map(Ray *ray){
 }
 
 vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
+    
     vec4 F = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    for(int i = 0; i < SAMPLES; i++){
+    
+    vec4 normal = scene->objects[obj_id]->normal_ray(position);
+    float normal_norm = glm::length(normal);
+
+    for(int i = 0; i < SAMPLES && depth != MAX_BOUNCES; i++){
         vec4 rand_dir = rand_hemisphere();
         pair<int, vec4> hit = incident_ray(position, rand_dir);
-        int hit_id = hit.first; 
-        vec4 p = hit.second;
-        F += path_trace(i, p, rand_dir, depth+1);
+        if(hit.first == -1){
+            F += scene->sky;
+            continue;
+        }
+        Ray *branch_ray = new Ray();
+        branch_ray->o = hit.second;
+        branch_ray->d = rand_dir;
+        branch_ray->t = 0.0f;
+        branch_ray->t_near = 0.0f;
+        branch_ray->t_far = 1000.0f; 
+        pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
+
+        float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
+        vec4 out = hit.second - position;
+        float out_norm = glm::length(out);
+        float cos_theta = glm::dot(out, normal)/ (out_norm * normal_norm);
+        
+        vec4 irradiance = MC_Sampling(hit.first, hit.second, -hit_out.second, depth+1);
+        irradiance *= (cos_theta/ fall_off);
+        irradiance.w /= (cos_theta/ fall_off);
+        
+        F += irradiance;
     }
+
+    F *= (2.0f*M_1_PI/(float)SAMPLES);
+
+    if(scene->objects[obj_id]->material->emmission){
+        F += scene->objects[obj_id]->material->emmission(position, out_dir);
+    }
+
+    F = scene->objects[obj_id]->material->reflectance(position, out_dir) * F;
+    return F;
 }
 
 vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 color = scene->objects[obj_id]->material->emmission(position, -out_dir);
 
+}
+
+vec4 Renderer::ray_trace(Ray *ray){
+    pair<int, vec4> hit = incident_ray(ray->o, ray->d);
+    if(hit.first == -1) return scene->sky;
+
+    vec4 intensity = MC_Sampling(hit.first, hit.second, -(ray->d), 1);
+    intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.z));
+    return scene->objects[hit.first]->material->diffuse(hit.second, -(ray->d)) * intensity;
 }
 
 vec4 Renderer::render(Ray* ray){
