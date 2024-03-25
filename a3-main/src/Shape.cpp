@@ -18,7 +18,7 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
 
     if (x1 * x1 - norm_d_sq * x2 < 0){
         ray->t = INT32_MAX;
-        return {nullptr, vec4(0,0,0,0)};
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     float D = sqrt(x1 * x1 - norm_d_sq * x2);
     float t1 = -x1 - D;
@@ -30,20 +30,20 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
 
     if(t2 <= ray->t_near){
         ray->t = INT32_MAX;
-        return {nullptr, vec4(0,0,0,0)};
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else if(t1 <= ray->t_near){
         ray->t = t2;
         return reflected_ray(ray, t2);
     }
-    else if(t1 >=0){
+    else{
         ray->t = t1;
         return reflected_ray(ray, t1);
     }
-    else {
-        ray->t = INT32_MAX;
-        return {nullptr, vec4(0,0,0,0)};
-    }
+}
+
+vec4 Sphere::normal_ray(vec4 position){
+    return position - centre;
 }
 
 pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
@@ -69,12 +69,16 @@ pair<Ray*, vec4> Plane::hit(Ray *ray){
     float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
     if (t <= ray->t_near){
         ray->t = INT32_MAX;
-        return {nullptr, vec4(0,0,0,0)};
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{
         ray->t = t;
         return reflected_ray(ray, t);
     }
+}
+
+vec4 Plane::normal_ray(vec4 position){
+    return normal;
 }
 
 pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){

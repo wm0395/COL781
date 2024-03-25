@@ -47,6 +47,9 @@ int Renderer::shadow_ray(int light_id, vec4 position){
             hit_id = i;
         }
     }
+    vec4 p = ray->o + t * ray->d;
+    if(dot(p- position, p- position) > 0.00001f)
+        hit_id = -1;
     return hit_id;
 }
 
@@ -58,31 +61,46 @@ vec4 Renderer::point_lambert(Ray *ray){
     vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
     if(scene->objects[hit.first]->material->emmission){
-        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);}
+        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);
+    }
     
-    int N = 0;
+    float N = 0.0f;
     
+    vec4 intensity = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
     for(int i = 0; i < scene->lights.size(); i++){
         if(shadow_ray(i, hit.second) != hit.first){ 
             // cout<<hit.first<<"Ray Blocked\n";
             continue;
         }
 
-        N++;
+        N+= 1.0f;
         vec4 irradiace = scene->lights[i]->Intensity;
-        float fall_off = 4*M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
-        irradiace /= fall_off;
-        vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        if(scene->objects[hit.first]->material->diffuse)
-            temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
-        color = color + (temp * (scene->objects[hit.first]->material->albedo * irradiace));
-        
+        float fall_off = 4.0f*(float)M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
+        vec4 out = scene->lights[i]->position - hit.second;
+        vec4 normal = scene->objects[hit.first]->normal_ray(hit.second);
+        float out_norm = glm::length(out);
+        float normal_norm = glm::length(normal);
+        float cos_theta = glm::dot(out, normal)/ (out_norm * normal_norm);
+        // cout << cos_theta <<"\n";
+        // float cos_theta = glm::dot(hit.second - scene->lights[i]->position, -(ray->d))/ (sqrt(glm::dot(hit.second - scene->lights[i]->position, hit.second - scene->lights[i]->position)) * sqrt(glm::dot(ray->d, ray->d)));
+        // float cos_theta = 1.0f;
+        irradiace *= (cos_theta/ fall_off);
+        intensity += irradiace;
     }
+    
+    intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
+
+    vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // if(scene->objects[hit.first]->material->diffuse)
+    //     temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
+    color = color + ((scene->objects[hit.first]->material->albedo * intensity));
     if(N == 0){
         // cout<< hit.first <<"no light intersect\n";
         return color;
     }
-    color *= (2/N);
+    color *= (2.0f/sqrt(N));
+    color = vec4(glm::min(1.0f, color.x), glm::min(1.0f, color.y), glm::min(1.0f, color.z), glm::min(1.0f, color.w));
     return color;
 }
 

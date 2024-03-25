@@ -91,7 +91,7 @@ void Ray_Tracer::draw(Scene *scene){
             float center_y = (y + 0.5f);///framebuffer->h;
 
             vec4 color = sample(center_x, center_y);
-            pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * glm::max(color.w, 1.0f));
+            pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
             Uint32 pixelValue = pixels[pixelIndex];

@@ -46,6 +46,7 @@ class Shape {
     public:
     Shape();
     virtual std::pair<Ray*, vec4> hit(Ray *ray) = 0;
+    virtual vec4 normal_ray(vec4 position) = 0;
     Material* material;
 };
 
@@ -54,6 +55,7 @@ class Sphere : public Shape {
     public:
     Sphere(const float &r, const vec4 &c);
     std::pair<Ray*, vec4> hit(Ray *ray) override;
+    vec4 normal_ray(vec4 position) override;
 
     private:
     float radius;
@@ -66,6 +68,7 @@ class Plane : public Shape {
     public:
     Plane(const vec4 &normal, const vec4 &point_on_plane);
     std::pair<Ray*, vec4> hit(Ray *ray) override;
+    vec4 normal_ray(vec4 position) override;
 
     private:
     vec4 normal;

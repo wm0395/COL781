@@ -33,8 +33,16 @@ int main(){
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
     Plane *plane1 = new Plane(normal1, point1);
     plane1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    plane1->material->diffuse = iso_blue;
+    plane1->material->diffuse = iso_white;
     objects.push_back(plane1);
+
+    vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    vec4 point2 = vec4(0.0f, -1.0f, -2.5f, 1.0f);
+    Plane *plane2 = new Plane(normal2, point2);
+    plane2->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    plane2->material->diffuse = iso_white;
+    // plane2->material->emmission = iso_white;
+    objects.push_back(plane2);
     
     scene->objects = objects;
 
@@ -47,19 +55,26 @@ int main(){
     light1->position = position1;
     lights.push_back(light1);
 
-    vec4 position2 = vec4(1.0f, 1.0f, -3.0f, 1.0f);
-    vec4 intensity2 = vec4(0.0f, 7.5f, 7.5f, 1.0f);
+    vec4 position2 = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    vec4 intensity2 = vec4(0.0f, 0.0f, 20.0f, 1.0f);
     Light *light2 = new Light();
     light2->Intensity = intensity2;
     light2->position = position2;
     lights.push_back(light2);
 
-    vec4 position3 = vec4(-1.0f, 1.0f, -5.0f, 1.0f);
-    vec4 intensity3 = vec4(7.0f, 7.5f, 7.5f, 1.0f);
+    vec4 position3 = vec4(-1.0f, 1.0f, 0.0f, 1.0f);
+    vec4 intensity3 = vec4(0.0f, 15.0f, 0.0f, 1.0f);
     Light *light3 = new Light();
     light3->Intensity = intensity3;
     light3->position = position3;
     lights.push_back(light3);
+
+    vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
+    vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
+    Light *light4 = new Light();
+    light4->Intensity = intensity4;
+    light4->position = position4;
+    lights.push_back(light4);
     
     scene->lights = lights;
 
