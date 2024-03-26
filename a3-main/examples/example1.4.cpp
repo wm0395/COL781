@@ -5,15 +5,16 @@
 using namespace std;
 using namespace glm;
 
-vec4 iso_blue(vec4 position, vec4 omega){
-    return vec4(0.0f, 0.0f, 1.0f, 0.0f);
-}
-
 int main(){
 
     Scene *scene = new Scene();
     Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
+    cam->up = vec3(0.0f, 1.0f, 0.0f);
+    cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->updateViewMatrix();
+    cam->translate_camera(vec3(2.0f, 0.0f, 2.0f));
+    cam->rotate_camera(15.0f, vec3(0.0, 1.0, 1.0));    // rotate_camera(radians, axis)
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -21,42 +22,29 @@ int main(){
     vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
-    sphere1->material->albedo = vec4(0.5f, 0.5f, 1.0f, 0.0f);
+    sphere1->translation(vec3(1.0f, -1.0f, -2.0f));
+    sphere1->scaling(vec3(2.0f, 1.2f, 1.0f));
+    sphere1->rotation(180.0f, vec3(0.0f, 0.0f, 1.0f));
+    sphere1->invert_transformation();  // carry this out at the end of all the transformations  
     objects.push_back(sphere1);
+
+    // vec4 center2 = vec4(0.0f, -101.0f, -2.0f, 1.0f);
+    // float r2 = 100.0f;
+    // Sphere *sphere2 = new Sphere(r2, center2);
+    // objects.push_back(sphere2);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
     Plane *plane1 = new Plane(normal1, point1);
-    plane1->material->albedo = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-    plane1->material->emmission = iso_blue;
     objects.push_back(plane1);
     
     scene->objects = objects;
 
-    vector<Light*> lights = {};
-
-    vec4 position1 = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    vec4 intensity1 = vec4(100000.0f, 100.0f, 100.0f, 1.0f);
-    Light *light1 = new Light();
-    light1->Intensity = intensity1;
-    light1->position = position1;
-    lights.push_back(light1);
-
-    // vec4 position2 = vec4(1.0f, 1.0f, -10.0f, 1.0f);
-    // vec4 intensity2 = vec4(100000.0f, 100000.0f, 100.0f, 1.0f);
-    // Light *light2 = new Light();
-    // light2->Intensity = intensity2;
-    // light2->position = position2;
-    // lights.push_back(light2);
-    
-    scene->lights = lights;
-
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 1, 1, 1, "point_lambert")){
+    if (!r.initialize("Example 1", 640, 480, 1, 1, 1, "normal_map")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
-
 
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));

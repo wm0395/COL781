@@ -1,7 +1,7 @@
 CMakeFiles/a3.dir/src/Camera.cpp.o: \
- /home/wm0395/COL781_Assignments/a3-main/src/Camera.cpp \
+ /home/kanav/COL781/COL781_Assignments/a3-main/src/Camera.cpp \
  /usr/include/stdc-predef.h \
- /home/wm0395/COL781_Assignments/a3-main/src/Scene.hpp \
+ /home/kanav/COL781/COL781_Assignments/a3-main/src/Scene.hpp \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

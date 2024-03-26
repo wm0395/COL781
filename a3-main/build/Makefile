@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wm0395/COL781_Assignments/a3-main
+CMAKE_SOURCE_DIR = /home/kanav/COL781/COL781_Assignments/a3-main
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/wm0395/COL781_Assignments/a3-main/build
+CMAKE_BINARY_DIR = /home/kanav/COL781/COL781_Assignments/a3-main/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles /home/wm0395/COL781_Assignments/a3-main/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kanav/COL781/COL781_Assignments/a3-main/build/CMakeFiles /home/kanav/COL781/COL781_Assignments/a3-main/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kanav/COL781/COL781_Assignments/a3-main/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -167,6 +167,19 @@ example1.3: cmake_check_build_system
 example1.3/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/build
 .PHONY : example1.3/fast
+
+#=============================================================================
+# Target rules for targets named example1.4
+
+# Build rule for target.
+example1.4: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example1.4
+.PHONY : example1.4
+
+# fast build rule for target.
+example1.4/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/build
+.PHONY : example1.4/fast
 
 deps/src/gl.o: deps/src/gl.c.o
 .PHONY : deps/src/gl.o
@@ -263,6 +276,30 @@ examples/example1.3.s: examples/example1.3.cpp.s
 examples/example1.3.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/examples/example1.3.cpp.s
 .PHONY : examples/example1.3.cpp.s
+
+examples/example1.4.o: examples/example1.4.cpp.o
+.PHONY : examples/example1.4.o
+
+# target to build an object file
+examples/example1.4.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.o
+.PHONY : examples/example1.4.cpp.o
+
+examples/example1.4.i: examples/example1.4.cpp.i
+.PHONY : examples/example1.4.i
+
+# target to preprocess a source file
+examples/example1.4.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.i
+.PHONY : examples/example1.4.cpp.i
+
+examples/example1.4.s: examples/example1.4.cpp.s
+.PHONY : examples/example1.4.s
+
+# target to generate assembly for a file
+examples/example1.4.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.s
+.PHONY : examples/example1.4.cpp.s
 
 src/Camera.o: src/Camera.cpp.o
 .PHONY : src/Camera.o
@@ -372,6 +409,7 @@ help:
 	@echo "... example1.1"
 	@echo "... example1.2"
 	@echo "... example1.3"
+	@echo "... example1.4"
 	@echo "... deps/src/gl.o"
 	@echo "... deps/src/gl.i"
 	@echo "... deps/src/gl.s"
@@ -384,6 +422,9 @@ help:
 	@echo "... examples/example1.3.o"
 	@echo "... examples/example1.3.i"
 	@echo "... examples/example1.3.s"
+	@echo "... examples/example1.4.o"
+	@echo "... examples/example1.4.i"
+	@echo "... examples/example1.4.s"
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"
