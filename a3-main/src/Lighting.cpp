@@ -126,7 +126,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 normal = scene->objects[obj_id]->normal_ray(position);
     float normal_norm = glm::length(normal);
 
-    for(int i = 0; i < SAMPLES && depth != MAX_BOUNCES; i++){
+    for(int i = 0; i < SAMPLES && depth <= MAX_BOUNCES; i++){
         vec4 rand_dir = rand_hemisphere();
         pair<int, vec4> hit = incident_ray(position, rand_dir);
         if(hit.first == -1){
@@ -150,7 +150,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         irradiance *= (cos_theta/ fall_off);
         irradiance.w /= (cos_theta/ fall_off);
         
-        F += irradiance;
+        F += scene->objects[obj_id]->material->reflectance(position, hit_out.second) * irradiance;
     }
 
     F *= (2.0f*M_1_PI/(float)SAMPLES);
@@ -159,22 +159,22 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         F += scene->objects[obj_id]->material->emmission(position, out_dir);
     }
 
-    F = scene->objects[obj_id]->material->reflectance(position, out_dir) * F;
+    F = scene->objects[obj_id]->material->diffuse(position, out_dir) * F;
     return F;
 }
 
-vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
-    vec4 color = scene->objects[obj_id]->material->emmission(position, -out_dir);
-
-}
+// vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
+//     vec4 color = scene->objects[obj_id]->material->emmission(position, -out_dir);
+// }
 
 vec4 Renderer::ray_trace(Ray *ray){
     pair<int, vec4> hit = incident_ray(ray->o, ray->d);
     if(hit.first == -1) return scene->sky;
 
     vec4 intensity = MC_Sampling(hit.first, hit.second, -(ray->d), 1);
-    intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.z));
-    return scene->objects[hit.first]->material->diffuse(hit.second, -(ray->d)) * intensity;
+    intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
+    
+    return scene->objects[hit.first]->material->albedo * intensity;
 }
 
 vec4 Renderer::render(Ray* ray){
@@ -182,6 +182,8 @@ vec4 Renderer::render(Ray* ray){
         return normal_map(ray);
     else if(SAMPLING.compare("point_lambert") == 0)
         return point_lambert(ray);
+    else if(SAMPLING.compare("ray_trace") == 0)
+        return ray_trace(ray);
     else 
         return vec4(0,0,0,0);
 }
