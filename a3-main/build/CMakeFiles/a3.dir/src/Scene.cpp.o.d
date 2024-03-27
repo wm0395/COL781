@@ -251,6 +251,7 @@ CMakeFiles/a3.dir/src/Scene.cpp.o: \
  /usr/include/SDL2/SDL_shape.h /usr/include/SDL2/SDL_system.h \
  /usr/include/SDL2/SDL_timer.h /usr/include/SDL2/SDL_version.h \
  /usr/include/SDL2/SDL_locale.h /usr/include/SDL2/SDL_misc.h \
+ /usr/include/SDL2/SDL_image.h /usr/include/SDL2/SDL.h \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/glm/detail/setup.hpp /usr/include/c++/11/cassert \
  /usr/include/assert.h /usr/include/c++/11/cstddef \
@@ -398,8 +399,8 @@ CMakeFiles/a3.dir/src/Scene.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc /usr/include/SDL2/SDL_image.h \
- /usr/include/SDL2/SDL.h /usr/include/glm/gtc/matrix_transform.hpp \
+ /usr/include/c++/11/bits/istream.tcc \
+ /usr/include/glm/gtc/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/gtc/constants.hpp \
  /usr/include/glm/ext/scalar_constants.hpp \

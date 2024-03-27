@@ -126,7 +126,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 normal = scene->objects[obj_id]->normal_ray(position);
     float normal_norm = glm::length(normal);
 
-    for(int i = 0; i < SAMPLES && depth <= MAX_BOUNCES; i++){
+    for(int i = 0; i < PATHS && depth <= MAX_BOUNCES; i++){
         vec4 rand_dir = rand_hemisphere();
         pair<int, vec4> hit = incident_ray(position, rand_dir);
         if(hit.first == -1){
@@ -149,18 +149,18 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         vec4 irradiance = MC_Sampling(hit.first, hit.second, -hit_out.second, depth+1);
         irradiance *= (cos_theta/ fall_off);
         irradiance.w /= (cos_theta/ fall_off);
-        
-        F += scene->objects[obj_id]->material->reflectance(position, hit_out.second) * irradiance;
+
+        F += scene->objects[obj_id]->material->reflectance(scene->objects[obj_id]->material->albedo, hit_out.second, scene->objects[obj_id]->normal_ray(position)) * irradiance;
     }
 
-    F *= (2.0f*M_1_PI/(float)SAMPLES);
-
+    // F *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/4.0f));
+    F /= (float)PATHS;
     if(scene->objects[obj_id]->material->emmission){
         F += scene->objects[obj_id]->material->emmission(position, out_dir);
     }
 
-    F = scene->objects[obj_id]->material->diffuse(position, out_dir) * F;
-    return F;
+    // F = scene->objects[obj_id]->material->diffuse(position, out_dir) * F;
+    return scene->objects[obj_id]->material->albedo * F;
 }
 
 // vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
@@ -171,7 +171,13 @@ vec4 Renderer::ray_trace(Ray *ray){
     pair<int, vec4> hit = incident_ray(ray->o, ray->d);
     if(hit.first == -1) return scene->sky;
 
-    vec4 intensity = MC_Sampling(hit.first, hit.second, -(ray->d), 1);
+    vec4 intensity = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    for(int i = 0; i < SAMPLES; i++){ 
+        intensity += MC_Sampling(hit.first, hit.second, -(ray->d), 1);
+    }
+    
+    intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
+    intensity *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/1.0f));
     intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
     
     return scene->objects[hit.first]->material->albedo * intensity;

@@ -369,6 +369,8 @@ CMakeFiles/a3.dir/src/Camera.cpp.o: ../src/Camera.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_image.h \
+  /usr/include/SDL2/SDL.h \
   /usr/include/glm/glm.hpp \
   /usr/include/glm/detail/_fixes.hpp \
   /usr/include/glm/detail/setup.hpp \
@@ -553,8 +555,6 @@ CMakeFiles/a3.dir/src/Camera.cpp.o: ../src/Camera.cpp \
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  /usr/include/SDL2/SDL_image.h \
-  /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
   /usr/include/glm/ext/matrix_projection.hpp \
   /usr/include/glm/gtc/constants.hpp \
@@ -869,6 +869,8 @@ CMakeFiles/a3.dir/src/Lighting.cpp.o: ../src/Lighting.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_image.h \
+  /usr/include/SDL2/SDL.h \
   /usr/include/glm/glm.hpp \
   /usr/include/glm/detail/_fixes.hpp \
   /usr/include/glm/detail/setup.hpp \
@@ -1355,6 +1357,8 @@ CMakeFiles/a3.dir/src/Scene.cpp.o: ../src/Scene.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_image.h \
+  /usr/include/SDL2/SDL.h \
   /usr/include/glm/glm.hpp \
   /usr/include/glm/detail/_fixes.hpp \
   /usr/include/glm/detail/setup.hpp \
@@ -1539,8 +1543,6 @@ CMakeFiles/a3.dir/src/Scene.cpp.o: ../src/Scene.cpp \
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  /usr/include/SDL2/SDL_image.h \
-  /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
   /usr/include/glm/ext/matrix_projection.hpp \
   /usr/include/glm/gtc/constants.hpp \
@@ -1855,6 +1857,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_image.h \
+  /usr/include/SDL2/SDL.h \
   /usr/include/glm/glm.hpp \
   /usr/include/glm/detail/_fixes.hpp \
   /usr/include/glm/detail/setup.hpp \
@@ -2046,8 +2050,6 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/glm/ext/scalar_constants.inl:
 
 /usr/include/glm/gtc/constants.hpp:
-
-/usr/include/SDL2/SDL_image.h:
 
 /usr/include/c++/11/bits/istream.tcc:
 
@@ -2246,6 +2248,8 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: ../src/Shape.cpp \
 /usr/include/glm/detail/setup.hpp:
 
 /usr/include/glm/detail/_fixes.hpp:
+
+/usr/include/SDL2/SDL_image.h:
 
 /usr/include/SDL2/SDL_locale.h:
 

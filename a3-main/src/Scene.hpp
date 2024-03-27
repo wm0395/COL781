@@ -1,5 +1,6 @@
 #include <string>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ class Material{
     vec4 albedo;
     vec4 (*emmission)(vec4 position, vec4 omega);
     vec4 (*diffuse)(vec4 position, vec4 omega);
-    vec4 (*reflectance)(vec4 position, vec4 omega);
+    vec4 (*reflectance)(vec4 position, vec4 omega, vec4 normal);
 };
 
 class Shape {
@@ -124,6 +125,7 @@ class Ray_Tracer{
     void clear(vec4 color);
     void show();
     void draw(Scene *scene);
+    void saveImage(const char *filename);
 
     private:
     SDL_Window *window;

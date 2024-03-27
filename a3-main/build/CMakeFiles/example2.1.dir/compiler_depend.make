@@ -482,13 +482,13 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
   /usr/include/SDL2/SDL_version.h \
   /usr/include/SDL2/SDL_locale.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_image.h \
+  /usr/include/SDL2/SDL.h \
   /usr/include/c++/11/vector \
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/vector.tcc \
-  /usr/include/SDL2/SDL_image.h \
-  /usr/include/SDL2/SDL.h \
   /usr/include/glm/gtc/matrix_transform.hpp \
   /usr/include/glm/ext/matrix_projection.hpp \
   /usr/include/glm/gtc/constants.hpp \
@@ -507,11 +507,11 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/include/glm/gtc/constants.hpp:
 
-/usr/include/SDL2/SDL_image.h:
-
 /usr/include/c++/11/bits/stl_uninitialized.h:
 
 /usr/include/c++/11/vector:
+
+/usr/include/SDL2/SDL_image.h:
 
 /usr/include/SDL2/SDL_locale.h:
 
