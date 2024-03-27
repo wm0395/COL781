@@ -1,7 +1,7 @@
 CMakeFiles/a3.dir/src/Shape.cpp.o: \
- /home/wm0395/COL781_Assignments/a3-main/src/Shape.cpp \
+ /home/kanav/COL781/COL781_Assignments/a3-main/src/Shape.cpp \
  /usr/include/stdc-predef.h \
- /home/wm0395/COL781_Assignments/a3-main/src/Scene.hpp \
+ /home/kanav/COL781/COL781_Assignments/a3-main/src/Scene.hpp \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -399,4 +399,16 @@ CMakeFiles/a3.dir/src/Shape.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc
+ /usr/include/c++/11/bits/istream.tcc \
+ /usr/include/glm/gtc/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_projection.hpp \
+ /usr/include/glm/gtc/constants.hpp \
+ /usr/include/glm/ext/scalar_constants.hpp \
+ /usr/include/glm/ext/scalar_constants.inl \
+ /usr/include/glm/gtc/constants.inl \
+ /usr/include/glm/ext/matrix_projection.inl \
+ /usr/include/glm/ext/matrix_clip_space.hpp \
+ /usr/include/glm/ext/matrix_clip_space.inl \
+ /usr/include/glm/ext/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_transform.inl \
+ /usr/include/glm/gtc/matrix_transform.inl

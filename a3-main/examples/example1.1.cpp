@@ -12,7 +12,6 @@ int main(){
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     scene->camera = cam;
 
-
     vector<Shape*> objects = {};
 
     vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
@@ -32,7 +31,6 @@ int main(){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
-
 
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));

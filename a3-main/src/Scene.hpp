@@ -27,6 +27,9 @@ class Camera {
 
     void setCameraView(glm::vec3 position_vector, glm::vec3 lookat_vector, glm::vec3 up_vector);
     void updateViewMatrix();
+
+    void translate_camera(vec3 v);
+    void rotate_camera(float radian, vec3 axis);
 };
 
 struct Ray{
@@ -132,7 +135,7 @@ class Ray_Tracer{
     bool quit;
     SDL_Surface* framebuffer = NULL;
     SDL_Surface *windowSurface = NULL;
-    vec4 sample(float x, float y);
+    vec4 sample(float x, float y, Camera* camera);
 
     int frameWidth;
     int frameHeight;
@@ -140,4 +143,3 @@ class Ray_Tracer{
     int spp; // Samples-per-pixel
     Renderer* renderer;
 };
-
