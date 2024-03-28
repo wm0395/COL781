@@ -1,4 +1,4 @@
-# Install script for directory: /home/kanav/COL781/COL781_Assignments/a3-main
+# Install script for directory: /home/wm0395/COL781_Assignments/a3-main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/kanav/COL781/COL781_Assignments/a3-main/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/wm0395/COL781_Assignments/a3-main/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

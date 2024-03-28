@@ -124,7 +124,7 @@ int main(){
     // scene->lights = lights;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 3, 1, 4, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 3, 1, 4, "normal_map")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }

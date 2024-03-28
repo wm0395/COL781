@@ -22,18 +22,11 @@ int main(){
 
     vector<Shape*> objects = {};
 
-<<<<<<< HEAD
-    vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-    float r1 = 1.0f;
-    Sphere *sphere1 = new Sphere(r1, center1);
-    sphere1->material->albedo = vec4(0.5f, 0.5f, 1.0f, 0.0f);
-=======
     vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
     sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     sphere1->material->diffuse = iso_white;
->>>>>>> 17cc5d0f382a2dbdb6f69313106c991a0abc9517
     objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -56,11 +49,7 @@ int main(){
     vector<Light*> lights = {};
 
     vec4 position1 = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-<<<<<<< HEAD
-    vec4 intensity1 = vec4(100000.0f, 100.0f, 100.0f, 1.0f);
-=======
     vec4 intensity1 = vec4(15.0f, 0.0f, 0.0f, 1.0f);
->>>>>>> 17cc5d0f382a2dbdb6f69313106c991a0abc9517
     Light *light1 = new Light();
     light1->Intensity = intensity1;
     light1->position = position1;
@@ -80,12 +69,12 @@ int main(){
     light3->position = position3;
     lights.push_back(light3);
 
-    // vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
-    // vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
-    // Light *light4 = new Light();
-    // light4->Intensity = intensity4;
-    // light4->position = position4;
-    // lights.push_back(light4);
+    vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
+    vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
+    Light *light4 = new Light();
+    light4->Intensity = intensity4;
+    light4->position = position4;
+    lights.push_back(light4);
     
     scene->lights = lights;
 

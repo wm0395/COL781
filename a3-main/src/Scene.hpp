@@ -54,6 +54,12 @@ class Shape {
     virtual std::pair<Ray*, vec4> hit(Ray *ray) = 0;
     virtual vec4 normal_ray(vec4 position) = 0;
     Material *material;
+    mat4 transformation_mat;
+
+    void scaling(vec3 s);
+    void translation(vec3 t);
+    void rotation(float radian, vec3 axis);
+    void invert_transformation();
 };
 
 
@@ -128,7 +134,7 @@ class Ray_Tracer{
     void clear(vec4 color);
     void show();
     void draw(Scene *scene);
-    void saveImage(const char *filename);
+    // void saveImage(const char *filename);
 
     private:
     SDL_Window *window;
