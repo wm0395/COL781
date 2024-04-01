@@ -119,6 +119,8 @@ void Ray_Tracer::draw(Scene *scene){
             float center_x = (x + 0.5f);///framebuffer->w;
             float center_y = (y + 0.5f);///framebuffer->h;
 
+            // cout << center_x << " " << center_y << "\n";
+
             vec4 color = sample(center_x, center_y, scene->camera);
             pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
@@ -155,6 +157,8 @@ vec4 Ray_Tracer::sample(float x, float y, Camera* camera){
     // to convert from camera space to world space
     ray->o = view_mat * ray->o;
     ray->d = view_mat * ray->d;
+
+    // cout << ray->d.x << " " << ray->d.y << " " << ray->d.z << " " << ray->d.w << " \n";
 
     vec4 color = renderer->render(ray);
     return color;

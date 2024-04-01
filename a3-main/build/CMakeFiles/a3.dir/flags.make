@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/g++
 C_DEFINES = 
 
-C_INCLUDES = -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
+C_INCLUDES = -I/home/kanav/COL781/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
 
-C_FLAGS = -g
+C_FLAGS = 
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
+CXX_INCLUDES = -I/home/kanav/COL781/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
 
-CXX_FLAGS = -g -std=gnu++11
+CXX_FLAGS = -std=gnu++11
 

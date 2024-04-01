@@ -203,3 +203,152 @@ pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){
     ref_ray->d = d - ref_ray->d; 
     return {ref_ray, normal};
 }
+
+
+Bounding_Box::Bounding_Box(const vec4 &min, const vec4 &max) : min(min), max(max) {
+
+}
+
+pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
+    // txmin = (xmin − ox)/dx
+
+    float txmin = (min.x - ray->o.x) / ray->d.x;
+    float txmax = (max.x - ray->o.x) / ray->d.x;
+    // Swap the bounds first if dx < 0
+    if (ray->d.x < 0){
+        float temp = txmin;
+        txmin = txmax;
+        txmax = temp;
+    }
+
+    // cout << txmin << " " << txmax << endl;
+
+    float tymin = (min.y - ray->o.y) / ray->d.y;
+    float tymax = (max.y - ray->o.y) / ray->d.y;
+    // Swap the bounds first if dy < 0
+    if (ray->d.y < 0){
+        float temp = tymin;
+        tymin = tymax;
+        tymax = temp;
+    }
+
+    // cout << tymin << " " << tymax << endl;
+
+    float tzmin = (min.z - ray->o.z) / ray->d.z;
+    float tzmax = (max.z - ray->o.z) / ray->d.z;
+    // Swap the bounds first if dz < 0
+    if (ray->d.z < 0){
+        float temp = tzmin;
+        tzmin = tzmax;
+        tzmax = temp;
+    }
+
+    // cout << tzmin << " " << tzmax << endl;
+
+    float tmin = std::max(std::max(txmin, tymin), tzmin);
+    float tmax = std::min(std::min(txmax, tymax), tzmax);
+    int min_plane;
+    int max_plane;
+
+    if (tmin == txmin){
+        min_plane = 0;
+    }
+    else if (tmin == tymin){
+        min_plane = 1;
+    }
+    else{
+        min_plane = 2;
+    }
+
+    if (tmax == txmax){
+        max_plane = 0;
+    }
+    else if (tmax == tymax){
+        max_plane = 1;
+    }
+    else{
+        max_plane = 2;
+    }
+
+    // cout << tmin << " " << tmax << " " << min_plane << " " << max_plane << "\n";
+
+    if (tmin > tmax){
+        ray->t = INT32_MAX;
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else{
+        ray->t = tmin;
+        return reflected_ray(ray, tmin, min_plane);
+    }
+}
+
+pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
+    vec4 normal;
+    if (min_plane == 0){
+        if (ray->d.x > 0){
+            normal = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+        }
+        else{
+            normal = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+    }
+    else if (min_plane == 1){
+        if (ray->d.y > 0){
+            normal = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+        }
+        else{
+            normal = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+        }
+    }
+    else{
+        if (ray->d.z > 0){
+            normal = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+        }
+        else{
+            normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+        }
+    }
+
+    Ray* ref_ray = new Ray();
+    ref_ray->o = ray->o + t * ray->d;
+    ref_ray->t_near = ray->t_near;
+    ref_ray->t_far = ray->t_far;
+    vec4 d = ray->d / length(ray->d);
+    vec4 n = normal / length(normal);
+    ref_ray->d = n;
+    ref_ray->d *= 2*dot(n,d);
+    ref_ray->d = d - ref_ray->d; 
+    return {ref_ray, normal};
+}
+
+vec4 Bounding_Box::normal_ray(vec4 position){
+    //TODO:
+    // vec4 normal;
+    // if (min_plane == 0){
+    //     if (ray->d.x > 0){
+    //         normal = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+    //     }
+    //     else{
+    //         normal = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    //     }
+    // }
+    // else if (min_plane == 1){
+    //     if (ray->d.y > 0){
+    //         normal = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+    //     }
+    //     else{
+    //         normal = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    //     }
+    // }
+    // else{
+    //     if (ray->d.z > 0){
+    //         normal = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+    //     }
+    //     else{
+    //         normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    //     }
+    // }
+    // return normal;
+
+    return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+}

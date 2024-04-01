@@ -89,6 +89,19 @@ class Plane : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
+class Bounding_Box : public Shape {
+    public:
+    Bounding_Box(const vec4 &min, const vec4 &max);
+    std::pair<Ray*, vec4> hit(Ray *ray) override;
+    vec4 normal_ray(vec4 position) override;
+
+    private:
+    vec4 min;
+    vec4 max;
+
+    pair<Ray*, vec4> reflected_ray(Ray* ray, float t, int min_plane);
+};
+
 class Light{
     public:
     vec4 Intensity;

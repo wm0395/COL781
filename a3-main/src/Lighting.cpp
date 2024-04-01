@@ -110,6 +110,7 @@ vec4 Renderer::point_lambert(Ray *ray){
 
 vec4 Renderer::normal_map(Ray *ray){
     pair<int, vec4> i_ray = incident_ray(ray->o, ray->d);
+    // cout << i_ray.first << "\n";
     if(i_ray.first == -1) return vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     pair<Ray*, vec4> hit = scene->objects[i_ray.first]->hit(ray);

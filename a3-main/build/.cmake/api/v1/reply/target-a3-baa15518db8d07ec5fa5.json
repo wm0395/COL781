@@ -50,9 +50,6 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g"
-				},
-				{
 					"fragment" : "-std=gnu++11"
 				}
 			],
@@ -60,7 +57,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/wm0395/COL781_Assignments/a3-main/deps/include"
+					"path" : "/home/kanav/COL781/COL781_Assignments/a3-main/deps/include"
 				},
 				{
 					"backtrace" : 3,
@@ -91,17 +88,11 @@
 			]
 		},
 		{
-			"compileCommandFragments" : 
-			[
-				{
-					"fragment" : "-g"
-				}
-			],
 			"includes" : 
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/wm0395/COL781_Assignments/a3-main/deps/include"
+					"path" : "/home/kanav/COL781/COL781_Assignments/a3-main/deps/include"
 				},
 				{
 					"backtrace" : 3,
