@@ -169,6 +169,19 @@ example1.3/fast:
 .PHONY : example1.3/fast
 
 #=============================================================================
+# Target rules for targets named example1.4
+
+# Build rule for target.
+example1.4: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example1.4
+.PHONY : example1.4
+
+# fast build rule for target.
+example1.4/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/build
+.PHONY : example1.4/fast
+
+#=============================================================================
 # Target rules for targets named example2.1
 
 # Build rule for target.
@@ -276,6 +289,30 @@ examples/example1.3.s: examples/example1.3.cpp.s
 examples/example1.3.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.3.dir/build.make CMakeFiles/example1.3.dir/examples/example1.3.cpp.s
 .PHONY : examples/example1.3.cpp.s
+
+examples/example1.4.o: examples/example1.4.cpp.o
+.PHONY : examples/example1.4.o
+
+# target to build an object file
+examples/example1.4.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.o
+.PHONY : examples/example1.4.cpp.o
+
+examples/example1.4.i: examples/example1.4.cpp.i
+.PHONY : examples/example1.4.i
+
+# target to preprocess a source file
+examples/example1.4.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.i
+.PHONY : examples/example1.4.cpp.i
+
+examples/example1.4.s: examples/example1.4.cpp.s
+.PHONY : examples/example1.4.s
+
+# target to generate assembly for a file
+examples/example1.4.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example1.4.dir/build.make CMakeFiles/example1.4.dir/examples/example1.4.cpp.s
+.PHONY : examples/example1.4.cpp.s
 
 examples/example2.1.o: examples/example2.1.cpp.o
 .PHONY : examples/example2.1.o
@@ -409,6 +446,7 @@ help:
 	@echo "... example1.1"
 	@echo "... example1.2"
 	@echo "... example1.3"
+	@echo "... example1.4"
 	@echo "... example2.1"
 	@echo "... deps/src/gl.o"
 	@echo "... deps/src/gl.i"
@@ -422,6 +460,9 @@ help:
 	@echo "... examples/example1.3.o"
 	@echo "... examples/example1.3.i"
 	@echo "... examples/example1.3.s"
+	@echo "... examples/example1.4.o"
+	@echo "... examples/example1.4.i"
+	@echo "... examples/example1.4.s"
 	@echo "... examples/example2.1.o"
 	@echo "... examples/example2.1.i"
 	@echo "... examples/example2.1.s"

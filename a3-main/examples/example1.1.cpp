@@ -32,7 +32,6 @@ int main(){
         return EXIT_FAILURE;
     }
 
-
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.draw(scene);

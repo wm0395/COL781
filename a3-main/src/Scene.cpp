@@ -119,7 +119,7 @@ void Ray_Tracer::draw(Scene *scene){
             float center_x = (x + 0.5f);///framebuffer->w;
             float center_y = (y + 0.5f);///framebuffer->h;
 
-            vec4 color = sample(center_x, center_y);
+            vec4 color = sample(center_x, center_y, scene->camera);
             pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
@@ -136,19 +136,25 @@ void Ray_Tracer::draw(Scene *scene){
     SDL_UnlockSurface(framebuffer);
 }
 
-vec4 Ray_Tracer::sample(float x, float y){
+vec4 Ray_Tracer::sample(float x, float y, Camera* camera){
     
     Ray* ray = new Ray();
     float h_prime = 1/sqrt(3);
     float b_prime = h_prime * framebuffer->w / float(framebuffer->h);
     float x_prime = 2 * b_prime * (x - (float(framebuffer->w) / 2)) / float(framebuffer -> w);
     float y_prime = 2 * h_prime * (-y + (float(framebuffer->h) / 2)) / float(framebuffer -> h);
-    ray->o = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    ray->o = vec4(camera->position.x, camera->position.y, camera->position.z, 1.0f);
     ray->d = vec4(x_prime, y_prime, -1.0f, 0.0f);
     // cout << ray->d.x << " " << ray->d.y << " " << ray->d.z << " " << ray->d.w << " \n";
     ray->t_near = 0.01f;
     ray->t_far = 1000.0f;
     float t = INT32_MAX;
+
+    mat4 view_mat = camera->getViewMatrix();
+
+    // to convert from camera space to world space
+    ray->o = view_mat * ray->o;
+    ray->d = view_mat * ray->d;
 
     vec4 color = renderer->render(ray);
     return color;

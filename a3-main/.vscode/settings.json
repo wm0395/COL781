@@ -9,6 +9,9 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
+<<<<<<< HEAD
+        "iostream": "cpp"
+=======
         "atomic": "cpp",
         "bit": "cpp",
         "cctype": "cpp",
@@ -46,5 +49,6 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
+>>>>>>> 17cc5d0f382a2dbdb6f69313106c991a0abc9517
     }
 }

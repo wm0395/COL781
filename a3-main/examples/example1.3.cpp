@@ -69,12 +69,12 @@ int main(){
     light3->position = position3;
     lights.push_back(light3);
 
-    // vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
-    // vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
-    // Light *light4 = new Light();
-    // light4->Intensity = intensity4;
-    // light4->position = position4;
-    // lights.push_back(light4);
+    vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
+    vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
+    Light *light4 = new Light();
+    light4->Intensity = intensity4;
+    light4->position = position4;
+    lights.push_back(light4);
     
     scene->lights = lights;
 

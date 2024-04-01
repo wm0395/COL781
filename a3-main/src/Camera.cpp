@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/gtc/matrix_transform.hpp>
+// #include <glm/gtc/matrix_transform.hpp>
 
 
 void Camera::initialize(float aspect) {
@@ -14,7 +15,7 @@ void Camera::initialize(float aspect) {
 
     this->aspect = aspect;
 
-    position = glm::vec3(0.0f, 0.0f, 1.5f);
+    position = glm::vec3(0.0f, 0.0f, 0.0f);
     lookAt = glm::vec3(0.0f, 0.0f, 0.0f);
     up = glm::vec3(0.0f, 1.0f,  0.0f);
 
@@ -47,4 +48,12 @@ void Camera::setCameraView(glm::vec3 position_vector, glm::vec3 lookat_vector, g
     up = std::move(up_vector);
 
     viewMatrix = glm::lookAt(position, lookAt, up);
+}
+
+void Camera::translate_camera(vec3 v){
+    viewMatrix = translate(viewMatrix, v);
+}
+
+void Camera::rotate_camera(float radian, vec3 axis){
+    viewMatrix = rotate(viewMatrix, radians(radian), axis);
 }
