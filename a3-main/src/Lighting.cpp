@@ -61,7 +61,8 @@ vec4 Renderer::point_lambert(Ray *ray){
     vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
     if(scene->objects[hit.first]->material->emmission){
-        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->normal_ray(hit.second));
+        // color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->normal_ray(hit.second));
+        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->hit(ray).second);   //TODO: check if correct
     }
     
     float N = 0.0f;
@@ -78,7 +79,8 @@ vec4 Renderer::point_lambert(Ray *ray){
         vec4 irradiace = scene->lights[i]->Intensity;
         float fall_off = 4.0f*(float)M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
         vec4 out = scene->lights[i]->position - hit.second;
-        vec4 normal = scene->objects[hit.first]->normal_ray(hit.second);
+        // vec4 normal = scene->objects[hit.first]->normal_ray(hit.second);
+        vec4 normal = scene->objects[hit.first]->hit(ray).second;   //TODO: check if correct
         float out_norm = glm::length(out);
         float normal_norm = glm::length(normal);
         float cos_theta = glm::dot(out, normal)/ (out_norm * normal_norm);
@@ -123,8 +125,13 @@ vec4 Renderer::normal_map(Ray *ray){
 vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     
     vec4 F = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    Ray* ray = new Ray();
+    ray->o = position;
+    ray->d = out_dir;
     
-    vec4 normal = scene->objects[obj_id]->normal_ray(position);
+    // vec4 normal = scene->objects[obj_id]->normal_ray(position);
+    vec4 normal = scene->objects[obj_id]->normal_ray(position);    //TODO: check if correct
     float normal_norm = glm::length(normal);
 
     for(int i = 0; i < PATHS && depth <= MAX_BOUNCES; i++){

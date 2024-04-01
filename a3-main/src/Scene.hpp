@@ -102,6 +102,22 @@ class Bounding_Box : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t, int min_plane);
 };
 
+class Triangle : public Shape {
+    public:
+    Triangle(const vec4 &p0, const vec4 &p1, const vec4 &p2);
+    std::pair<Ray*, vec4> hit(Ray *ray) override;
+    vec4 normal_ray(vec4 position) override;
+
+    private:
+    vec4 p0;
+    vec4 p1;
+    vec4 p2;
+
+    pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
+};
+
+
+
 class Light{
     public:
     vec4 Intensity;

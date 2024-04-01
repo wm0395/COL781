@@ -99,18 +99,7 @@ Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     
-    // mat4 world_to_object = inverse(transformation_mat);
     mat4 world_to_object = transformation_mat;
-
-    //print the world_to_object mat4
-    // cout << "World to object matrix: \n";
-    // for (int i = 0; i<4; i++){
-    //     for (int j = 0; j<4; j++){
-    //         std::cout << world_to_object[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-
     ray->o = world_to_object * ray->o;
     ray->d = world_to_object * ray->d;
 
@@ -145,10 +134,6 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     }
 }
 
-vec4 Sphere::normal_ray(vec4 position){
-    return position - centre;
-}
-
 pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     vec4 normal = ray->o + t * ray->d - centre;
     float norm = length(normal);
@@ -162,7 +147,15 @@ pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     ref_ray->d = normal;
     ref_ray->d *= 2*dot(normal,d);
     ref_ray->d = d - ref_ray->d;
+    normal = transpose(transformation_mat) * normal;
     return {ref_ray, normal};
+}
+
+vec4 Sphere::normal_ray(vec4 position){
+    vec4 normal = position - centre;
+    normal = normal / length(normal);
+    normal = transpose(transformation_mat) * normal;
+    return normal;
 }
 
 Plane::Plane(const vec4 &normal, const vec4 &point_on_plane) : normal(normal), point_on_plane(point_on_plane) {
@@ -171,7 +164,7 @@ Plane::Plane(const vec4 &normal, const vec4 &point_on_plane) : normal(normal), p
 
 pair<Ray*, vec4> Plane::hit(Ray *ray){
 
-    mat4 world_to_object = inverse(transformation_mat);
+    mat4 world_to_object = transformation_mat;
     ray->o = world_to_object * ray->o;
     ray->d = world_to_object * ray->d;
 
@@ -187,9 +180,6 @@ pair<Ray*, vec4> Plane::hit(Ray *ray){
     }
 }
 
-vec4 Plane::normal_ray(vec4 position){
-    return normal;
-}
 
 pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){
     Ray* ref_ray = new Ray();
@@ -201,7 +191,14 @@ pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){
     ref_ray->d = n;
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
+    normal = transpose(transformation_mat) * normal;
     return {ref_ray, normal};
+}
+
+vec4 Plane::normal_ray(vec4 position){
+    normal = normal / length(normal);
+    normal = transpose(transformation_mat) * normal;
+    return normal;
 }
 
 
@@ -210,6 +207,11 @@ Bounding_Box::Bounding_Box(const vec4 &min, const vec4 &max) : min(min), max(max
 }
 
 pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
+
+    mat4 world_to_object = transformation_mat;
+    ray->o = world_to_object * ray->o;
+    ray->d = world_to_object * ray->d;
+
     // txmin = (xmin − ox)/dx
 
     float txmin = (min.x - ray->o.x) / ray->d.x;
@@ -221,8 +223,6 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
         txmax = temp;
     }
 
-    // cout << txmin << " " << txmax << endl;
-
     float tymin = (min.y - ray->o.y) / ray->d.y;
     float tymax = (max.y - ray->o.y) / ray->d.y;
     // Swap the bounds first if dy < 0
@@ -232,8 +232,6 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
         tymax = temp;
     }
 
-    // cout << tymin << " " << tymax << endl;
-
     float tzmin = (min.z - ray->o.z) / ray->d.z;
     float tzmax = (max.z - ray->o.z) / ray->d.z;
     // Swap the bounds first if dz < 0
@@ -242,8 +240,6 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
         tzmin = tzmax;
         tzmax = temp;
     }
-
-    // cout << tzmin << " " << tzmax << endl;
 
     float tmin = std::max(std::max(txmin, tymin), tzmin);
     float tmax = std::min(std::min(txmax, tymax), tzmax);
@@ -270,9 +266,7 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
         max_plane = 2;
     }
 
-    // cout << tmin << " " << tmax << " " << min_plane << " " << max_plane << "\n";
-
-    if (tmin > tmax){
+    if (tmin > tmax || tmin > ray->t_far || tmax < ray->t_near){
         ray->t = INT32_MAX;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
@@ -318,37 +312,95 @@ pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
     ref_ray->d = n;
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
+    normal = transpose(transformation_mat) * normal;
     return {ref_ray, normal};
 }
 
-vec4 Bounding_Box::normal_ray(vec4 position){
-    //TODO:
-    // vec4 normal;
-    // if (min_plane == 0){
-    //     if (ray->d.x > 0){
-    //         normal = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
-    //     }
-    //     else{
-    //         normal = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-    //     }
-    // }
-    // else if (min_plane == 1){
-    //     if (ray->d.y > 0){
-    //         normal = vec4(0.0f, -1.0f, 0.0f, 0.0f);
-    //     }
-    //     else{
-    //         normal = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-    //     }
-    // }
-    // else{
-    //     if (ray->d.z > 0){
-    //         normal = vec4(0.0f, 0.0f, -1.0f, 0.0f);
-    //     }
-    //     else{
-    //         normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-    //     }
-    // }
-    // return normal;
+vec4 Bounding_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
+    //firstly find out the face on which the vec4 position is present
 
-    return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    vec4 normal;
+    if (position.x == min.x){
+        normal = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+    }
+    else if (position.x == max.x){
+        normal = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    }
+    else if (position.y == min.y){
+        normal = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+    }
+    else if (position.y == max.y){
+        normal = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    }
+    else if (position.z == min.z){
+        normal = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+    }
+    else{
+        normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    }
+    normal = normal / length(normal);
+    normal = transpose(transformation_mat) * normal;
+    return normal;
+}
+
+Triangle::Triangle(const vec4 &p0, const vec4 &p1, const vec4 &p2) : p0(p0), p1(p1), p2(p2) {
+
+}
+
+pair<Ray*, vec4> Triangle::hit(Ray *ray){
+    mat4 world_to_object = inverse(transformation_mat);
+    ray->o = world_to_object * ray->o;
+    ray->d = world_to_object * ray->d;
+
+    vec4 v1 = ray->o - p0;
+    mat4 A = mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    vec4 soln = v1 * inverse(A);
+    float t = soln.x;
+    float b1 = soln.y;
+    float b2 = soln.z;
+
+    cout << t << " " << b1 << " " << b2 << "\n";
+
+    if (b1<=0 || b2<=0 || b1+b2>=1 || t<=ray->t_near){
+        ray->t = INT32_MAX;
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else{
+        ray->t = t;
+        return reflected_ray(ray, t);
+    }
+}
+
+pair<Ray*, vec4> Triangle::reflected_ray(Ray* ray, float t){
+    vec4 v1 = p1-p0;
+    vec4 v2 = p2-p0;
+    vec3 x1 = vec3(v1.x, v1.y, v1.z);
+    vec3 x2 = vec3(v2.x, v2.y, v2.z);
+    vec3 n1 = cross(x1, x2);
+    vec4 normal = vec4(n1.x, n1.y, n1.z, 0.0f);
+    normal = normal / length(normal);
+
+    Ray* ref_ray = new Ray();
+    ref_ray->o = ray->o + t * ray->d;
+    ref_ray->t_near = ray->t_near;
+    ref_ray->t_far = ray->t_far;
+    vec4 d = ray->d / length(ray->d);
+    vec4 n = normal / length(normal);
+    ref_ray->d = n;
+    ref_ray->d *= 2*dot(n,d);
+    ref_ray->d = d - ref_ray->d; 
+    normal = transpose(transformation_mat) * normal;
+    return {ref_ray, normal};
+}
+
+vec4 Triangle::normal_ray(vec4 position){
+    vec4 v1 = p1-p0;
+    vec4 v2 = p2-p0;
+    vec3 x1 = vec3(v1.x, v1.y, v1.z);
+    vec3 x2 = vec3(v2.x, v2.y, v2.z);
+    vec3 n1 = cross(x1, x2);
+    vec4 normal = vec4(n1.x, n1.y, n1.z, 0.0f);
+    normal = normal / length(normal);
+    normal = transpose(transformation_mat) * normal;
+    return normal;
 }

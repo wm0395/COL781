@@ -15,7 +15,7 @@ int main(){
     cam->up = vec3(0.0f, 1.0f, 0.0f);
     cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
     cam->updateViewMatrix();
-    cam->translate_camera(vec3(2.0f, 1.5f, 1.0f));
+    // cam->translate_camera(vec3(2.0f, 1.5f, 1.0f));
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -30,10 +30,16 @@ int main(){
     // Sphere *sphere2 = new Sphere(r2, center2);
     // objects.push_back(sphere2);
 
-    vec4 min1 = vec4(-1.0f, -1.0f, -4.0f, 1.0f);
-    vec4 max1 = vec4(1.0f, 1.0f, -3.0f, 1.0f);
-    Bounding_Box* bb1 = new Bounding_Box(min1, max1);
-    objects.push_back(bb1);
+    // vec4 min1 = vec4(-1.0f, -1.0f, -4.0f, 1.0f);
+    // vec4 max1 = vec4(1.0f, 1.0f, -3.0f, 1.0f);
+    // Bounding_Box* bb1 = new Bounding_Box(min1, max1);
+    // objects.push_back(bb1);
+
+    vec4 p0 = vec4(-2.0f, -2.0f, -3.0f, 1.0f);
+    vec4 p1 = vec4(2.0f, -2.0f, -3.0f, 1.0f);
+    vec4 p2 = vec4(0.0f, 2.0f, -3.0f, 1.0f);
+    Triangle *triangle1 = new Triangle(p0, p1, p2);
+    objects.push_back(triangle1);
     
     scene->objects = objects;
 
