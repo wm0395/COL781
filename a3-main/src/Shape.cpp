@@ -56,8 +56,10 @@ pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     ref_ray->t_near = ray->t_near;
     ref_ray->t_far = ray->t_far;
     vec4 d = ray->d / length(ray->d);
-    ref_ray->d = d - 2*dot(normal,d)*normal;
-    return {new Ray(), normal};
+    ref_ray->d = normal;
+    ref_ray->d *= 2*dot(normal,d);
+    ref_ray->d = d - ref_ray->d;
+    return {ref_ray, normal};
 }
 
 Plane::Plane(const vec4 &normal, const vec4 &point_on_plane) : normal(normal), point_on_plane(point_on_plane) {
@@ -88,6 +90,8 @@ pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){
     ref_ray->t_far = ray->t_far;
     vec4 d = ray->d / length(ray->d);
     vec4 n = normal / length(normal);
-    ref_ray->d = d - 2*dot(n,d)*n;
+    ref_ray->d = n;
+    ref_ray->d *= 2*dot(n,d);
+    ref_ray->d = d - ref_ray->d; 
     return {ref_ray, normal};
 }

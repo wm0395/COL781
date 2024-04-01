@@ -340,7 +340,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  ../src/Scene.cpp \
   ../src/Scene.hpp \
   /usr/include/SDL2/SDL.h \
   /usr/include/SDL2/SDL_main.h \
@@ -488,24 +487,8 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
-  /usr/include/c++/11/bits/vector.tcc \
-  /usr/include/glm/gtc/matrix_transform.hpp \
-  /usr/include/glm/ext/matrix_projection.hpp \
-  /usr/include/glm/gtc/constants.hpp \
-  /usr/include/glm/ext/scalar_constants.hpp \
-  /usr/include/glm/ext/scalar_constants.inl \
-  /usr/include/glm/gtc/constants.inl \
-  /usr/include/glm/ext/matrix_projection.inl \
-  /usr/include/glm/ext/matrix_clip_space.hpp \
-  /usr/include/glm/ext/matrix_clip_space.inl \
-  /usr/include/glm/ext/matrix_transform.hpp \
-  /usr/include/glm/ext/matrix_transform.inl \
-  /usr/include/glm/gtc/matrix_transform.inl
+  /usr/include/c++/11/bits/vector.tcc
 
-
-/usr/include/glm/ext/scalar_constants.inl:
-
-/usr/include/glm/gtc/constants.hpp:
 
 /usr/include/c++/11/bits/stl_uninitialized.h:
 
@@ -520,8 +503,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 /usr/include/SDL2/SDL_metal.h:
 
 /usr/include/SDL2/SDL_messagebox.h:
-
-/usr/include/glm/ext/matrix_projection.hpp:
 
 /usr/include/SDL2/SDL_touch.h:
 
@@ -647,8 +628,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/include/SDL2/SDL_thread.h:
 
-/usr/include/glm/ext/matrix_transform.hpp:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512cdintrin.h:
 
 /usr/include/SDL2/SDL_mutex.h:
@@ -660,8 +639,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 /usr/include/SDL2/SDL_audio.h:
 
 /usr/include/SDL2/SDL_assert.h:
-
-/usr/include/glm/ext/matrix_projection.inl:
 
 /usr/include/inttypes.h:
 
@@ -847,8 +824,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/include/glm/ext/matrix_double2x2_precision.hpp:
 
-/usr/include/glm/ext/matrix_clip_space.inl:
-
 /usr/include/glm/detail/setup.hpp:
 
 /usr/include/glm/fwd.hpp:
@@ -856,8 +831,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 /usr/include/glm/vec2.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
-
-/usr/include/glm/ext/scalar_constants.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
@@ -993,15 +966,11 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls.h:
 
-/usr/include/glm/ext/matrix_clip_space.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
 /usr/include/glm/ext/vector_bool3_precision.hpp:
-
-/usr/include/glm/gtc/constants.inl:
 
 /usr/include/SDL2/SDL_timer.h:
 
@@ -1131,8 +1100,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/include/c++/11/bits/postypes.h:
 
-/usr/include/glm/gtc/matrix_transform.hpp:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/lzcntintrin.h:
 
 /usr/include/glm/simd/platform.h:
@@ -1149,13 +1116,9 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/clwbintrin.h:
 
-../src/Scene.cpp:
-
 /usr/include/c++/11/string:
 
 /usr/include/x86_64-linux-gnu/bits/uio_lim.h:
-
-/usr/include/glm/gtc/matrix_transform.inl:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/tmmintrin.h:
 
@@ -1294,8 +1257,6 @@ CMakeFiles/example2.1.dir/examples/example2.1.cpp.o: ../examples/example2.1.cpp 
 /usr/include/glm/detail/type_mat3x3.inl:
 
 /usr/include/glm/ext/matrix_double3x3_precision.hpp:
-
-/usr/include/glm/ext/matrix_transform.inl:
 
 /usr/include/glm/ext/matrix_float3x3.hpp:
 

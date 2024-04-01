@@ -40,8 +40,8 @@ struct Ray{
 class Material{
     public:
     vec4 albedo;
-    vec4 (*emmission)(vec4 position, vec4 omega);
-    vec4 (*diffuse)(vec4 position, vec4 omega);
+    vec4 (*emmission)(vec4 position, vec4 omega, vec4 normal);
+    vec4 (*diffuse)(vec4 position, vec4 omega, vec4 normal);
     vec4 (*reflectance)(vec4 position, vec4 omega, vec4 normal);
 };
 

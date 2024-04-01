@@ -62,29 +62,31 @@ void Ray_Tracer::show(){
 }	
 
 void Ray_Tracer::saveImage(const char *filename) {
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, framebuffer->w, framebuffer->h, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-    if (!surface) {
-        // Handle error
-        return;
-    }
+    // SDL_Surface* surface = SDL_CreateRGBSurface(0, framebuffer->w, framebuffer->h, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+    // if (!surface) {
+    //     // Handle error
+    //     return;
+    // }
 
-    // Copy pixel data from framebuffer to surface
-    Uint32 *surfacePixels = (Uint32*)surface->pixels;
-    Uint32 *framebufferPixels = (Uint32*)framebuffer->pixels;
-    int pixelCount = surface->w * surface->h;
-    for (int i = 0; i < pixelCount; ++i) {
-        surfacePixels[i] = framebufferPixels[i];
-    }
+    // // Copy pixel data from framebuffer to surface
+    // Uint32 *surfacePixels = (Uint32*)surface->pixels;
+    // Uint32 *framebufferPixels = (Uint32*)framebuffer->pixels;
+    // int pixelCount = surface->w * surface->h;
+    // for (int i = 0; i < pixelCount; ++i) {
+    //     surfacePixels[i] = framebufferPixels[i];
+    // }
 
-    // Save surface as image
-    if (IMG_SavePNG(surface, filename) != 0) {
-        // Handle error
-        SDL_FreeSurface(surface);
-        return;
-    }
+    // // Save surface as image
+    // if (IMG_SavePNG(surface, filename) != 0) {
+    //     // Handle error
+    //     SDL_FreeSurface(surface);
+    //     return;
+    // }
 
-    // Free surface
-    SDL_FreeSurface(surface);
+    // // Free surface
+    // SDL_FreeSurface(surface);
+    
+    IMG_SavePNG(framebuffer, filename);
 }
 
 

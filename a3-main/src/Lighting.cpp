@@ -61,7 +61,7 @@ vec4 Renderer::point_lambert(Ray *ray){
     vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
     if(scene->objects[hit.first]->material->emmission){
-        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d);
+        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->normal_ray(hit.second));
     }
     
     float N = 0.0f;
@@ -134,29 +134,29 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             continue;
         }
         Ray *branch_ray = new Ray();
-        branch_ray->o = hit.second;
+        branch_ray->o = position;
         branch_ray->d = rand_dir;
         branch_ray->t = 0.0f;
         branch_ray->t_near = 0.0f;
-        branch_ray->t_far = 1000.0f; 
+        branch_ray->t_far = 1000.0f;
         pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
 
         float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
-        vec4 out = hit.second - position;
-        float out_norm = glm::length(out);
-        float cos_theta = glm::dot(out, normal)/ (out_norm * normal_norm);
+        // vec4 out = hit.second - position;
+        float out_norm = glm::length(rand_dir);
+        float cos_theta = glm::dot(rand_dir, normal)/ (out_norm * normal_norm);
         
-        vec4 irradiance = MC_Sampling(hit.first, hit.second, -hit_out.second, depth+1);
+        vec4 irradiance = MC_Sampling(hit.first, hit.second, -rand_dir, depth+1);
         irradiance *= (cos_theta/ fall_off);
         irradiance.w /= (cos_theta/ fall_off);
 
-        F += scene->objects[obj_id]->material->reflectance(scene->objects[obj_id]->material->albedo, hit_out.second, scene->objects[obj_id]->normal_ray(position)) * irradiance;
+        F += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance;
     }
 
     // F *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/4.0f));
     F /= (float)PATHS;
     if(scene->objects[obj_id]->material->emmission){
-        F += scene->objects[obj_id]->material->emmission(position, out_dir);
+        F += scene->objects[obj_id]->material->emmission(position, out_dir, normal);
     }
 
     // F = scene->objects[obj_id]->material->diffuse(position, out_dir) * F;

@@ -5,11 +5,11 @@
 using namespace std;
 using namespace glm;
 
-vec4 iso_blue(vec4 position, vec4 omega){
+vec4 iso_blue(vec4 position, vec4 omega, vec4 normal){
     return vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }
 
-vec4 iso_white(vec4 position, vec4 omega){
+vec4 iso_white(vec4 position, vec4 omega, vec4 normal){
     return vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 

@@ -12,7 +12,6 @@ int main(){
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     scene->camera = cam;
 
-
     vector<Shape*> objects = {};
 
     vec4 center1 = vec4(0.0f, 0.0f, -2.0f, 1.0f);
