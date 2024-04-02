@@ -152,7 +152,7 @@ vec4 Ray_Tracer::sample(float x, float y){
     ray->d = vec4(x_prime, y_prime, camera->near_plane, 0.0f);
 
     ray->t_near = 0.01f;
-    ray->t_far = 1000.0f;
+    ray->t_far = camera->far_plane;
     float t = INT32_MAX;
 
     mat4 view_mat = camera->getViewMatrix();

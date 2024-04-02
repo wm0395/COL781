@@ -39,6 +39,8 @@ struct Ray{
     float t;
     float t_near;
     float t_far;
+    
+    Camera* camera;
 };
 
 class Material{

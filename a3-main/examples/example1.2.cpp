@@ -14,6 +14,7 @@ int main(){
     cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
     cam->fov = 60.0f;
     cam->near_plane = -1.0f;
+    cam->far_plane = 1000.0f;
     cam->updateViewMatrix();
     scene->camera = cam;
 

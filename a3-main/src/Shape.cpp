@@ -109,7 +109,7 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     float x2 = dot(ray->o - centre, ray->o - centre) - radius * radius;
 
     if (x1 * x1 - norm_d_sq * x2 < 0){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     float D = sqrt(x1 * x1 - norm_d_sq * x2);
@@ -121,7 +121,7 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     t2 /= norm_d_sq;
 
     if(t2 <= ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else if(t1 <= ray->t_near){
@@ -171,7 +171,7 @@ pair<Ray*, vec4> Plane::hit(Ray *ray){
     // t = (n · (p0 − o))/(n · d) 
     float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
     if (t <= ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{
@@ -275,11 +275,11 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
     }
 
     if (tmin > tmax){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else if (tmin < ray->t_near && tmax < ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else if (tmin < ray->t_near && tmax > ray->t_near){
@@ -377,7 +377,7 @@ pair<Ray*, vec4> Triangle::hit(Ray *ray){
     float b2 = soln.z;
 
     if (b1<=0 || b2<=0 || b1+b2>=1 || t<=ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->camera->far_plane;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{

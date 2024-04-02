@@ -30,7 +30,7 @@ pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
     ray->o = position;
     ray->d = direction;
     ray->t_near = 0.01f;
-    ray->t_far = 1000.0f;
+    ray->t_far = scene->camera->far_plane;
     float t = INT32_MAX;
     int hit_id = -1;
     for(int i = 0; i < scene->objects.size(); i++){
@@ -49,8 +49,8 @@ int Renderer::shadow_ray(int light_id, vec4 position){
     Ray *ray = new Ray();
     ray->o = scene->lights[light_id]->position;
     ray->d = position - scene->lights[light_id]->position;
-    ray->t_near = 0.0f;
-    ray->t_far = 1000.0f;
+    ray->t_near = 0.01f;
+    ray->t_far = scene->camera->far_plane;
     // int bias = 0.0
     float t = INT32_MAX;
     int hit_id = -1;
@@ -144,6 +144,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     Ray* ray = new Ray();
     ray->o = position;
     ray->d = out_dir;
+    ray->t_far = scene->camera->far_plane;
     
     // vec4 normal = scene->objects[obj_id]->normal_ray(position);
     vec4 normal = scene->objects[obj_id]->normal_ray(position);    //TODO: check if correct
@@ -172,8 +173,8 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         branch_ray->o = position;
         branch_ray->d = rand_dir;
         branch_ray->t = 0.0f;
-        branch_ray->t_near = 0.0f;
-        branch_ray->t_far = 1000.0f;
+        branch_ray->t_near = 0.01f;
+        branch_ray->t_far = scene->camera->far_plane;
         pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
 
         float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
