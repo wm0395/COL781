@@ -4,11 +4,26 @@ Renderer::Renderer(int bounces, int paths, int samples, string sampling) : MAX_B
 
 }
 
+
 vec4 Renderer::rand_hemisphere(){
     float e1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float e2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     return vec4(sqrt(1-e1*e1)*cos(2*M_PI*e2), sqrt(1-e1*e1)*sin(2*M_PI*e2), e1, 0.0f);
 }
+
+vec4 Renderer::cos_hemisphere(){
+    float e1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float e2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float theta = acos(sqrt(e1));
+    float phi = 2 * M_1_PIf32 * e2;
+ 
+    float x = cos(phi) * sin(theta);
+    float y = sin(phi) * sin(theta);
+    float z = cos(theta);
+ 
+    return vec4(x, y, z, 0.0f);
+}
+
 
 pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
     Ray *ray = new Ray();
@@ -126,13 +141,25 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 normal = scene->objects[obj_id]->normal_ray(position);
     float normal_norm = glm::length(normal);
 
+    vec3 z = normalize(vec3(normal.x, normal.y, normal.z));
+    vec3 x = normalize(glm::cross(vec3(out_dir.x, out_dir.y, out_dir.z), z));
+    vec3 y = normalize(glm::cross(z, x));
+    mat4 T = mat4(vec4(x.x, x.y, x.z, 0.0f),vec4(y.x, y.y, y.z, 0.0f),vec4(z.x, z.y, z.z, 0.0f),vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
     for(int i = 0; i < PATHS && depth <= MAX_BOUNCES; i++){
+        
+        // Uniform Hemisphere
         vec4 rand_dir = rand_hemisphere();
+        // // Cos weighted Hemisphere
+        // vec4 rand_dir = cos_hemisphere();
+        rand_dir = T * rand_dir;
+
         pair<int, vec4> hit = incident_ray(position, rand_dir);
         if(hit.first == -1){
             F += scene->sky;
             continue;
         }
+
         Ray *branch_ray = new Ray();
         branch_ray->o = position;
         branch_ray->d = rand_dir;
@@ -142,11 +169,15 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
 
         float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
+        // float fall_off = 1.0f;
         // vec4 out = hit.second - position;
-        float out_norm = glm::length(rand_dir);
-        float cos_theta = glm::dot(rand_dir, normal)/ (out_norm * normal_norm);
+        
         
         vec4 irradiance = MC_Sampling(hit.first, hit.second, -rand_dir, depth+1);
+        
+        // Not needed for Xos sampling
+        float out_norm = glm::length(rand_dir);
+        float cos_theta = glm::dot(rand_dir, normal)/ (out_norm * normal_norm);
         irradiance *= (cos_theta/ fall_off);
         irradiance.w /= (cos_theta/ fall_off);
 
@@ -154,7 +185,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     }
 
     // F *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/4.0f));
-    F /= (float)PATHS;
+    // F /= (float)PATHS;
     if(scene->objects[obj_id]->material->emmission){
         F += scene->objects[obj_id]->material->emmission(position, out_dir, normal);
     }
@@ -176,7 +207,7 @@ vec4 Renderer::ray_trace(Ray *ray){
         intensity += MC_Sampling(hit.first, hit.second, -(ray->d), 1);
     }
     
-    intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
+    intensity = vec4(pow(intensity.x, 1.0f/2.2f), pow(intensity.y, 1.0f/2.2f), pow(intensity.z, 1.0f/2.2f), pow(intensity.w, 1.0f/2.2f));
     intensity *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/1.0f));
     intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
     
