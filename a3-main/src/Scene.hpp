@@ -17,7 +17,8 @@ class Camera {
     glm::vec3 lookAt;
     glm::mat4 viewMatrix;
 
-    float cameraSpeed, yaw, pitch, lastX, lastY, fov, aspect;
+
+    float cameraSpeed, yaw, pitch, lastX, lastY, fov, aspect, near_plane, far_plane;
     bool firstMouse;
     void initialize(float aspect);
     glm::mat4 getViewMatrix();
@@ -171,7 +172,7 @@ class Ray_Tracer{
     bool quit;
     SDL_Surface* framebuffer = NULL;
     SDL_Surface *windowSurface = NULL;
-    vec4 sample(float x, float y, Camera* camera);
+    vec4 sample(float x, float y);
 
     int frameWidth;
     int frameHeight;

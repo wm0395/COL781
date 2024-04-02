@@ -353,13 +353,12 @@ pair<Ray*, vec4> Triangle::hit(Ray *ray){
     ray->d = world_to_object * ray->d;
 
     vec4 v1 = ray->o - p0;
-    mat4 A = mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    mat4 A = transpose(mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+    // A = transpose(A);
     vec4 soln = v1 * inverse(A);
     float t = soln.x;
     float b1 = soln.y;
     float b2 = soln.z;
-
-    cout << t << " " << b1 << " " << b2 << "\n";
 
     if (b1<=0 || b2<=0 || b1+b2>=1 || t<=ray->t_near){
         ray->t = INT32_MAX;

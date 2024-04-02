@@ -18,6 +18,9 @@ int main(){
     Scene *scene = new Scene();
     Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
+    cam->up = vec3(0.0f, 1.0f, 0.0f);
+    cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->updateViewMatrix();
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -26,7 +29,7 @@ int main(){
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
     sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    sphere1->material->diffuse = iso_white;
+    sphere1->material->diffuse = iso_blue;
     objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);

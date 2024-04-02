@@ -5,22 +5,22 @@
 // #include <glm/gtc/matrix_transform.hpp>
 
 
-void Camera::initialize(float aspect) {
-    firstMouse = true;
-    yaw   = -90.0f;    
-    pitch =  0.0f;
-    lastX =  800.0f / 2.0;
-    lastY =  600.0 / 2.0;
-    fov   =  60.0f;
+// void Camera::initialize(float aspect) {
+//     firstMouse = true;
+//     yaw   = -90.0f;    
+//     pitch =  0.0f;
+//     lastX =  800.0f / 2.0;
+//     lastY =  600.0 / 2.0;
+//     fov   =  60.0f;
 
-    this->aspect = aspect;
+//     this->aspect = aspect;
 
-    position = glm::vec3(0.0f, 0.0f, 0.0f);
-    lookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-    up = glm::vec3(0.0f, 1.0f,  0.0f);
+//     position = glm::vec3(0.0f, 0.0f, 0.0f);
+//     lookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+//     up = glm::vec3(0.0f, 1.0f,  0.0f);
 
-    updateViewMatrix();
-}
+//     updateViewMatrix();
+// }
 
 glm::mat4 Camera::getViewMatrix() {
     return viewMatrix;

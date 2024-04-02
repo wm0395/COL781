@@ -121,7 +121,7 @@ void Ray_Tracer::draw(Scene *scene){
 
             // cout << center_x << " " << center_y << "\n";
 
-            vec4 color = sample(center_x, center_y, scene->camera);
+            vec4 color = sample(center_x, center_y);
             pixels[pixelIndex] = SDL_MapRGBA(pixelFormat, 255*color.x, 255 * color.y, 255*color.z, 255 * color.w);
 
             // Access the pixel value
@@ -138,13 +138,16 @@ void Ray_Tracer::draw(Scene *scene){
     SDL_UnlockSurface(framebuffer);
 }
 
-vec4 Ray_Tracer::sample(float x, float y, Camera* camera){
-    
+vec4 Ray_Tracer::sample(float x, float y){
+  
+    Camera* camera = renderer->scene->camera;
+
     Ray* ray = new Ray();
-    float h_prime = 1/sqrt(3);
+    float h_prime = camera->near_plane * tan(radians(camera->fov / 2));
     float b_prime = h_prime * framebuffer->w / float(framebuffer->h);
     float x_prime = 2 * b_prime * (x - (float(framebuffer->w) / 2)) / float(framebuffer -> w);
     float y_prime = 2 * h_prime * (-y + (float(framebuffer->h) / 2)) / float(framebuffer -> h);
+
     ray->o = vec4(camera->position.x, camera->position.y, camera->position.z, 1.0f);
     ray->d = vec4(x_prime, y_prime, -1.0f, 0.0f);
     // cout << ray->d.x << " " << ray->d.y << " " << ray->d.z << " " << ray->d.w << " \n";
