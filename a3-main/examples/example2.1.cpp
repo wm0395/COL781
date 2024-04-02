@@ -14,7 +14,7 @@ vec4 iso_white(vec4 position, vec4 omega, vec4 normal){
 }
 
 vec4 iso_gray(vec4 position, vec4 omega, vec4 normal){
-    return vec4(1000.0f, 1000.0f, 1000.0f, 1000.0f);
+    return vec4(10.0f, 10.0f, 10.0f, 10.0f);
 }
 
 vec4 iso_reflectance(vec4 position, vec4 omega, vec4 normal){
@@ -68,10 +68,10 @@ vec4 schlik_reflectance(vec4 incoming, vec4 outgoing, vec4 normal){
     // cout << NdotH <<'\n';
 
 // Blinn-Phong
-    // float D = pow(glm::max(0.0f,dot(h, normal)), 2.5f);
+    float D = pow(glm::max(0.0f,dot(h, normal)), 2.5f);
     
-// Rough    
-    float D = 1.0f;
+// // Rough    
+//     float D = 1.0f;
     
     float NdotV = glm::max(dot(normal, incoming), 0.0f);
     float NdotL = glm::max(dot(normal, outgoing), 0.0f);
@@ -109,14 +109,14 @@ int main(){
 
     vector<Shape*> objects = {};
 
-    // vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
-    // float r1 = 1.0f;
-    // Sphere *sphere1 = new Sphere(r1, center1);
-    // sphere1->material->albedo = vec4(1.0f, 0.75f, 0.3f, 1.0f);
-    // sphere1->material->diffuse = schlik_reflectance;
-    // // sphere1->material->diffuse = iso_reflectance;
-    // // sphere1->material->emmission = iso_white;
-    // objects.push_back(sphere1);
+    vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
+    float r1 = 1.0f;
+    Sphere *sphere1 = new Sphere(r1, center1);
+    sphere1->material->albedo = vec4(1.0f, 0.75f, 0.3f, 1.0f);
+    sphere1->material->diffuse = schlik_reflectance;
+    // sphere1->material->diffuse = iso_reflectance;
+    // sphere1->material->emmission = iso_white;
+    objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
@@ -161,8 +161,8 @@ int main(){
     // sphere3->material->emmission = iso_blue;
     // objects.push_back(sphere3);
 
-    // vec4 center4 = vec4(0.0f, 60.0f, -2.5f, 1.0f);
-    // float r4 = 15.0f;
+    // vec4 center4 = vec4(0.0f, 1.0f, -2.5f, 1.0f);
+    // float r4 = 0.5f;
     // Sphere *sphere4 = new Sphere(r4, center4);
     // sphere4->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     // sphere4->material->diffuse = iso_white;

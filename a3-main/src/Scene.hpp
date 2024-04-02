@@ -147,6 +147,7 @@ class Renderer{
     private:
     vec4 path_trace(int obj_id, vec4 position, vec4 out_dir, int depth);
     vec4 rand_hemisphere();
+    vec4 cos_hemisphere();
     pair<int, vec4> incident_ray(vec4 position, vec4 direction);
     int shadow_ray(int light_id, vec4 position);
     
