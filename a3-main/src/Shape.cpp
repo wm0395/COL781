@@ -102,7 +102,7 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     mat4 world_to_object = transformation_mat;
     ray->o = world_to_object * ray->o;
     ray->d = world_to_object * ray->d;
-
+    
     float x1 = dot(ray->d, ray->o - centre);
     float norm_d_sq = length(ray->d);
     norm_d_sq *= norm_d_sq;
@@ -216,33 +216,41 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
 
     float txmin = (min.x - ray->o.x) / ray->d.x;
     float txmax = (max.x - ray->o.x) / ray->d.x;
-    // Swap the bounds first if dx < 0
-    if (ray->d.x < 0){
-        float temp = txmin;
-        txmin = txmax;
-        txmax = temp;
-    }
+    if (txmin > txmax) swap(txmin, txmax);
+    // // Swap the bounds first if dx < 0
+    // if (ray->d.x < 0){
+    //     float temp = txmin;
+    //     txmin = txmax;
+    //     txmax = temp;
+    // }
 
     float tymin = (min.y - ray->o.y) / ray->d.y;
     float tymax = (max.y - ray->o.y) / ray->d.y;
+    if (tymin > tymax) swap(tymin, tymax);
     // Swap the bounds first if dy < 0
-    if (ray->d.y < 0){
-        float temp = tymin;
-        tymin = tymax;
-        tymax = temp;
-    }
+    // if (ray->d.y < 0){
+    //     float temp = tymin;
+    //     tymin = tymax;
+    //     tymax = temp;
+    // }
 
     float tzmin = (min.z - ray->o.z) / ray->d.z;
     float tzmax = (max.z - ray->o.z) / ray->d.z;
+    if (tzmin > tzmax) swap(tzmin, tzmax);
     // Swap the bounds first if dz < 0
-    if (ray->d.z < 0){
-        float temp = tzmin;
-        tzmin = tzmax;
-        tzmax = temp;
-    }
+    // if (ray->d.z < 0){
+    //     float temp = tzmin;
+    //     tzmin = tzmax;
+    //     tzmax = temp;
+    // }
+
+    // cout << txmin << " " << tymin << " " << tzmin << "\n";
+    // cout << txmax << " " << tymax << " " << tzmax << "\n";
 
     float tmin = std::max(std::max(txmin, tymin), tzmin);
     float tmax = std::min(std::min(txmax, tymax), tzmax);
+
+    // cout << tmin << " " << tmax << "\n";
     int min_plane;
     int max_plane;
 
@@ -266,9 +274,17 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
         max_plane = 2;
     }
 
-    if (tmin > tmax || tmin > ray->t_far || tmax < ray->t_near){
+    if (tmin > tmax){
         ray->t = INT32_MAX;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else if (tmin < ray->t_near && tmax < ray->t_near){
+        ray->t = INT32_MAX;
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else if (tmin < ray->t_near && tmax > ray->t_near){
+        ray->t = tmax;
+        return reflected_ray(ray, tmax, max_plane);
     }
     else{
         ray->t = tmin;
