@@ -202,11 +202,11 @@ vec4 Plane::normal_ray(vec4 position){
 }
 
 
-Bounding_Box::Bounding_Box(const vec4 &min, const vec4 &max) : min(min), max(max) {
+Axis_Aligned_Box::Axis_Aligned_Box(const vec4 &min, const vec4 &max) : min(min), max(max) {
 
 }
 
-pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
+pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
 
     mat4 world_to_object = transformation_mat;
     ray->o = world_to_object * ray->o;
@@ -276,7 +276,7 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
     }
 }
 
-pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
+pair<Ray*, vec4> Axis_Aligned_Box::reflected_ray(Ray* ray, float t, int min_plane){
     vec4 normal;
     if (min_plane == 0){
         if (ray->d.x > 0){
@@ -316,7 +316,7 @@ pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
     return {ref_ray, normal};
 }
 
-vec4 Bounding_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
+vec4 Axis_Aligned_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
     //firstly find out the face on which the vec4 position is present
 
     vec4 normal;

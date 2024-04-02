@@ -12,9 +12,9 @@ int main(){
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     cam->up = vec3(0.0f, 1.0f, 0.0f);
     cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->fov = 60.0f;
+    cam->near_plane = -1.0f;
     cam->updateViewMatrix();
-    cam->translate_camera(vec3(2.0f, 0.0f, 2.0f));
-    cam->rotate_camera(15.0f, vec3(0.0, 1.0, 1.0));    // rotate_camera(radians, axis)
     scene->camera = cam;
 
     vector<Shape*> objects = {};

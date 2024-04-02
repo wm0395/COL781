@@ -90,9 +90,9 @@ class Plane : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
-class Bounding_Box : public Shape {
+class Axis_Aligned_Box : public Shape {
     public:
-    Bounding_Box(const vec4 &min, const vec4 &max);
+    Axis_Aligned_Box(const vec4 &min, const vec4 &max);
     std::pair<Ray*, vec4> hit(Ray *ray) override;
     vec4 normal_ray(vec4 position) override;
 
