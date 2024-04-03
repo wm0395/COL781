@@ -14,12 +14,16 @@ vec4 Renderer::rand_hemisphere(){
 vec4 Renderer::cos_hemisphere(){
     float e1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float e2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float theta = acos(sqrt(e1));
-    float phi = 2 * M_1_PIf32 * e2;
+    // float theta = acos(sqrt(e1));
+    // float phi = 2 * M_1_PIf32 * e2;
  
-    float x = cos(phi) * sin(theta);
-    float y = sin(phi) * sin(theta);
-    float z = cos(theta);
+    // float x = cos(phi) * sin(theta);
+    // float y = sin(phi) * sin(theta);
+    // float z = cos(theta);
+
+    float x = sqrt(e1) * cos(2 * M_1_PIf32 * e2);
+    float y = sqrt(e1) * sin(2 * M_1_PIf32 * e2);
+    float z = sqrt(glm::max(0.0f, 1 - x*x - y*y));
  
     return vec4(x, y, z, 0.0f);
 }
@@ -97,7 +101,6 @@ vec4 Renderer::point_lambert(Ray *ray){
         vec4 irradiace = scene->lights[i]->Intensity;
         float fall_off = 4.0f*(float)M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
         vec4 out = scene->lights[i]->position - hit.second;
-        // vec4 normal = scene->objects[hit.first]->normal_ray(hit.second);
         vec4 normal = scene->objects[hit.first]->hit(ray).second;   //TODO: check if correct
         float out_norm = glm::length(out);
         float normal_norm = glm::length(normal);
@@ -110,7 +113,7 @@ vec4 Renderer::point_lambert(Ray *ray){
         intensity += irradiace;
     }
     
-    intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
+    // intensity = vec4(glm::min(1.0f, intensity.x), glm::min(1.0f, intensity.y), glm::min(1.0f, intensity.z), glm::min(1.0f, intensity.w));
 
     if(N == 0.0f){
         // cout<< hit.first <<"no light intersect\n";
@@ -118,7 +121,7 @@ vec4 Renderer::point_lambert(Ray *ray){
     }
 
     intensity = vec4(pow(intensity.x, 1.0f/2.2), pow(intensity.y, 1.0f/2.2), pow(intensity.z, 1.0f/2.2), pow(intensity.w, 1.0f/2.2));
-    intensity *= (2.0f/pow(N,1.0f/4.0f));
+    // intensity *= (2.0f/pow(N,1.0f/4.0f));
     vec4 temp = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     // if(scene->objects[hit.first]->material->diffuse)
     //     temp = scene->objects[hit.first]->material->diffuse(ray->o, ray->d);
@@ -155,6 +158,8 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
     vec3 z = normalize(vec3(normal.x, normal.y, normal.z));
     vec3 x = normalize(glm::cross(vec3(out_dir.x, out_dir.y, out_dir.z), z));
+    // vec3 z = normalize(vec3(out_dir.x, out_dir.y, out_dir.z));
+    // vec3 x = normalize(glm::cross(vec3(normal.x, normal.y, normal.z), z));
     vec3 y = normalize(glm::cross(z, x));
     mat4 T = mat4(vec4(x.x, x.y, x.z, 0.0f),vec4(y.x, y.y, y.z, 0.0f),vec4(z.x, z.y, z.z, 0.0f),vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
@@ -162,9 +167,10 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         
         // Uniform Hemisphere
         vec4 rand_dir = rand_hemisphere();
+        rand_dir = T * rand_dir;
         // // Cos weighted Hemisphere
         // vec4 rand_dir = cos_hemisphere();
-        rand_dir = T * rand_dir;
+        // rand_dir = T * rand_dir;
 
         pair<int, vec4> hit = incident_ray(position, rand_dir);
         if(hit.first == -1){
@@ -193,7 +199,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         irradiance *= (cos_theta/ fall_off);
         irradiance.w /= (cos_theta/ fall_off);
 
-        F += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance;
+        F += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * 100.0f;
     }
 
     // F *= (2.0f*M_1_PI/glm::pow((float)SAMPLES, 1.0f/4.0f));
@@ -205,10 +211,6 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     // F = scene->objects[obj_id]->material->diffuse(position, out_dir) * F;
     return scene->objects[obj_id]->material->albedo * F;
 }
-
-// vec4 Renderer::path_trace(int obj_id, vec4 position, vec4 out_dir, int depth){
-//     vec4 color = scene->objects[obj_id]->material->emmission(position, -out_dir);
-// }
 
 vec4 Renderer::ray_trace(Ray *ray){
     pair<int, vec4> hit = incident_ray(ray->o, ray->d);

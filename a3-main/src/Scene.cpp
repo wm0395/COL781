@@ -155,7 +155,7 @@ vec4 Ray_Tracer::sample(float x, float y){
     ray->t_far = camera->far_plane;
     float t = INT32_MAX;
 
-    mat4 view_mat = camera->getViewMatrix();
+    mat4 view_mat = renderer->scene->camera->getViewMatrix();
 
     // to convert from camera space to world space
     ray->o = view_mat * ray->o;

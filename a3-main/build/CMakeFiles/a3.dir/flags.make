@@ -7,11 +7,11 @@ C_DEFINES =
 
 C_INCLUDES = -I/home/kanav/COL781/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
 
-C_FLAGS = 
+C_FLAGS = -g
 
 CXX_DEFINES = 
 
 CXX_INCLUDES = -I/home/kanav/COL781/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2
 
-CXX_FLAGS = -std=gnu++11
+CXX_FLAGS = -g -std=gnu++11
 

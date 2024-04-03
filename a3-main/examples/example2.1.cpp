@@ -67,11 +67,14 @@ vec4 schlik_reflectance(vec4 incoming, vec4 outgoing, vec4 normal){
     // //     D= 0.0f;
     // cout << NdotH <<'\n';
 
-// Blinn-Phong
-    float D = pow(glm::max(0.0f,dot(h, normal)), 2.5f);
+// // Blinn-Phong
+//     float D = pow(glm::max(0.0f,dot(h, normal)), 50.5f);
     
 // // Rough    
 //     float D = 1.0f;
+
+// Perfect Mirror
+    float D = glm::max(0.0f,dot(h, normal)) >= 0.99f ? 1000.0f : 0.0f;
     
     float NdotV = glm::max(dot(normal, incoming), 0.0f);
     float NdotL = glm::max(dot(normal, outgoing), 0.0f);
@@ -83,7 +86,7 @@ vec4 schlik_reflectance(vec4 incoming, vec4 outgoing, vec4 normal){
     color *= R;
     // color *= G;
     color *= D;
-    color *= 1.0f/(dot(normal, incoming) * dot(normal, outgoing) * 4.0f); 
+    color *= 100.0f/(dot(normal, incoming) * dot(normal, outgoing) * 4.0f); 
     return color;
 }
 
@@ -105,6 +108,9 @@ int main(){
     Scene *scene = new Scene();
     Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
+    cam->up = vec3(0.0f, 1.0f, 0.0f);
+    cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->updateViewMatrix();
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -126,6 +132,14 @@ int main(){
     plane1->material->reflectance = iso_reflectance;
     objects.push_back(plane1);
 
+    vec4 normal1_1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    vec4 point1_1 = vec4(0.0f, 4.0f, 0.0f, 1.0f);
+    Plane *plane1_1 = new Plane(normal1_1, point1_1);
+    plane1_1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    plane1_1->material->diffuse = iso_white;
+    plane1_1->material->reflectance = iso_reflectance;
+    objects.push_back(plane1_1);
+
     vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
     vec4 point2 = vec4(0.0f, -1.0f, -3.5f, 1.0f);
     Plane *plane2 = new Plane(normal2, point2);
@@ -142,6 +156,22 @@ int main(){
     // plane3->material->emmission = iso_gray;
     // plane3->material->reflectance = iso_reflectance;
     // objects.push_back(plane3);
+
+    vec4 normal4 = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    vec4 point4 = vec4(0.0f, -2.0f, -0.0f, 1.0f);
+    Plane *plane4 = new Plane(normal4, point4);
+    plane4->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    plane4->material->diffuse = iso_white;
+    plane4->material->reflectance = iso_reflectance;
+    objects.push_back(plane4);
+
+    vec4 normal5 = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    vec4 point5 = vec4(0.0f, 2.0f, -0.0f, 1.0f);
+    Plane *plane5 = new Plane(normal5, point5);
+    plane5->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    plane5->material->diffuse = iso_white;
+    plane5->material->reflectance = iso_reflectance;
+    objects.push_back(plane5);
 
     vec4 center2 = vec4(0.75f, 0.3f, -1.5f, 1.0f);
     float r2 = 0.1f;
@@ -161,14 +191,14 @@ int main(){
     // sphere3->material->emmission = iso_blue;
     // objects.push_back(sphere3);
 
-    // vec4 center4 = vec4(0.0f, 1.0f, -2.5f, 1.0f);
-    // float r4 = 0.5f;
-    // Sphere *sphere4 = new Sphere(r4, center4);
-    // sphere4->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    // sphere4->material->diffuse = iso_white;
-    // sphere4->material->reflectance = iso_reflectance;
-    // sphere4->material->emmission = iso_blue;
-    // objects.push_back(sphere4);    
+    vec4 center4 = vec4(0.0f, 1.0f, -2.5f, 1.0f);
+    float r4 = 0.5f;
+    Sphere *sphere4 = new Sphere(r4, center4);
+    sphere4->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    sphere4->material->diffuse = iso_white;
+    sphere4->material->reflectance = iso_reflectance;
+    sphere4->material->emmission = iso_blue;
+    objects.push_back(sphere4);    
 
 
     scene->objects = objects;
@@ -176,7 +206,7 @@ int main(){
     scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 3, 1, 30, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 2, 1, 10, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
