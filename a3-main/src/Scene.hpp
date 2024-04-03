@@ -116,8 +116,6 @@ class Triangle : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
-
-
 class Light{
     public:
     vec4 Intensity;
@@ -171,7 +169,7 @@ class Ray_Tracer{
     bool quit;
     SDL_Surface* framebuffer = NULL;
     SDL_Surface *windowSurface = NULL;
-    vec4 sample(float x, float y, Camera* camera);
+    vec4 sample(float x, float y);
 
     int frameWidth;
     int frameHeight;
@@ -179,3 +177,4 @@ class Ray_Tracer{
     int spp; // Samples-per-pixel
     Renderer* renderer;
 };
+

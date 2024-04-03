@@ -18,6 +18,9 @@ int main(){
     Scene *scene = new Scene();
     Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
+    cam->up = vec3(0.0f, 1.0f, 0.0f);
+    cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->updateViewMatrix();
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -37,7 +40,7 @@ int main(){
     objects.push_back(plane1);
 
     vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-    vec4 point2 = vec4(0.0f, -1.0f, -2.5f, 1.0f);
+    vec4 point2 = vec4(0.0f, -1.0f, -5.5f, 1.0f);
     Plane *plane2 = new Plane(normal2, point2);
     plane2->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     plane2->material->diffuse = iso_white;
@@ -70,7 +73,7 @@ int main(){
     lights.push_back(light3);
 
     vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
-    vec4 intensity4 = vec4(10.0f, 10.0f, 10.0f, 1.0f);
+    vec4 intensity4 = vec4(100.0f, 100.0f, 100.0f, 100.0f);
     Light *light4 = new Light();
     light4->Intensity = intensity4;
     light4->position = position4;

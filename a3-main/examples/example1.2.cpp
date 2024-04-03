@@ -10,6 +10,9 @@ int main(){
     Scene *scene = new Scene();
     Camera *cam = new Camera();
     cam->position = vec3(0.0f, 0.0f, 0.0f);
+    cam->up = vec3(0.0f, 1.0f, 0.0f);
+    cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->updateViewMatrix();
     scene->camera = cam;
 
     vector<Shape*> objects = {};
