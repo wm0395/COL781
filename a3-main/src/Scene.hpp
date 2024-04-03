@@ -63,6 +63,8 @@ class Shape {
     void translation(vec3 t);
     void rotation(float radian, vec3 axis);
     void invert_transformation();
+
+    vec4 refracted_ray(vec4 incidence, vec4 position, float n1, float n2);
 };
 
 

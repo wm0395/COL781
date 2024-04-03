@@ -93,6 +93,15 @@ void Shape::invert_transformation(){
     }
 }
 
+vec4 Shape::refracted_ray(vec4 incidence, vec4 position, float n1, float n2){
+    vec4 normal = normal_ray(position);
+    float cos_theta1 = dot(-incidence, normal);
+    float n = n1/n2;
+    float cos_theta2 = sqrt(1 - n*n*(1 - cos_theta1*cos_theta1));
+    vec4 ref_d = n * incidence + (n * cos_theta1 - cos_theta2) * normal;
+    return ref_d;
+}
+
 Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 
 }
