@@ -123,6 +123,8 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     float t2 = -x1 + D;
     t2 /= norm_d_sq;
 
+    // cout << t1 << " " << t2 << "\n";
+
     if(t2 <= ray->t_near){
         ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};

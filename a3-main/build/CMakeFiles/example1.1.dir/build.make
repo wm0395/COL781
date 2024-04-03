@@ -72,29 +72,16 @@ include CMakeFiles/example1.1.dir/flags.make
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.o: CMakeFiles/example1.1.dir/flags.make
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.o: ../examples/example1.1.cpp
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.o: CMakeFiles/example1.1.dir/compiler_depend.ts
-<<<<<<< HEAD
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kanav/COL781/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/example1.1.dir/examples/example1.1.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -MF CMakeFiles/example1.1.dir/examples/example1.1.cpp.o.d -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -c /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -MF CMakeFiles/example1.1.dir/examples/example1.1.cpp.o.d -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -c /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp
 
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/example1.1.dir/examples/example1.1.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp > CMakeFiles/example1.1.dir/examples/example1.1.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp > CMakeFiles/example1.1.dir/examples/example1.1.cpp.i
 
 CMakeFiles/example1.1.dir/examples/example1.1.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/example1.1.dir/examples/example1.1.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.s
-=======
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/example1.1.dir/examples/example1.1.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -MF CMakeFiles/example1.1.dir/examples/example1.1.cpp.o.d -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp
-
-CMakeFiles/example1.1.dir/examples/example1.1.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/example1.1.dir/examples/example1.1.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp > CMakeFiles/example1.1.dir/examples/example1.1.cpp.i
-
-CMakeFiles/example1.1.dir/examples/example1.1.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/example1.1.dir/examples/example1.1.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.s
->>>>>>> main
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kanav/COL781/COL781_Assignments/a3-main/examples/example1.1.cpp -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.s
 
 # Object files for target example1.1
 example1_1_OBJECTS = \

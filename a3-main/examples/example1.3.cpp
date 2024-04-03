@@ -20,12 +20,9 @@ int main(){
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     cam->up = vec3(0.0f, 1.0f, 0.0f);
     cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
-<<<<<<< HEAD
     cam->fov = 60.0f;
     cam->near_plane = -1.0f;
-    cam->far_plane = 1000.0f;
-=======
->>>>>>> main
+    cam->far_plane = -1000.0f;
     cam->updateViewMatrix();
     scene->camera = cam;
 
@@ -88,7 +85,7 @@ int main(){
     scene->lights = lights;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 1, 1, 1, "point_lambert")){
+    if (!r.initialize("Example 3", 640, 480, 1, 1, 1, "point_lambert")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
