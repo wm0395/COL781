@@ -93,6 +93,15 @@ void Shape::invert_transformation(){
     }
 }
 
+vec4 Shape::refracted_ray(vec4 incidence, vec4 position, float n1, float n2){
+    vec4 normal = normal_ray(position);
+    float cos_theta1 = dot(-incidence, normal);
+    float n = n1/n2;
+    float cos_theta2 = sqrt(1 - n*n*(1 - cos_theta1*cos_theta1));
+    vec4 ref_d = n * incidence + (n * cos_theta1 - cos_theta2) * normal;
+    return ref_d;
+}
+
 Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 
 }
@@ -103,13 +112,16 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     ray->o = world_to_object * ray->o;
     ray->d = world_to_object * ray->d;
 
+    // cout << radius << " " << centre.x << " " << centre.y << " " << centre.z << "\n";
+    
     float x1 = dot(ray->d, ray->o - centre);
     float norm_d_sq = length(ray->d);
     norm_d_sq *= norm_d_sq;
     float x2 = dot(ray->o - centre, ray->o - centre) - radius * radius;
 
     if (x1 * x1 - norm_d_sq * x2 < 0){
-        ray->t = INT32_MAX;
+        ray->t = ray->t_far;
+        // cout << ray->t << "\n";
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     float D = sqrt(x1 * x1 - norm_d_sq * x2);
@@ -120,8 +132,10 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     float t2 = -x1 + D;
     t2 /= norm_d_sq;
 
+    // cout << t1 << " " << t2 << "\n";
+
     if(t2 <= ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else if(t1 <= ray->t_near){
@@ -171,7 +185,7 @@ pair<Ray*, vec4> Plane::hit(Ray *ray){
     // t = (n · (p0 − o))/(n · d) 
     float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
     if (t <= ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{
@@ -202,11 +216,11 @@ vec4 Plane::normal_ray(vec4 position){
 }
 
 
-Bounding_Box::Bounding_Box(const vec4 &min, const vec4 &max) : min(min), max(max) {
+Axis_Aligned_Box::Axis_Aligned_Box(const vec4 &min, const vec4 &max) : min(min), max(max) {
 
 }
 
-pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
+pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
 
     mat4 world_to_object = transformation_mat;
     ray->o = world_to_object * ray->o;
@@ -216,33 +230,41 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
 
     float txmin = (min.x - ray->o.x) / ray->d.x;
     float txmax = (max.x - ray->o.x) / ray->d.x;
-    // Swap the bounds first if dx < 0
-    if (ray->d.x < 0){
-        float temp = txmin;
-        txmin = txmax;
-        txmax = temp;
-    }
+    if (txmin > txmax) swap(txmin, txmax);
+    // // Swap the bounds first if dx < 0
+    // if (ray->d.x < 0){
+    //     float temp = txmin;
+    //     txmin = txmax;
+    //     txmax = temp;
+    // }
 
     float tymin = (min.y - ray->o.y) / ray->d.y;
     float tymax = (max.y - ray->o.y) / ray->d.y;
+    if (tymin > tymax) swap(tymin, tymax);
     // Swap the bounds first if dy < 0
-    if (ray->d.y < 0){
-        float temp = tymin;
-        tymin = tymax;
-        tymax = temp;
-    }
+    // if (ray->d.y < 0){
+    //     float temp = tymin;
+    //     tymin = tymax;
+    //     tymax = temp;
+    // }
 
     float tzmin = (min.z - ray->o.z) / ray->d.z;
     float tzmax = (max.z - ray->o.z) / ray->d.z;
+    if (tzmin > tzmax) swap(tzmin, tzmax);
     // Swap the bounds first if dz < 0
-    if (ray->d.z < 0){
-        float temp = tzmin;
-        tzmin = tzmax;
-        tzmax = temp;
-    }
+    // if (ray->d.z < 0){
+    //     float temp = tzmin;
+    //     tzmin = tzmax;
+    //     tzmax = temp;
+    // }
+
+    // cout << txmin << " " << tymin << " " << tzmin << "\n";
+    // cout << txmax << " " << tymax << " " << tzmax << "\n";
 
     float tmin = std::max(std::max(txmin, tymin), tzmin);
     float tmax = std::min(std::min(txmax, tymax), tzmax);
+
+    // cout << tmin << " " << tmax << "\n";
     int min_plane;
     int max_plane;
 
@@ -266,9 +288,17 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
         max_plane = 2;
     }
 
-    if (tmin > tmax || tmin > ray->t_far || tmax < ray->t_near){
-        ray->t = INT32_MAX;
+    if (tmin > tmax){
+        ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else if (tmin < ray->t_near && tmax < ray->t_near){
+        ray->t = ray->t_far;
+        return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
+    }
+    else if (tmin < ray->t_near && tmax > ray->t_near){
+        ray->t = tmax;
+        return reflected_ray(ray, tmax, max_plane);
     }
     else{
         ray->t = tmin;
@@ -276,7 +306,7 @@ pair<Ray*, vec4> Bounding_Box::hit(Ray *ray){
     }
 }
 
-pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
+pair<Ray*, vec4> Axis_Aligned_Box::reflected_ray(Ray* ray, float t, int min_plane){
     vec4 normal;
     if (min_plane == 0){
         if (ray->d.x > 0){
@@ -316,7 +346,7 @@ pair<Ray*, vec4> Bounding_Box::reflected_ray(Ray* ray, float t, int min_plane){
     return {ref_ray, normal};
 }
 
-vec4 Bounding_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
+vec4 Axis_Aligned_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
     //firstly find out the face on which the vec4 position is present
 
     vec4 normal;
@@ -353,16 +383,15 @@ pair<Ray*, vec4> Triangle::hit(Ray *ray){
     ray->d = world_to_object * ray->d;
 
     vec4 v1 = ray->o - p0;
-    mat4 A = mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    mat4 A = transpose(mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+    // A = transpose(A);
     vec4 soln = v1 * inverse(A);
     float t = soln.x;
     float b1 = soln.y;
     float b2 = soln.z;
 
-    cout << t << " " << b1 << " " << b2 << "\n";
-
     if (b1<=0 || b2<=0 || b1+b2>=1 || t<=ray->t_near){
-        ray->t = INT32_MAX;
+        ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{

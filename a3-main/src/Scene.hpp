@@ -17,7 +17,8 @@ class Camera {
     glm::vec3 lookAt;
     glm::mat4 viewMatrix;
 
-    float cameraSpeed, yaw, pitch, lastX, lastY, fov, aspect;
+
+    float cameraSpeed, yaw, pitch, lastX, lastY, fov, aspect, near_plane, far_plane;
     bool firstMouse;
     void initialize(float aspect);
     glm::mat4 getViewMatrix();
@@ -38,6 +39,8 @@ struct Ray{
     float t;
     float t_near;
     float t_far;
+    
+    Camera* camera;
 };
 
 class Material{
@@ -87,6 +90,8 @@ class Shape {
     void translation(vec3 t);
     void rotation(float radian, vec3 axis);
     void invert_transformation();
+
+    vec4 refracted_ray(vec4 incidence, vec4 position, float n1, float n2);
 };
 
 
@@ -116,9 +121,9 @@ class Plane : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
-class Bounding_Box : public Shape {
+class Axis_Aligned_Box : public Shape {
     public:
-    Bounding_Box(const vec4 &min, const vec4 &max);
+    Axis_Aligned_Box(const vec4 &min, const vec4 &max);
     std::pair<Ray*, vec4> hit(Ray *ray) override;
     vec4 normal_ray(vec4 position) override;
 

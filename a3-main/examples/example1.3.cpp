@@ -20,6 +20,9 @@ int main(){
     cam->position = vec3(0.0f, 0.0f, 0.0f);
     cam->up = vec3(0.0f, 1.0f, 0.0f);
     cam->lookAt = vec3(0.0f, 0.0f, -1.0f);
+    cam->fov = 60.0f;
+    cam->near_plane = -1.0f;
+    cam->far_plane = -1000.0f;
     cam->updateViewMatrix();
     scene->camera = cam;
 
@@ -29,7 +32,7 @@ int main(){
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
     sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    sphere1->material->diffuse = iso_white;
+    sphere1->material->diffuse = iso_blue;
     objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -82,7 +85,7 @@ int main(){
     scene->lights = lights;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 1, 1, 1, "point_lambert")){
+    if (!r.initialize("Example 3", 640, 480, 1, 1, 1, "point_lambert")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
