@@ -119,6 +119,16 @@ class Triangle : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
+class Mirror : public Shape {
+    public :
+    Mirror(const vec4 &normal, const vec4 &point_on_plane);
+    std::pair<Ray*, vec4> hit(Ray *ray) override;
+    vec4 normal_ray(vec4 position) override;
+
+    private:
+    vec4 normal;
+    vec4 point_on_plane;
+};
 
 
 class Light{

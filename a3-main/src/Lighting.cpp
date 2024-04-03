@@ -30,18 +30,21 @@ pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
     ray->o = position;
     ray->d = direction;
     ray->t_near = 0.01f;
-    ray->t_far = scene->camera->far_plane;
-    float t = INT32_MAX;
+    ray->t_far = -scene->camera->far_plane;
+    float t = -scene->camera->far_plane;
     int hit_id = -1;
     for(int i = 0; i < scene->objects.size(); i++){
+        // cout << i << "\n";
         ray->t = 0;
         pair<Ray*, vec4> hit = scene->objects[i]->hit(ray);
-        if(ray->t > 0 && ray->t < t){
+        // cout << ray->t << "\n";
+        if(ray->t > ray->t_near && ray->t < t){
             t = ray->t;
             hit_id = i;
         }
     }
     vec4 p = position + t * ray->d;
+    // cout << hit_id << "\n";
     return {hit_id, p};
 }
 

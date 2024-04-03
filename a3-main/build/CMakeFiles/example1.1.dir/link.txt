@@ -1,1 +1,1 @@
-/usr/bin/c++ -rdynamic CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -o example1.1  liba3.a /usr/lib/x86_64-linux-gnu/libSDL2.so -lSDL2_image 
+/usr/bin/g++ -rdynamic CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -o example1.1  liba3.a /usr/lib/x86_64-linux-gnu/libSDL2.so -lSDL2_image 
