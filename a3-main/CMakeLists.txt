@@ -7,7 +7,7 @@ find_package(glm REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL_image REQUIRED)
 
-add_library(a3 src/Scene.hpp src/Scene.cpp src/Shape.cpp src/Camera.cpp src/Lighting.cpp deps/src/gl.c)
+add_library(a3 src/Scene.hpp src/Scene.cpp src/Shape.cpp src/Camera.cpp src/Lighting.cpp src/Material.cpp deps/src/gl.c)
 target_include_directories(a3 PUBLIC deps/include)
 target_link_libraries(a3 glm::glm SDL2::SDL2 SDL2_image)
 
@@ -25,3 +25,6 @@ target_link_libraries(example1.4 a3)
 
 add_executable(example2.1 examples/example2.1.cpp)
 target_link_libraries(example2.1 a3)
+
+add_executable(example2.2 examples/example2.2.cpp)
+target_link_libraries(example2.2 a3)

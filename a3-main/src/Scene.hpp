@@ -46,6 +46,33 @@ class Material{
     vec4 (*emmission)(vec4 position, vec4 omega, vec4 normal);
     vec4 (*diffuse)(vec4 position, vec4 omega, vec4 normal);
     vec4 (*reflectance)(vec4 position, vec4 omega, vec4 normal);
+    bool isEmissive;
+    bool isDiffuse;
+    bool isReflective;
+    bool isTransparent;
+    float ke;
+    float kd;
+    float ks;
+    float F;
+};
+
+class Diffuse : public Material{
+    public:
+    Diffuse(vec4 color, float kd);
+};
+
+class Metal : public Material{
+    public:
+    Metal(vec4 color, float ks);
+};
+
+class Glass : public Material{
+
+};
+
+class Emmissive : public Material{
+    public:
+    Emmissive(vec4 color, float ke);
 };
 
 class Shape {

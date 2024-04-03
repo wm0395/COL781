@@ -20,7 +20,8 @@
 						2,
 						3,
 						4,
-						5
+						5,
+						6
 					]
 				}
 			],
@@ -40,7 +41,8 @@
 						2,
 						3,
 						4,
-						5
+						5,
+						6
 					]
 				}
 			],
@@ -49,7 +51,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "a3::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-a3-Debug-a8457dd989308278e98d.json",
+					"jsonFile" : "target-a3-Debug-7d4cb74049a379f06a97.json",
 					"name" : "a3",
 					"projectIndex" : 0
 				},
@@ -86,6 +88,13 @@
 					"id" : "example2.1::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-example2.1-Debug-8866e1ba9e81b1219df2.json",
 					"name" : "example2.1",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "example2.2::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-example2.2-Debug-5ddb733799ef2a38f60d.json",
+					"name" : "example2.2",
 					"projectIndex" : 0
 				}
 			]
