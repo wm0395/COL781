@@ -1,6 +1,8 @@
 #include "Scene.hpp"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <fstream>
+#include <sstream>
 
 
 Shape::Shape(){
@@ -93,6 +95,16 @@ void Shape::invert_transformation(){
     }
 }
 
+mat4 mat4_to_mat4(mat4 A){
+    mat4 B = mat4(1.0f);
+    for (int i = 0; i<3; i++){
+        for (int j = 0; j<3; j++){
+            B[i][j] = A[i][j];
+        }
+    }
+    return B;
+}
+
 pair<vec4, float> Shape::refracted_ray(vec4 incidence, vec4 position, vec4 normal, float n1, float n2){
     incidence = normalize(incidence);
     normal = normalize(normal);
@@ -129,19 +141,23 @@ Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 }
 
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {
-    
+
     mat4 world_to_object = transformation_mat;
-    Ray *hit_ray = new Ray();
+
+    Ray* hit_ray = new Ray();
     hit_ray->o = world_to_object * ray->o;
     hit_ray->d = world_to_object * ray->d;
-    hit_ray->t = ray->t;
-    hit_ray->t_near = 0.0f;
-    hit_ray->t_far = 1000.0f;
+    hit_ray->t_near = ray->t_near;
+    hit_ray->t_far = ray->t_far;
+    hit_ray->t = ray->t_far;
+    
+    // ray->o = world_to_object * ray->o;
+    // ray->d = world_to_object * ray->d;
 
     // cout << radius << " " << centre.x << " " << centre.y << " " << centre.z << "\n";
     
     float x1 = dot(hit_ray->d, hit_ray->o - centre);
-    float norm_d_sq = length(ray->d);
+    float norm_d_sq = length(hit_ray->d);
     norm_d_sq *= norm_d_sq;
     float x2 = dot(hit_ray->o - centre, hit_ray->o - centre) - radius * radius;
 
@@ -187,14 +203,14 @@ pair<Ray*, vec4> Sphere::reflected_ray(Ray* ray, float t){
     ref_ray->d = normal;
     ref_ray->d *= 2*dot(normal,d);
     ref_ray->d = d - ref_ray->d;
-    normal = transpose(transformation_mat) * normal;
+    normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return {ref_ray, normal};
 }
 
 vec4 Sphere::normal_ray(vec4 position){
     vec4 normal = position - centre;
     normal = normal / length(normal);
-    normal = transpose(transformation_mat) * normal;
+    normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return normal;
 }
 
@@ -205,13 +221,17 @@ Plane::Plane(const vec4 &normal, const vec4 &point_on_plane) : normal(normal), p
 pair<Ray*, vec4> Plane::hit(Ray *ray){
 
     mat4 world_to_object = transformation_mat;
-    Ray *hit_ray = new Ray();
+
+    Ray* hit_ray = new Ray();
     hit_ray->o = world_to_object * ray->o;
     hit_ray->d = world_to_object * ray->d;
+    hit_ray->t_near = ray->t_near;
+    hit_ray->t_far = ray->t_far;
+    hit_ray->t = ray->t_far;
 
     // t = (n · (p0 − o))/(n · d) 
-    float t = float(dot(normal, point_on_plane - hit_ray->o)) / dot(normal, hit_ray->d);
-    if (t <= hit_ray->t_near){
+    float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
+    if (t <= ray->t_near){
         ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
@@ -233,12 +253,14 @@ pair<Ray*, vec4> Plane::reflected_ray(Ray* ray, float t){
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
     normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return {ref_ray, normal};
 }
 
 vec4 Plane::normal_ray(vec4 position){
     normal = normal / length(normal);
     normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return normal;
 }
 
@@ -250,13 +272,17 @@ Axis_Aligned_Box::Axis_Aligned_Box(const vec4 &min, const vec4 &max) : min(min),
 pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
 
     mat4 world_to_object = transformation_mat;
-    ray->o = world_to_object * ray->o;
-    ray->d = world_to_object * ray->d;
+    Ray* hit_ray = new Ray();
+    hit_ray->o = world_to_object * ray->o;
+    hit_ray->d = world_to_object * ray->d;
+    hit_ray->t_near = ray->t_near;
+    hit_ray->t_far = ray->t_far;
+    hit_ray->t = ray->t_far;
 
     // txmin = (xmin − ox)/dx
 
-    float txmin = (min.x - ray->o.x) / ray->d.x;
-    float txmax = (max.x - ray->o.x) / ray->d.x;
+    float txmin = (min.x - hit_ray->o.x) / hit_ray->d.x;
+    float txmax = (max.x - hit_ray->o.x) / hit_ray->d.x;
     if (txmin > txmax) swap(txmin, txmax);
     // // Swap the bounds first if dx < 0
     // if (ray->d.x < 0){
@@ -265,8 +291,8 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
     //     txmax = temp;
     // }
 
-    float tymin = (min.y - ray->o.y) / ray->d.y;
-    float tymax = (max.y - ray->o.y) / ray->d.y;
+    float tymin = (min.y - hit_ray->o.y) / hit_ray->d.y;
+    float tymax = (max.y - hit_ray->o.y) / hit_ray->d.y;
     if (tymin > tymax) swap(tymin, tymax);
     // Swap the bounds first if dy < 0
     // if (ray->d.y < 0){
@@ -275,8 +301,8 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
     //     tymax = temp;
     // }
 
-    float tzmin = (min.z - ray->o.z) / ray->d.z;
-    float tzmax = (max.z - ray->o.z) / ray->d.z;
+    float tzmin = (min.z - hit_ray->o.z) / hit_ray->d.z;
+    float tzmax = (max.z - hit_ray->o.z) / hit_ray->d.z;
     if (tzmin > tzmax) swap(tzmin, tzmax);
     // Swap the bounds first if dz < 0
     // if (ray->d.z < 0){
@@ -325,11 +351,11 @@ pair<Ray*, vec4> Axis_Aligned_Box::hit(Ray *ray){
     }
     else if (tmin < ray->t_near && tmax > ray->t_near){
         ray->t = tmax;
-        return reflected_ray(ray, tmax, max_plane);
+        return reflected_ray(hit_ray, tmax, max_plane);
     }
     else{
         ray->t = tmin;
-        return reflected_ray(ray, tmin, min_plane);
+        return reflected_ray(hit_ray, tmin, min_plane);
     }
 }
 
@@ -369,7 +395,8 @@ pair<Ray*, vec4> Axis_Aligned_Box::reflected_ray(Ray* ray, float t, int min_plan
     ref_ray->d = n;
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
-    normal = transpose(transformation_mat) * normal;
+    // normal = transpose(transformation_mat) * normal;
+    normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return {ref_ray, normal};
 }
 
@@ -397,6 +424,7 @@ vec4 Axis_Aligned_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
     }
     normal = normal / length(normal);
     normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return normal;
 }
 
@@ -406,11 +434,16 @@ Triangle::Triangle(const vec4 &p0, const vec4 &p1, const vec4 &p2) : p0(p0), p1(
 
 pair<Ray*, vec4> Triangle::hit(Ray *ray){
     mat4 world_to_object = inverse(transformation_mat);
-    ray->o = world_to_object * ray->o;
-    ray->d = world_to_object * ray->d;
+    Ray* hit_ray = new Ray();
+    hit_ray->o = world_to_object * ray->o;
+    hit_ray->d = world_to_object * ray->d;
+    hit_ray->t_near = ray->t_near;
+    hit_ray->t_far = ray->t_far;
+    hit_ray->t = ray->t_far;
 
-    vec4 v1 = ray->o - p0;
-    mat4 A = transpose(mat4(-ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+
+    vec4 v1 = hit_ray->o - p0;
+    mat4 A = transpose(mat4(-hit_ray->d, p1 - p0, p2 - p0, vec4(0.0f, 0.0f, 0.0f, 1.0f)));
     // A = transpose(A);
     vec4 soln = v1 * inverse(A);
     float t = soln.x;
@@ -423,13 +456,13 @@ pair<Ray*, vec4> Triangle::hit(Ray *ray){
     }
     else{
         ray->t = t;
-        return reflected_ray(ray, t);
+        return reflected_ray(hit_ray, t);
     }
 }
 
 pair<Ray*, vec4> Triangle::reflected_ray(Ray* ray, float t){
     vec4 v1 = p1-p0;
-    vec4 v2 = p2-p0;
+    vec4 v2 = p2-p1;
     vec3 x1 = vec3(v1.x, v1.y, v1.z);
     vec3 x2 = vec3(v2.x, v2.y, v2.z);
     vec3 n1 = cross(x1, x2);
@@ -446,6 +479,7 @@ pair<Ray*, vec4> Triangle::reflected_ray(Ray* ray, float t){
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
     normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return {ref_ray, normal};
 }
 
@@ -458,5 +492,90 @@ vec4 Triangle::normal_ray(vec4 position){
     vec4 normal = vec4(n1.x, n1.y, n1.z, 0.0f);
     normal = normal / length(normal);
     normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return normal;
+}
+
+Mesh::Mesh(string file){
+    parse_OBJ(file.c_str());
+}
+
+void Mesh::parse_OBJ(const char *filename){
+    std::vector<vec3> vertex;
+    std::vector<vec3> normal;
+    std::vector<ivec3> face;
+    std::ifstream in(filename, std::ios::in);
+
+    bool nn = false;
+    
+    if (!in){
+        std::cerr << "Cannot open " << filename << std::endl;
+        exit(1);
+
+    }
+    std::string line;
+    while (std::getline(in, line))
+    {
+        //check v for vertices
+        if (line.substr(0,2)=="v "){
+            std::istringstream v(line.substr(2));
+            glm::vec3 vert;
+            double x,y,z;
+            v>>x;v>>y;v>>z;
+            vert=glm::vec3(x,y,z);
+            vertex.push_back(vert);
+        }
+        //check for texture co-ordinate
+        else if(line.substr(0,2)=="vn"){
+
+            nn = true;
+            std::istringstream v(line.substr(3));
+            glm::vec3 nor;
+            float x,y,z;
+            v>>x;v>>y;v>>z;
+            nor=glm::vec3(x,y,z);
+            normal.push_back(nor);
+
+        }
+        //check for faces
+        else if(line.substr(0,2)=="f " && nn){
+            int a,b,c; //to store mesh index
+            int A,B,C; //to store texture index
+            const char* chh=line.c_str();
+            sscanf (chh, "f %i//%i %i//%i %i//%i",&a,&A,&b,&B,&c,&C); //here it read the line start with f and store the corresponding values in the variables
+            a--;b--;c--;
+            A--;B--;C--;\
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+        }
+
+        else if (line.substr(0,2)=="f " && !nn){
+            int a,b,c;
+            const char* chh=line.c_str();
+            sscanf(chh, "f %i %i %i", &a, &b, &c);
+            a--;b--;c--;
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+
+        }
+
+    }
+
+    if (!nn){
+        for (int i = 0; i<vertex.size(); i++){
+            normal.push_back(glm::vec3(0.0, 0.0, 0.0));
+        }
+    }
+    
+    vertices = new vec3[vertex.size()];
+    std::copy(vertex.begin(), vertex.end(), vertices);
+
+    normals = new vec3[normal.size()];
+    std::copy(normal.begin(), normal.end(), normals);
+
+    triangles = new ivec3[face.size()];
+    std::copy(face.begin(), face.end(), triangles);
+
+    num_of_vertices = vertex.size();
+    num_of_faces = face.size();
 }

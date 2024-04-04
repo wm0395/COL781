@@ -155,6 +155,18 @@ class Triangle : public Shape {
     pair<Ray*, vec4> reflected_ray(Ray* ray, float t);
 };
 
+class Mesh {
+    public:
+    Mesh(string file);
+    vec3* vertices;
+    ivec3* triangles;
+    vec3* normals;
+    int num_of_vertices;
+    int num_of_faces;
+
+    void parse_OBJ(const char *filename);
+};
+
 class Light{
     public:
     vec4 Intensity;

@@ -24,6 +24,8 @@ int main(){
     cam->near_plane = -1.0f;
     cam->far_plane = -1000.0f;
     cam->updateViewMatrix();
+    // cam->translate_camera(vec3(0.5f, 0.0f, 0.5f));
+    // cam->rotate_camera(45.0f, vec3(0.0f, 1.0f, 1.0f));
     scene->camera = cam;
 
     vector<Shape*> objects = {};
@@ -31,7 +33,7 @@ int main(){
     vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
-    sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    sphere1->material->albedo = vec4(1.0f, 1.0f, 10.0f, 1.0f);
     sphere1->material->diffuse = iso_blue;
     objects.push_back(sphere1);
 
@@ -55,7 +57,7 @@ int main(){
     vector<Light*> lights = {};
 
     vec4 position1 = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    vec4 intensity1 = vec4(15.0f, 0.0f, 0.0f, 1.0f);
+    vec4 intensity1 = vec4(50.0f, 0.0f, 0.0f, 1.0f);
     Light *light1 = new Light();
     light1->Intensity = intensity1;
     light1->position = position1;
@@ -69,7 +71,7 @@ int main(){
     lights.push_back(light2);
 
     vec4 position3 = vec4(-1.0f, 1.0f, 0.0f, 1.0f);
-    vec4 intensity3 = vec4(0.0f, 15.0f, 0.0f, 1.0f);
+    vec4 intensity3 = vec4(0.0f, 50.0f, 0.0f, 1.0f);
     Light *light3 = new Light();
     light3->Intensity = intensity3;
     light3->position = position3;

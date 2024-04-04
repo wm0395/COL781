@@ -31,7 +31,7 @@ void Camera::updateViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
-    return glm::perspective(glm::radians(fov), aspect, 0.1f, 100.0f);
+    return glm::perspective(glm::radians(fov), aspect, near_plane, far_plane);
 }
 
 glm::vec3 Camera:: getViewDir() {
