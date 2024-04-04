@@ -1,6 +1,8 @@
 #include "Scene.hpp"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <fstream>
+#include <sstream>
 
 
 Shape::Shape(){
@@ -461,7 +463,7 @@ pair<Ray*, vec4> Triangle::hit(Ray *ray){
 
 pair<Ray*, vec4> Triangle::reflected_ray(Ray* ray, float t){
     vec4 v1 = p1-p0;
-    vec4 v2 = p2-p0;
+    vec4 v2 = p2-p1;
     vec3 x1 = vec3(v1.x, v1.y, v1.z);
     vec3 x2 = vec3(v2.x, v2.y, v2.z);
     vec3 n1 = cross(x1, x2);
@@ -493,4 +495,88 @@ vec4 Triangle::normal_ray(vec4 position){
     normal = transpose(transformation_mat) * normal;
     // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return normal;
+}
+
+Mesh::Mesh(string file){
+    parse_OBJ(file.c_str());
+}
+
+void Mesh::parse_OBJ(const char *filename){
+    std::vector<vec3> vertex;
+    std::vector<vec3> normal;
+    std::vector<ivec3> face;
+    std::ifstream in(filename, std::ios::in);
+
+    bool nn = false;
+    
+    if (!in){
+        std::cerr << "Cannot open " << filename << std::endl;
+        exit(1);
+
+    }
+    std::string line;
+    while (std::getline(in, line))
+    {
+        //check v for vertices
+        if (line.substr(0,2)=="v "){
+            std::istringstream v(line.substr(2));
+            glm::vec3 vert;
+            double x,y,z;
+            v>>x;v>>y;v>>z;
+            vert=glm::vec3(x,y,z);
+            vertex.push_back(vert);
+        }
+        //check for texture co-ordinate
+        else if(line.substr(0,2)=="vn"){
+
+            nn = true;
+            std::istringstream v(line.substr(3));
+            glm::vec3 nor;
+            float x,y,z;
+            v>>x;v>>y;v>>z;
+            nor=glm::vec3(x,y,z);
+            normal.push_back(nor);
+
+        }
+        //check for faces
+        else if(line.substr(0,2)=="f " && nn){
+            int a,b,c; //to store mesh index
+            int A,B,C; //to store texture index
+            const char* chh=line.c_str();
+            sscanf (chh, "f %i//%i %i//%i %i//%i",&a,&A,&b,&B,&c,&C); //here it read the line start with f and store the corresponding values in the variables
+            a--;b--;c--;
+            A--;B--;C--;\
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+        }
+
+        else if (line.substr(0,2)=="f " && !nn){
+            int a,b,c;
+            const char* chh=line.c_str();
+            sscanf(chh, "f %i %i %i", &a, &b, &c);
+            a--;b--;c--;
+            glm::ivec3 fac = ivec3(a,b,c);
+            face.push_back(fac);
+
+        }
+
+    }
+
+    if (!nn){
+        for (int i = 0; i<vertex.size(); i++){
+            normal.push_back(glm::vec3(0.0, 0.0, 0.0));
+        }
+    }
+    
+    vertices = new vec3[vertex.size()];
+    std::copy(vertex.begin(), vertex.end(), vertices);
+
+    normals = new vec3[normal.size()];
+    std::copy(normal.begin(), normal.end(), normals);
+
+    triangles = new ivec3[face.size()];
+    std::copy(face.begin(), face.end(), triangles);
+
+    num_of_vertices = vertex.size();
+    num_of_faces = face.size();
 }

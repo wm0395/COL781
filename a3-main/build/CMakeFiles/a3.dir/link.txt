@@ -1,0 +1,2 @@
+/usr/bin/ar qc liba3.a CMakeFiles/a3.dir/src/Scene.cpp.o CMakeFiles/a3.dir/src/Shape.cpp.o CMakeFiles/a3.dir/src/Camera.cpp.o CMakeFiles/a3.dir/src/Lighting.cpp.o CMakeFiles/a3.dir/src/Material.cpp.o CMakeFiles/a3.dir/deps/src/gl.c.o
+/usr/bin/ranlib liba3.a
