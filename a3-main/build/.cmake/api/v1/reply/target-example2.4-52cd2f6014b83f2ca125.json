@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "example2.1"
+			"path" : "example2.4"
 		}
 	],
 	"backtrace" : 1,
@@ -25,13 +25,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 26,
+				"line" : 32,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 27,
+				"line" : 33,
 				"parent" : 0
 			}
 		]
@@ -41,9 +41,6 @@
 		{
 			"compileCommandFragments" : 
 			[
-				{
-					"fragment" : "-g"
-				},
 				{
 					"fragment" : "-std=gnu++11"
 				}
@@ -87,15 +84,11 @@
 			"id" : "a3::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "example2.1::@6890427a1f51a3e7e1df",
+	"id" : "example2.4::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
-			{
-				"fragment" : "-g",
-				"role" : "flags"
-			},
 			{
 				"fragment" : "-rdynamic",
 				"role" : "flags"
@@ -116,8 +109,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "example2.1",
-	"nameOnDisk" : "example2.1",
+	"name" : "example2.4",
+	"nameOnDisk" : "example2.4",
 	"paths" : 
 	{
 		"build" : ".",
@@ -138,7 +131,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "examples/example2.1.cpp",
+			"path" : "examples/example2.4.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

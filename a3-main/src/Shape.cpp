@@ -97,11 +97,12 @@ pair<vec4, float> Shape::refracted_ray(vec4 incidence, vec4 position, vec4 norma
     incidence = normalize(incidence);
     // vec4 normal = normal_ray(position);
     normal = normalize(normal);
-    float cos_theta1 = glm::max(dot(-incidence, normal), 0.0f);
+    // float cos_theta1 = glm::max(dot(-incidence, normal), 0.0f);
+    float cos_theta1 = abs(dot(-incidence, normal));
     // cout << cos_theta1 << "\n";
     // cout << n1 << " " << n2 << "\n";
     float n = n1/n2;
-    // cout << n << "\n";
+    // cout << n << "\n"
     float f = 1.0f - n*n*(1.0f - cos_theta1*cos_theta1);
     // cout << f << "\n";
     vec4 ref_d = vec4(0.0f);

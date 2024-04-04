@@ -146,7 +146,7 @@ int main(){
     // objects.push_back(plane1_1);
 
     vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-    vec4 point2 = vec4(0.0f, -1.0f, -3.5f, 1.0f);
+    vec4 point2 = vec4(0.0f, 0.0f, -3.5f, 1.0f);
     Plane *plane2 = new Plane(normal2, point2);
     // plane2->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     // plane2->material->diffuse = iso_white;
@@ -212,7 +212,7 @@ int main(){
 
     scene->objects = objects;
 
-    scene->sky = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
 
     Ray_Tracer r;
     if (!r.initialize("Example 1", 640, 480, 4, 1, 3, "ray_trace")){

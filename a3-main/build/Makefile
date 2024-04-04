@@ -207,6 +207,19 @@ example2.2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.2.dir/build.make CMakeFiles/example2.2.dir/build
 .PHONY : example2.2/fast
 
+#=============================================================================
+# Target rules for targets named example2.4
+
+# Build rule for target.
+example2.4: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example2.4
+.PHONY : example2.4
+
+# fast build rule for target.
+example2.4/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.4.dir/build.make CMakeFiles/example2.4.dir/build
+.PHONY : example2.4/fast
+
 deps/src/gl.o: deps/src/gl.c.o
 .PHONY : deps/src/gl.o
 
@@ -375,6 +388,30 @@ examples/example2.2.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.2.dir/build.make CMakeFiles/example2.2.dir/examples/example2.2.cpp.s
 .PHONY : examples/example2.2.cpp.s
 
+examples/example2.4.o: examples/example2.4.cpp.o
+.PHONY : examples/example2.4.o
+
+# target to build an object file
+examples/example2.4.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.4.dir/build.make CMakeFiles/example2.4.dir/examples/example2.4.cpp.o
+.PHONY : examples/example2.4.cpp.o
+
+examples/example2.4.i: examples/example2.4.cpp.i
+.PHONY : examples/example2.4.i
+
+# target to preprocess a source file
+examples/example2.4.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.4.dir/build.make CMakeFiles/example2.4.dir/examples/example2.4.cpp.i
+.PHONY : examples/example2.4.cpp.i
+
+examples/example2.4.s: examples/example2.4.cpp.s
+.PHONY : examples/example2.4.s
+
+# target to generate assembly for a file
+examples/example2.4.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.4.dir/build.make CMakeFiles/example2.4.dir/examples/example2.4.cpp.s
+.PHONY : examples/example2.4.cpp.s
+
 src/Camera.o: src/Camera.cpp.o
 .PHONY : src/Camera.o
 
@@ -510,6 +547,7 @@ help:
 	@echo "... example1.4"
 	@echo "... example2.1"
 	@echo "... example2.2"
+	@echo "... example2.4"
 	@echo "... deps/src/gl.o"
 	@echo "... deps/src/gl.i"
 	@echo "... deps/src/gl.s"
@@ -531,6 +569,9 @@ help:
 	@echo "... examples/example2.2.o"
 	@echo "... examples/example2.2.i"
 	@echo "... examples/example2.2.s"
+	@echo "... examples/example2.4.o"
+	@echo "... examples/example2.4.i"
+	@echo "... examples/example2.4.s"
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"

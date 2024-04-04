@@ -251,7 +251,14 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
         if(scene->objects[obj_id]->material->isTransparent){
             pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position, normal, scene->mu, scene->objects[obj_id]->material->mu);
-            cout << (refrac.first == -out_dir) << "\n";
+            // check refrac.first and -out.dir with some small error for floating error
+            // float eps = 0.00001f;
+            // if (abs(refrac.first.x + out_dir.x) > eps || abs(refrac.first.y + out_dir.y) > eps || abs(refrac.first.z + out_dir.z) > eps){
+            //     cout << "refrac.first => " << refrac.first.x << " " << refrac.first.y << " " << refrac.first.z << "\n";
+            //     cout << "out_dir => " << out_dir.x << " " << out_dir.y << " " << out_dir.z << "\n";
+            //     // continue;
+            // }
+            // cout << (refrac.first == -out_dir) << "\n";
             pair<int, vec4> refrac_hit = incident_ray(position, refrac.first);
 
             if(refrac_hit.first != obj_id){ // Another object inside volume

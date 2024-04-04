@@ -50,9 +50,6 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g"
-				},
-				{
 					"fragment" : "-std=gnu++11"
 				}
 			],
@@ -92,12 +89,6 @@
 			]
 		},
 		{
-			"compileCommandFragments" : 
-			[
-				{
-					"fragment" : "-g"
-				}
-			],
 			"includes" : 
 			[
 				{
