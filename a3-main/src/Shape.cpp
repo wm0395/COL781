@@ -95,7 +95,6 @@ void Shape::invert_transformation(){
 
 pair<vec4, float> Shape::refracted_ray(vec4 incidence, vec4 position, vec4 normal, float n1, float n2){
     incidence = normalize(incidence);
-    // vec4 normal = normal_ray(position);
     normal = normalize(normal);
     // float cos_theta1 = glm::max(dot(-incidence, normal), 0.0f);
     float cos_theta1 = abs(dot(-incidence, normal));
@@ -109,7 +108,7 @@ pair<vec4, float> Shape::refracted_ray(vec4 incidence, vec4 position, vec4 norma
     if (f < 0){  // case of TIR
         // return the reflected direction
         ref_d = normal;
-        ref_d*= 2*dot(normal,incidence);
+        ref_d*= 2*dot(normal,-incidence);
         ref_d = incidence - ref_d;
         return {ref_d, 1.0f};
     }

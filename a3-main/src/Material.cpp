@@ -158,5 +158,5 @@ Glass::Glass(vec4 color, float ks, float kt){
     isTransparent = true;
     this->ks = ks;
     this->kt = kt;
-    mu = 1.0f;
+    mu = 1.55f;
 }

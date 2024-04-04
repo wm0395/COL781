@@ -1,0 +1,67 @@
+[
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/a3.dir/src/Scene.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Scene.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/src/Scene.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/a3.dir/src/Shape.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Shape.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/src/Shape.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/a3.dir/src/Camera.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Camera.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/src/Camera.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/a3.dir/src/Lighting.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Lighting.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/src/Lighting.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/a3.dir/src/Material.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/src/Material.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/src/Material.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/gcc  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -o CMakeFiles/a3.dir/deps/src/gl.c.o -c /home/wm0395/COL781_Assignments/a3-main/deps/src/gl.c",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/deps/src/gl.c"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example1.1.dir/examples/example1.1.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example1.1.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example1.2.dir/examples/example1.2.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example1.2.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example1.2.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example1.3.dir/examples/example1.3.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example1.3.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example1.3.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example1.4.dir/examples/example1.4.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example1.4.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example1.4.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example2.1.dir/examples/example2.1.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example2.1.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example2.1.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example2.2.dir/examples/example2.2.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example2.2.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example2.2.cpp"
+},
+{
+  "directory": "/home/wm0395/COL781_Assignments/a3-main/build",
+  "command": "/usr/bin/g++  -I/home/wm0395/COL781_Assignments/a3-main/deps/include -isystem /usr/lib -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/example2.4.dir/examples/example2.4.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp",
+  "file": "/home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp"
+}
+]

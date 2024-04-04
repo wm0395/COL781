@@ -32,7 +32,7 @@ vec4 Renderer::cos_hemisphere(){
 pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
     Ray *ray = new Ray();
     ray->o = position;
-    ray->d = direction;
+    ray->d = normalize( direction);
     // ray->t_near = 0.0f;
     // ray->t_far = -scene->camera->far_plane;
     float t = -scene->camera->far_plane;
@@ -55,7 +55,7 @@ pair<int, vec4> Renderer::incident_ray(vec4 position, vec4 direction){
 int Renderer::shadow_ray(int light_id, vec4 position){
     Ray *ray = new Ray();
     ray->o = scene->lights[light_id]->position;
-    ray->d = position - scene->lights[light_id]->position;
+    ray->d = normalize(position - scene->lights[light_id]->position);
     // ray->t_near = 0.0f;
     // ray->t_far = scene->camera->far_plane;
     // int bias = 0.0
@@ -168,9 +168,10 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 D = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec4 R = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec4 T = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-    for(int i = 0; i < PATHS && depth <= MAX_BOUNCES; i++){
+    float e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    for(int i = 0; i < PATHS && e <= ((MAX_BOUNCES - 1.0f)/MAX_BOUNCES) && depth <= 15; i++){
         // cout << depth << "\n";
+        e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
         if(scene->objects[obj_id]->material->isDiffuse){
             // Uniform Hemisphere
@@ -187,7 +188,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             else{
                 Ray *branch_ray = new Ray();
                 branch_ray->o = position ;//+ 0.000001f * normal;
-                branch_ray->d = rand_dir;
+                branch_ray->d = normalize(rand_dir);
                 branch_ray->t = 0.0f;
                 // branch_ray->t_near = 0.0f;
                 // branch_ray->t_far = 1000.0f;
@@ -223,7 +224,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             else{ 
                 Ray *branch_ray = new Ray();
                 branch_ray->o = position ;//+ 0.000001f * normal;
-                branch_ray->d = reflect;
+                branch_ray->d = normalize(reflect);
                 branch_ray->t = 0.0f;
                 // branch_ray->t_near = 0.0f;
                 // branch_ray->t_far = 1000.0f;
@@ -250,7 +251,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         }
 
         if(scene->objects[obj_id]->material->isTransparent){
-            pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position, normal, scene->mu, scene->objects[obj_id]->material->mu);
+            pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position , normal, scene->mu, scene->objects[obj_id]->material->mu);
             // check refrac.first and -out.dir with some small error for floating error
             // float eps = 0.00001f;
             // if (abs(refrac.first.x + out_dir.x) > eps || abs(refrac.first.y + out_dir.y) > eps || abs(refrac.first.z + out_dir.z) > eps){
@@ -258,35 +259,38 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             //     cout << "out_dir => " << out_dir.x << " " << out_dir.y << " " << out_dir.z << "\n";
             //     // continue;
             // }
-            // cout << (refrac.first == -out_dir) << "\n";
+            // cout << (dot(refrac.first, -out_dir) >= 0.9f) << "\n";
             pair<int, vec4> refrac_hit = incident_ray(position, refrac.first);
 
             if(refrac_hit.first != obj_id){ // Another object inside volume
-                // Ray *trans_ray = new Ray();
-                // trans_ray->o = position - 0.0000001f * normal;
-                // trans_ray->d = refrac.first;
-                // trans_ray->t = 0.0f;
-                // trans_ray->t_near = 0.0f;
-                // trans_ray->t_far = 1000.0f;
-                // pair<Ray*, vec4> hit_out = scene->objects[obj_id]->hit(trans_ray);
+                vec4 irradiance = vec4(0.0f);
+                if(refrac_hit.first == -1){
+                    irradiance = scene->sky;
+                }
+                else{
+                    Ray *trans_ray = new Ray();
+                    trans_ray->o = position - 0.0000001f * normal;
+                    trans_ray->d = normalize(refrac.first);
+                    trans_ray->t = 0.0f;
+                    pair<Ray*, vec4> hit_out = scene->objects[obj_id]->hit(trans_ray);
 
-                // float fall_off = 4.0f*(float)M_PI*glm::dot(refrac_hit.second - position, refrac_hit.second - position);
-                
-                
-                // vec4 irradiance = MC_Sampling(refrac_hit.first, refrac_hit.second, -refrac.first, depth+1);
-                // // Light Sampling
-                // if(scene->objects[refrac_hit.first]->material->isEmissive){
-                //     irradiance += scene->objects[refrac_hit.first]->material->albedo * scene->objects[refrac_hit.first]->material->emmission(refrac_hit.second, refrac.first, refrac.first) * scene->objects[refrac_hit.first]->material->ke;
-                // }
-                
-                // // Not needed for Cos sampling
-                // float out_norm = glm::length(refrac.first);
-                // float cos_theta = glm::dot(refrac.first, normal)/ (out_norm * normal_norm);
-                // irradiance *= (cos_theta/ fall_off);
-                // irradiance.w /= (cos_theta/ fall_off);
-
-                // T += (vec4(1.0f) - refrac_hit.second) * irradiance * scene->objects[obj_id]->material->kt;
-                cout<<"occlusion\n";
+                    float fall_off = 4.0f*(float)M_PI*glm::dot(refrac_hit.second - position, refrac_hit.second - position);
+                    
+                    
+                    irradiance = MC_Sampling(refrac_hit.first, refrac_hit.second, -refrac.first, depth+1);
+                    // Light Sampling
+                    if(scene->objects[refrac_hit.first]->material->isEmissive){
+                        irradiance += scene->objects[refrac_hit.first]->material->albedo * scene->objects[refrac_hit.first]->material->emmission(refrac_hit.second, refrac.first, refrac.first) * scene->objects[refrac_hit.first]->material->ke;
+                    }
+                    
+                    // Not needed for Cos sampling
+                    float out_norm = glm::length(refrac.first);
+                    float cos_theta = glm::dot(refrac.first, normal)/ (out_norm * normal_norm);
+                    irradiance *= (cos_theta/ fall_off);
+                    irradiance.w /= (cos_theta/ fall_off);
+                }
+                T += glm::max(vec4(1.0f) - refrac.second, 0.0f) * irradiance * scene->objects[obj_id]->material->kt;
+                // cout<< refrac_hit.first <<"hit\n";
             }
             else{ // Cohesive Volume
                 vec4 normal2 = -scene->objects[obj_id]->normal_ray(refrac_hit.second);
@@ -303,7 +307,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 else{
                     Ray *trans_ray = new Ray();
                     trans_ray->o = refrac_hit.second ;//+ 0.00001f * normal2;
-                    trans_ray->d = refrac.first;
+                    trans_ray->d = normalize(refrac.first);
                     trans_ray->t = 0.0f;
                     // trans_ray->t_near = 0.0f;
                     // trans_ray->t_far = 1000.0f;
@@ -332,44 +336,43 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 T += (vec4(1.0f) - refrac.second) * irradiance * scene->objects[obj_id]->material->kt;
             }
             
+            // REFLECTION
+                vec4 normal = scene->objects[obj_id]->normal_ray(position);
+                normal = normalize(normal);
+                vec4 reflect = 2.0f * dot(out_dir, normal) * normal - out_dir;
+                
+                pair<int, vec4> reflect_hit = incident_ray(position, reflect);
+                vec4 ref_irradiance = vec4(0.0f);
+                if(reflect_hit.first == -1){
+                    ref_irradiance = scene->sky;
+                }
+                else{
+                    Ray *ref_ray = new Ray();
+                    ref_ray->o = position; //+ 0.000001f * normal;
+                    ref_ray->d = normalize(reflect);
+                    ref_ray->t = 0.0f;
+                    pair<Ray*, vec4> hit_out = scene->objects[reflect_hit.first]->hit(ref_ray);
 
-            // vec4 normal = scene->objects[obj_id]->normal_ray(position);
-            // normal = normalize(normal);
-            // vec4 reflect = -2.0f * dot(-out_dir, normal) * normal - out_dir;
-            
-            // pair<int, vec4> reflect_hit = incident_ray(position, reflect);
-            // vec4 irradiance = vec4(0.0f);
-            // if(reflect_hit.first == -1){
-            //     irradiance = scene->sky;
-            // }
-            // else{
-            //     Ray *branch_ray = new Ray();
-            //     branch_ray->o = position + 0.000001f * normal;
-            //     branch_ray->d = reflect;
-            //     branch_ray->t = 0.0f;
-                // branch_ray->t_near = 0.0f;
-                // branch_ray->t_far = 1000.0f;
-            //     pair<Ray*, vec4> hit_out = scene->objects[reflect_hit.first]->hit(branch_ray);
+                    float fall_off = 4.0f*(float)M_PI*glm::dot(reflect_hit.second - position, reflect_hit.second - position);
+                    
+                    // cout << reflect_hit.first << " " << depth+1 <<" before\n";
+                    ref_irradiance = MC_Sampling(reflect_hit.first, reflect_hit.second, -reflect, depth+2);
+                    // cout << "after\n";
+                    // Light Sampling
+                    if(scene->objects[reflect_hit.first]->material->isEmissive){
+                        ref_irradiance += scene->objects[reflect_hit.first]->material->albedo * scene->objects[reflect_hit.first]->material->emmission(reflect_hit.second, reflect, reflect) * scene->objects[reflect_hit.first]->material->ke;
+                    }
+                    
+                    // Not needed for Cos sampling
+                    float out_norm = glm::length(reflect);
+                    float ref_cos_theta = glm::dot(reflect, normal)/ (out_norm * normal_norm);
+                    ref_irradiance *= (ref_cos_theta/ fall_off);
+                    ref_irradiance.w /= (ref_cos_theta/ fall_off);
+                }
+                cout << refrac.second<< "\n";
+                R += refrac.second * ref_irradiance * scene->objects[obj_id]->material->ks;
 
-            //     float fall_off = 4.0f*(float)M_PI*glm::dot(reflect_hit.second - position, reflect_hit.second - position);
-                
-                
-            //     irradiance = MC_Sampling(reflect_hit.first, reflect_hit.second, -reflect, depth+1);
-            //     // Light Sampling
-            //     if(scene->objects[reflect_hit.first]->material->isEmissive){
-            //         irradiance += scene->objects[reflect_hit.first]->material->albedo * scene->objects[reflect_hit.first]->material->emmission(reflect_hit.second, reflect, reflect) * scene->objects[reflect_hit.first]->material->ke;
-            //     }
-                
-            //     // Not needed for Cos sampling
-            //     float out_norm = glm::length(reflect);
-            //     float cos_theta = glm::dot(reflect, normal)/ (out_norm * normal_norm);
-            //     irradiance *= (cos_theta/ fall_off);
-            //     irradiance.w /= (cos_theta/ fall_off);
-            // }
-            // // cout << refrac_hit.second << "\n";
-            // R += refrac.second * irradiance * scene->objects[obj_id]->material->ks;
         }
-        
     }
 
     if(scene->objects[obj_id]->material->isEmissive){
@@ -378,7 +381,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     F += D;
     F += R;
     F += T;
-    return scene->objects[obj_id]->material->albedo * F;
+    return scene->objects[obj_id]->material->albedo * F * (MAX_BOUNCES/(MAX_BOUNCES - 1.0f));
 }
 
 vec4 Renderer::ray_trace(Ray *ray){

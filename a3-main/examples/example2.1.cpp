@@ -215,7 +215,7 @@ int main(){
     scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 4, 1, 3, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 5, 1, 10, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }

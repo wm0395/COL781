@@ -37,7 +37,7 @@ struct Ray{
     vec4 o;
     vec4 d;
     float t = 0.0f;
-    float t_near = 0.0001f;
+    float t_near = 0.00001f;
     float t_far = 1000.0f;
     
     Camera* camera;

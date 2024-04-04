@@ -26,8 +26,8 @@ int main(){
     plane1->material = new Diffuse(vec4(1.0f), 1.0f);
     objects.push_back(plane1);
 
-    vec4 normal2 = vec4(0.5f, 0.0f, 1.0f, 0.0f);
-    vec4 point2 = vec4(0.0f, -1.0f, -10.5f, 1.0f);
+    vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    vec4 point2 = vec4(0.0f, -1.0f, -3.5f, 1.0f);
     Plane *plane2 = new Plane(normal2, point2);
     plane2->material = new Diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
     objects.push_back(plane2);
@@ -41,22 +41,22 @@ int main(){
     vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
-    sphere1->material = new Glass(vec4(1.0f), 1.0f, 10.0f);
+    sphere1->material = new Glass(vec4(1.0f), 1.0f, 1.0f);
     objects.push_back(sphere1);
 
-    vec4 min1 = vec4(0.5f, 0.5f, -1.5f, 1.0f);
-    vec4 max1 = vec4(1.0f, 1.0f, -0.0f, 1.0f);
-    Axis_Aligned_Box* bb1 = new Axis_Aligned_Box(min1, max1);
-    bb1->material = new Emmissive(vec4(1.0f), 50.0f);
-    objects.push_back(bb1);
+    // vec4 min1 = vec4(0.5f, 0.5f, -1.5f, 1.0f);
+    // vec4 max1 = vec4(1.0f, 1.0f, -0.0f, 1.0f);
+    // Axis_Aligned_Box* bb1 = new Axis_Aligned_Box(min1, max1);
+    // bb1->material = new Emmissive(vec4(1.0f), 50.0f);
+    // objects.push_back(bb1);
 
     scene->objects = objects;
 
     scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
-    scene->mu = 1.0f;
+    scene->mu = 0.9f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 2, 1, 5, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 3, 1, 5, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }

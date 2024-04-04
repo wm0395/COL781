@@ -28,6 +28,14 @@ int main(){
     sphere1->material = new Metal(vec4(1.0f), 5.0f);
     objects.push_back(sphere1);
 
+    vec4 center2 = vec4(0.5f, -0.7f, -2.0f, 1.0f);
+    float r2 = 0.3f;
+    Sphere *sphere2 = new Sphere(r2, center2);
+    // sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // sphere1->material->diffuse = iso_blue;
+    sphere2->material = new Glass(vec4(1.0f), 1.0f, 2.0f);
+    objects.push_back(sphere2);
+
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
     Plane *plane1 = new Plane(normal1, point1);
@@ -112,7 +120,7 @@ int main(){
     scene->mu = 1.0f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 4, 1, 3, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 3, 1, 10, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
