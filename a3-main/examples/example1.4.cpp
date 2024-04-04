@@ -38,13 +38,13 @@ int main(){
     // sphere2->invert_transformation();
     // objects.push_back(sphere2);
 
-    // vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-    // vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
-    // Plane *plane1 = new Plane(normal1, point1);
-    // // plane1->translation(vec3(0.0f, -1.5f, 0.0f));
+    vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
+    Plane *plane1 = new Plane(normal1, point1);
+    // plane1->translation(vec3(0.0f, -1.5f, 0.0f));
     // plane1->rotation(20.0f, vec3(0.0f, 1.0f, 0.0f));
-    // plane1->invert_transformation();
-    // objects.push_back(plane1);
+    plane1->invert_transformation();
+    objects.push_back(plane1);
 
     // vec4 min1 = vec4(-4.0f, -3.0f, 3.0f, 1.0f);
     // vec4 max1 = vec4(4.0f, 3.0f, -10.0f, 1.0f);
@@ -58,7 +58,7 @@ int main(){
     bb2->scaling(vec3(1.0f, 2.0f, 1.5f));
     // bb2->rotation(20.0f, vec3(0.0f, 1.0f, 0.0f));
     // bb2->rotation(10.0f, vec3(1.0f, 0.0f, 0.0f));
-    bb2->rotation(30.0f, vec3(0.0f, 0.0f, 1.0f));
+    bb2->rotation(20.0f, vec3(0.0f, 1.0f, 1.0f));
     bb2->invert_transformation();
     objects.push_back(bb2);
     

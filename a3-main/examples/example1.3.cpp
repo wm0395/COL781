@@ -33,6 +33,9 @@ int main(){
     vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
+    sphere1->translation(vec3(0.5f, 0.0f, 0.0f));
+    sphere1->scaling(vec3(1.5f, 0.9f, 1.0f));
+    sphere1->invert_transformation();
     sphere1->material->albedo = vec4(1.0f, 1.0f, 10.0f, 1.0f);
     sphere1->material->diffuse = iso_blue;
     objects.push_back(sphere1);
@@ -77,8 +80,8 @@ int main(){
     light3->position = position3;
     lights.push_back(light3);
 
-    vec4 position4 = vec4(0.0f, 3.0f, -2.5f, 1.0f);
-    vec4 intensity4 = vec4(100.0f, 100.0f, 100.0f, 100.0f);
+    vec4 position4 = vec4(0.0f, 100.0f, -2.5f, 1.0f);
+    vec4 intensity4 = vec4(1000.0f, 1000.0f, 1000.0f, 1000.0f);
     Light *light4 = new Light();
     light4->Intensity = intensity4;
     light4->position = position4;

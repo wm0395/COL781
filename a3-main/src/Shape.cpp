@@ -395,8 +395,8 @@ pair<Ray*, vec4> Axis_Aligned_Box::reflected_ray(Ray* ray, float t, int min_plan
     ref_ray->d = n;
     ref_ray->d *= 2*dot(n,d);
     ref_ray->d = d - ref_ray->d; 
-    // normal = transpose(transformation_mat) * normal;
-    normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
+    normal = transpose(transformation_mat) * normal;
+    // normal = transpose(mat4_to_mat4(transformation_mat)) * normal;
     return {ref_ray, normal};
 }
 

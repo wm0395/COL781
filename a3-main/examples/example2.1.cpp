@@ -224,7 +224,7 @@ int main(){
     // while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.draw(scene);
-        const char* filename = "test.png"; 
+        const char* filename = "metal_ball.png"; 
         r.saveImage(filename);
         // r.show();
     // }

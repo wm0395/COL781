@@ -169,7 +169,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 R = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec4 T = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     float e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    for(int i = 0; i < PATHS && e <= ((MAX_BOUNCES - 1.0f)/MAX_BOUNCES) && depth <= 15; i++){
+    for(int i = 0; i < PATHS && e <= ((MAX_BOUNCES - 1.0f)/MAX_BOUNCES) && depth <= 20; i++){
         // cout << depth << "\n";
         e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
@@ -369,7 +369,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                     ref_irradiance *= (ref_cos_theta/ fall_off);
                     ref_irradiance.w /= (ref_cos_theta/ fall_off);
                 }
-                cout << refrac.second<< "\n";
+                // cout << refrac.second<< "\n";
                 R += refrac.second * ref_irradiance * scene->objects[obj_id]->material->ks;
 
         }

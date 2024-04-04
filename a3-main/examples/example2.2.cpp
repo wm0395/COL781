@@ -41,7 +41,7 @@ int main(){
     vec4 center1 = vec4(0.0f, 0.0f, -2.5f, 1.0f);
     float r1 = 1.0f;
     Sphere *sphere1 = new Sphere(r1, center1);
-    sphere1->material = new Glass(vec4(1.0f), 1.0f, 1.0f);
+    sphere1->material = new Glass(vec4(1.0f), 1.0f, 2.0f);
     objects.push_back(sphere1);
 
     // vec4 min1 = vec4(0.5f, 0.5f, -1.5f, 1.0f);
@@ -53,10 +53,10 @@ int main(){
     scene->objects = objects;
 
     scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
-    scene->mu = 0.9f;
+    scene->mu = 0.8f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 3, 1, 5, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 3, 1, 3, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
@@ -65,7 +65,7 @@ int main(){
     // while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.draw(scene);
-        const char* filename = "test.png"; 
+        const char* filename = "glass_ball.png"; 
         r.saveImage(filename);
         // r.show();
     // }
