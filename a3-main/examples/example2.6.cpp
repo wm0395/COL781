@@ -36,12 +36,32 @@ int main(){
     sphere2->material = new Glass(vec4(0.7f, 1.0f, 0.7f, 1.0f), 1.0f, 5.0f);
     objects.push_back(sphere2);
 
+    vec4 center3 = vec4(-0.5f, 0.0f, -2.0f, 1.0f);
+    float r3 = 0.3f;
+    Sphere *sphere3 = new Sphere(r3, center3);
+    sphere3->scaling(vec3(1.5f, 1.0f, 1.0f));
+    sphere3->invert_transformation();
+    // sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // sphere1->material->diffuse = iso_blue;
+    sphere3->material = new Metal(vec4(1.0f, 1.0f, 0.7f, 1.0f), 5.0f);
+    objects.push_back(sphere3);
+
+    vec4 center4 = vec4(0.5f, 0.2f, -2.0f, 1.0f);
+    float r4 = 0.3f;
+    Sphere *sphere4 = new Sphere(r4, center4);
+    sphere4->scaling(vec3(1.0f, 1.5f, 1.0f));
+    sphere4->invert_transformation();
+    // sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // sphere1->material->diffuse = iso_blue;
+    sphere4->material = new Metal(vec4(1.0f, 1.0f, 0.7f, 1.0f), 5.0f);
+    objects.push_back(sphere4);
+
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
     Plane *plane1 = new Plane(normal1, point1);
     // plane1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     // plane1->material->diffuse = iso_white;
-    plane1->material = new Diffuse(vec4(1.0f), 1.0f);
+    plane1->material = new Metal(vec4(1.0f), 1.0f);
     objects.push_back(plane1);
 
     vec4 normal2 = vec4(0.0f, -1.0f, 0.0f, 0.0f);
@@ -120,14 +140,14 @@ int main(){
     scene->mu = 1.0f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 5, 1, 3, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 5, 1, 4, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
 
     r.clear(vec4(1.0, 1.0, 1.0, 1.0));
     r.draw(scene);
-    const char* filename = "metal_and_transparent.png"; 
+    const char* filename = "scene.png"; 
     r.saveImage(filename);
     return EXIT_SUCCESS;
 }

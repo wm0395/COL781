@@ -84,7 +84,7 @@ vec4 Renderer::point_lambert(Ray *ray){
     
     if(scene->objects[hit.first]->material->emmission){
         // color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->normal_ray(hit.second));
-        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->hit(ray).second);   //TODO: check if correct
+        color += scene->objects[hit.first]->material->emmission(ray->o, ray->d, scene->objects[hit.first]->hit(ray).second);
     }
     
     float N = 0.0f;
@@ -101,7 +101,7 @@ vec4 Renderer::point_lambert(Ray *ray){
         vec4 irradiace = scene->lights[i]->Intensity;
         float fall_off = 4.0f*(float)M_PI*glm::dot(scene->lights[i]->position - hit.second, scene->lights[i]->position - hit.second);
         vec4 out = scene->lights[i]->position - hit.second;
-        vec4 normal = scene->objects[hit.first]->hit(ray).second;   //TODO: check if correct
+        vec4 normal = scene->objects[hit.first]->hit(ray).second; 
         float out_norm = glm::length(out);
         float normal_norm = glm::length(normal);
         float cos_theta = glm::dot(out, normal)/ (out_norm * normal_norm);
@@ -152,9 +152,10 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     ray->d = out_dir;
     // ray->t_far = scene->camera->far_plane;
     
-    vec4 normal = scene->objects[obj_id]->normal_ray(position);   //TODO: check if correct
+    vec4 normal = scene->objects[obj_id]->normal_ray(position);
     normal = normalize(normal);
     float normal_norm = glm::length(normal);
+    //Not Necessary for Cos
     mat4 Tf;
     if(scene->objects[obj_id]->material->isDiffuse){
         vec3 z = normalize(vec3(normal.x, normal.y, normal.z));
@@ -175,13 +176,13 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
         if(scene->objects[obj_id]->material->isDiffuse){
             
-            // Uniform Hemisphere
+            // // Uniform Hemisphere
             vec4 rand_dir = rand_hemisphere();
             rand_dir = Tf * rand_dir;
 
-            // // Cos weighted Hemisphere
+            // Cos weighted Hemisphere
             // vec4 rand_dir = cos_hemisphere();
-            // // rand_dir = Tf * rand_dir;
+            // rand_dir = Tf * rand_dir;
 
             pair<int, vec4> hit = incident_ray(position, rand_dir);
             if(hit.first == -1){
@@ -210,7 +211,9 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 irradiance *= (cos_theta/ fall_off);
                 irradiance.w /= (cos_theta/ fall_off);
 
-                D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd;// * (M_1_PIf32 / rand_dir.z);
+                D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd;
+                //COS WEIGHTED
+                // D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd * (M_1_PIf32 / rand_dir.z);
             }
         }
 

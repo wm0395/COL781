@@ -23,43 +23,37 @@ int main(){
 
     vector<Shape*> objects = {};
 
-    string file = "meshes/cube.obj";
+    string file = "meshes/bunny-1k.obj";
     Mesh *mesh = new Mesh(file);
 
     // mat4 projection_mat = cam->getProjectionMatrix();
     // mat4 inverse_proj_mat = inverse(projection_mat);
     // float max_z = -1000.0f;
     for (int i = 0; i<mesh->num_of_vertices; i++){
-        cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z + 0.5f << endl;
-        vec4 vertex = vec4(mesh->vertices[i].x, mesh->vertices[i].y, mesh->vertices[i].z - 1.5f, 1.0f);
+        vec4 vertex = vec4(mesh->vertices[i].x, mesh->vertices[i].y, mesh->vertices[i].z - 2.5f, 1.0f);
         // vertex = inverse_proj_mat * vertex;
         mesh->vertices[i] = vec3(vertex) / vertex.w;
-        // if (mesh->vertices[i].z > max_z){
-        //     max_z = mesh->vertices[i].z;
-        // }
-
-    //     //print them
-    //     cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
-    // }
-
-    // for (int i = 0; i<mesh->num_of_vertices; i++){
-    //     mesh->vertices[i].z = mesh->vertices[i].z - max_z - 1.0f;
-    //     cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
     }
+
+    Diffuse* color = new Diffuse(vec4(1.0f), 1.0f);
 
     for (int i = 0; i<mesh->num_of_faces; i++){
         vec4 p0 = vec4(mesh->vertices[mesh->triangles[i].x], 1.0f);
         vec4 p1 = vec4(mesh->vertices[mesh->triangles[i].y], 1.0f);
         vec4 p2 = vec4(mesh->vertices[mesh->triangles[i].z], 1.0f);
         Triangle* tri = new Triangle(p0, p1, p2);
+        tri->material = color;
         objects.push_back(tri);
-        // if (i == 3){
-        //     break;
-        // }
     }
 
+    vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
+    Plane *plane1 = new Plane(normal1, point1);
+    plane1->material = color;
+    objects.push_back(plane1);
+
     scene->objects = objects;
-    cout << scene->objects.size() << endl;
+    // cout << scene->objects.size() << endl;
 
     vector<Light*> lights = {};
 

@@ -37,3 +37,6 @@ target_link_libraries(example2.4 a3)
 
 add_executable(example2.5 examples/example2.5.cpp)
 target_link_libraries(example2.5 a3)
+
+add_executable(example2.6 examples/example2.6.cpp)
+target_link_libraries(example2.6 a3)

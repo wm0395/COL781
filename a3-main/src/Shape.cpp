@@ -400,7 +400,7 @@ pair<Ray*, vec4> Axis_Aligned_Box::reflected_ray(Ray* ray, float t, int min_plan
     return {ref_ray, normal};
 }
 
-vec4 Axis_Aligned_Box::normal_ray(vec4 position){   // TODO: Yeh gadbad hai abhi
+vec4 Axis_Aligned_Box::normal_ray(vec4 position){
     //firstly find out the face on which the vec4 position is present
 
     vec4 normal;
