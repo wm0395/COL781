@@ -145,24 +145,24 @@ int main(){
     // plane1_1->material->reflectance = iso_reflectance;
     // objects.push_back(plane1_1);
 
-    // vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-    // vec4 point2 = vec4(0.0f, 0.0f, -3.5f, 1.0f);
-    // Plane *plane2 = new Plane(normal2, point2);
-    // // plane2->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    // // plane2->material->diffuse = iso_white;
-    // // plane2->material->reflectance = iso_reflectance;
-    // plane2->material = new Diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
-    // objects.push_back(plane2);
+    vec4 normal2 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    vec4 point2 = vec4(0.0f, 0.0f, -3.5f, 1.0f);
+    Plane *plane2 = new Plane(normal2, point2);
+    // plane2->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // plane2->material->diffuse = iso_white;
+    // plane2->material->reflectance = iso_reflectance;
+    plane2->material = new Diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+    objects.push_back(plane2);
     
-    // vec4 normal3 = vec4(0.0f, -1.0f, 0.0f, 0.0f);
-    // vec4 point3 = vec4(0.0f, 2.0f, 0.0f, 1.0f);
-    // Plane *plane3 = new Plane(normal3, point3);
-    // // plane3->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    // // plane3->material->diffuse = iso_white;
-    // // plane3->material->emmission = iso_gray;
-    // // plane3->material->reflectance = iso_reflectance;
-    // plane3->material = new Emmissive(vec4(1.0f), 100.0f);
-    // objects.push_back(plane3);
+    vec4 normal3 = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+    vec4 point3 = vec4(0.0f, 2.0f, 0.0f, 1.0f);
+    Plane *plane3 = new Plane(normal3, point3);
+    // plane3->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // plane3->material->diffuse = iso_white;
+    // plane3->material->emmission = iso_gray;
+    // plane3->material->reflectance = iso_reflectance;
+    plane3->material = new Emmissive(vec4(1.0f), 100.0f);
+    objects.push_back(plane3);
 
     // vec4 normal4 = vec4(1.0f, 0.0f, 0.0f, 0.0f);
     // vec4 point4 = vec4(0.0f, -2.0f, -0.0f, 1.0f);
@@ -212,7 +212,7 @@ int main(){
 
     scene->objects = objects;
 
-    scene->sky = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    scene->sky = vec4(0.5f, 0.5f, 0.6f, 1.0f);
 
     Ray_Tracer r;
     if (!r.initialize("Example 1", 640, 480, 4, 1, 3, "ray_trace")){

@@ -161,7 +161,7 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     float x2 = dot(hit_ray->o - centre, hit_ray->o - centre) - radius * radius;
 
     if (x1 * x1 - norm_d_sq * x2 < 0){
-        ray->t = ray->t_far;
+        hit_ray->t = hit_ray->t_far;
         // cout << ray->t << "\n";
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
@@ -229,7 +229,7 @@ pair<Ray*, vec4> Plane::hit(Ray *ray){
     hit_ray->t = ray->t_far;
 
     // t = (n · (p0 − o))/(n · d) 
-    float t = float(dot(normal, point_on_plane - hit_ray->o)) / dot(normal, hit_ray->d);
+    float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
     if (t <= ray->t_near){
         ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};

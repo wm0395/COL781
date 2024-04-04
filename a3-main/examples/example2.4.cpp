@@ -20,13 +20,13 @@ int main(){
 
     vector<Shape*> objects = {};
 
-    // vec4 center1 = vec4(-0.5f, -0.7f, -2.0f, 1.0f);
-    // float r1 = 0.3f;
-    // Sphere *sphere1 = new Sphere(r1, center1);
-    // // sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    // // sphere1->material->diffuse = iso_blue;
-    // sphere1->material = new Metal(vec4(0.0f, 0.4f, 0.0f, 1.0f), 1.0f);
-    // objects.push_back(sphere1);
+    vec4 center1 = vec4(-0.5f, -0.7f, -2.0f, 1.0f);
+    float r1 = 0.3f;
+    Sphere *sphere1 = new Sphere(r1, center1);
+    // sphere1->material->albedo = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // sphere1->material->diffuse = iso_blue;
+    sphere1->material = new Metal(vec4(1.0f), 5.0f);
+    objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
     vec4 point1 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
@@ -68,8 +68,8 @@ int main(){
     plane5->material = new Diffuse(vec4(1.0f), 1.0f);
     objects.push_back(plane5);
 
-    vec4 min1 = vec4(-0.3f, 0.95f, -3.0f, 1.0f);
-    vec4 max1 = vec4(0.3f, 1.5f, -2.0f, 1.0f);
+    vec4 min1 = vec4(-0.75f, 0.95f, -3.25f, 1.0f);
+    vec4 max1 = vec4(0.75f, 1.5f, -1.75f, 1.0f);
     Axis_Aligned_Box* bb1 = new Axis_Aligned_Box(min1, max1);
     bb1->material = new Emmissive(vec4(1.0f), 1000.0f);
     objects.push_back(bb1);
@@ -112,7 +112,7 @@ int main(){
     scene->mu = 1.0f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 2, 1, 10, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 4, 1, 3, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }
