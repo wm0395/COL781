@@ -120,7 +120,7 @@ int main(){
     scene->mu = 1.0f;
 
     Ray_Tracer r;
-    if (!r.initialize("Example 1", 640, 480, 3, 1, 10, "ray_trace")){
+    if (!r.initialize("Example 1", 640, 480, 3, 1, 5, "ray_trace")){
         std::cout << "failure to initialise\n";
         return EXIT_FAILURE;
     }

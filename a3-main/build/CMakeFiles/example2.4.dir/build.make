@@ -73,15 +73,15 @@ CMakeFiles/example2.4.dir/examples/example2.4.cpp.o: CMakeFiles/example2.4.dir/f
 CMakeFiles/example2.4.dir/examples/example2.4.cpp.o: ../examples/example2.4.cpp
 CMakeFiles/example2.4.dir/examples/example2.4.cpp.o: CMakeFiles/example2.4.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/example2.4.dir/examples/example2.4.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/example2.4.dir/examples/example2.4.cpp.o -MF CMakeFiles/example2.4.dir/examples/example2.4.cpp.o.d -o CMakeFiles/example2.4.dir/examples/example2.4.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/example2.4.dir/examples/example2.4.cpp.o -MF CMakeFiles/example2.4.dir/examples/example2.4.cpp.o.d -o CMakeFiles/example2.4.dir/examples/example2.4.cpp.o -c /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp
 
 CMakeFiles/example2.4.dir/examples/example2.4.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/example2.4.dir/examples/example2.4.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp > CMakeFiles/example2.4.dir/examples/example2.4.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp > CMakeFiles/example2.4.dir/examples/example2.4.cpp.i
 
 CMakeFiles/example2.4.dir/examples/example2.4.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/example2.4.dir/examples/example2.4.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp -o CMakeFiles/example2.4.dir/examples/example2.4.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wm0395/COL781_Assignments/a3-main/examples/example2.4.cpp -o CMakeFiles/example2.4.dir/examples/example2.4.cpp.s
 
 # Object files for target example2.4
 example2_4_OBJECTS = \

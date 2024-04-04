@@ -21,9 +21,9 @@ vec4 Renderer::cos_hemisphere(){
     // float y = sin(phi) * sin(theta);
     // float z = cos(theta);
 
-    float x = sqrt(e1) * cos(2 * M_1_PIf32 * e2);
-    float y = sqrt(e1) * sin(2 * M_1_PIf32 * e2);
-    float z = sqrt(glm::max(0.0f, 1 - x*x - y*y));
+    float x = sqrt(e1) * cos(2.0f * M_1_PIf32 * e2);
+    float y = sqrt(e1) * sin(2.0f * M_1_PIf32 * e2);
+    float z = sqrt(1.0f - e1);
  
     return vec4(x, y, z, 0.0f);
 }
@@ -174,12 +174,14 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
         if(scene->objects[obj_id]->material->isDiffuse){
+            
             // Uniform Hemisphere
             vec4 rand_dir = rand_hemisphere();
             rand_dir = Tf * rand_dir;
+
             // // Cos weighted Hemisphere
             // vec4 rand_dir = cos_hemisphere();
-            // rand_dir = T * rand_dir;
+            // // rand_dir = Tf * rand_dir;
 
             pair<int, vec4> hit = incident_ray(position, rand_dir);
             if(hit.first == -1){
@@ -190,8 +192,6 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 branch_ray->o = position ;//+ 0.000001f * normal;
                 branch_ray->d = normalize(rand_dir);
                 branch_ray->t = 0.0f;
-                // branch_ray->t_near = 0.0f;
-                // branch_ray->t_far = 1000.0f;
                 pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
 
                 float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
@@ -210,7 +210,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 irradiance *= (cos_theta/ fall_off);
                 irradiance.w /= (cos_theta/ fall_off);
 
-                D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd;
+                D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd;// * (M_1_PIf32 / rand_dir.z);
             }
         }
 
@@ -226,8 +226,6 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 branch_ray->o = position ;//+ 0.000001f * normal;
                 branch_ray->d = normalize(reflect);
                 branch_ray->t = 0.0f;
-                // branch_ray->t_near = 0.0f;
-                // branch_ray->t_far = 1000.0f;
                 pair<Ray*, vec4> hit_out = scene->objects[hit.first]->hit(branch_ray);
 
                 float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
@@ -236,7 +234,6 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
                 vec4 irradiance = MC_Sampling(hit.first, hit.second, -reflect, depth);
                 // Light Sampling
                 if(scene->objects[hit.first]->material->isEmissive){
-                    // irradiance += scene->objects[hit.first]->material->emmission(hit.second, reflect, reflect) * scene->objects[hit.first]->material->ke;
                     irradiance += scene->objects[hit.first]->material->albedo * scene->objects[hit.first]->material->emmission(hit.second, reflect, reflect) * scene->objects[hit.first]->material->ke;
                 }
                 
@@ -252,14 +249,6 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
         if(scene->objects[obj_id]->material->isTransparent){
             pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position , normal, scene->mu, scene->objects[obj_id]->material->mu);
-            // check refrac.first and -out.dir with some small error for floating error
-            // float eps = 0.00001f;
-            // if (abs(refrac.first.x + out_dir.x) > eps || abs(refrac.first.y + out_dir.y) > eps || abs(refrac.first.z + out_dir.z) > eps){
-            //     cout << "refrac.first => " << refrac.first.x << " " << refrac.first.y << " " << refrac.first.z << "\n";
-            //     cout << "out_dir => " << out_dir.x << " " << out_dir.y << " " << out_dir.z << "\n";
-            //     // continue;
-            // }
-            // cout << (dot(refrac.first, -out_dir) >= 0.9f) << "\n";
             pair<int, vec4> refrac_hit = incident_ray(position, refrac.first);
 
             if(refrac_hit.first != obj_id){ // Another object inside volume
@@ -355,9 +344,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
                     float fall_off = 4.0f*(float)M_PI*glm::dot(reflect_hit.second - position, reflect_hit.second - position);
                     
-                    // cout << reflect_hit.first << " " << depth+1 <<" before\n";
                     ref_irradiance = MC_Sampling(reflect_hit.first, reflect_hit.second, -reflect, depth+2);
-                    // cout << "after\n";
                     // Light Sampling
                     if(scene->objects[reflect_hit.first]->material->isEmissive){
                         ref_irradiance += scene->objects[reflect_hit.first]->material->albedo * scene->objects[reflect_hit.first]->material->emmission(reflect_hit.second, reflect, reflect) * scene->objects[reflect_hit.first]->material->ke;

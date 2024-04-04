@@ -26,25 +26,25 @@ int main(){
     string file = "meshes/cube.obj";
     Mesh *mesh = new Mesh(file);
 
-    mat4 projection_mat = cam->getProjectionMatrix();
-    mat4 inverse_proj_mat = inverse(projection_mat);
-    float max_z = -1000.0f;
+    // mat4 projection_mat = cam->getProjectionMatrix();
+    // mat4 inverse_proj_mat = inverse(projection_mat);
+    // float max_z = -1000.0f;
     for (int i = 0; i<mesh->num_of_vertices; i++){
         cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z + 0.5f << endl;
-        vec4 vertex = vec4(mesh->vertices[i].x, mesh->vertices[i].y, mesh->vertices[i].z, 1.0f);
-        vertex = inverse_proj_mat * vertex;
+        vec4 vertex = vec4(mesh->vertices[i].x, mesh->vertices[i].y, mesh->vertices[i].z - 1.5f, 1.0f);
+        // vertex = inverse_proj_mat * vertex;
         mesh->vertices[i] = vec3(vertex) / vertex.w;
-        if (mesh->vertices[i].z > max_z){
-            max_z = mesh->vertices[i].z;
-        }
+        // if (mesh->vertices[i].z > max_z){
+        //     max_z = mesh->vertices[i].z;
+        // }
 
-        //print them
-        cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
-    }
+    //     //print them
+    //     cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
+    // }
 
-    for (int i = 0; i<mesh->num_of_vertices; i++){
-        mesh->vertices[i].z = mesh->vertices[i].z - max_z - 1.0f;
-        cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
+    // for (int i = 0; i<mesh->num_of_vertices; i++){
+    //     mesh->vertices[i].z = mesh->vertices[i].z - max_z - 1.0f;
+    //     cout << mesh->vertices[i].x << " " << mesh->vertices[i].y << " " << mesh->vertices[i].z << endl;
     }
 
     for (int i = 0; i<mesh->num_of_faces; i++){
@@ -53,9 +53,9 @@ int main(){
         vec4 p2 = vec4(mesh->vertices[mesh->triangles[i].z], 1.0f);
         Triangle* tri = new Triangle(p0, p1, p2);
         objects.push_back(tri);
-        if (i == 3){
-            break;
-        }
+        // if (i == 3){
+        //     break;
+        // }
     }
 
     scene->objects = objects;

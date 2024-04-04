@@ -72,6 +72,7 @@ all: CMakeFiles/example2.1.dir/all
 all: CMakeFiles/example2.2.dir/all
 all: CMakeFiles/example2.3.dir/all
 all: CMakeFiles/example2.4.dir/all
+all: CMakeFiles/example2.5.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -88,6 +89,7 @@ clean: CMakeFiles/example2.1.dir/clean
 clean: CMakeFiles/example2.2.dir/clean
 clean: CMakeFiles/example2.3.dir/clean
 clean: CMakeFiles/example2.4.dir/clean
+clean: CMakeFiles/example2.5.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -323,6 +325,32 @@ example2.4: CMakeFiles/example2.4.dir/rule
 CMakeFiles/example2.4.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.4.dir/build.make CMakeFiles/example2.4.dir/clean
 .PHONY : CMakeFiles/example2.4.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/example2.5.dir
+
+# All Build rule for target.
+CMakeFiles/example2.5.dir/all: CMakeFiles/a3.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.5.dir/build.make CMakeFiles/example2.5.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.5.dir/build.make CMakeFiles/example2.5.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles --progress-num=24,25 "Built target example2.5"
+.PHONY : CMakeFiles/example2.5.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/example2.5.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/example2.5.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wm0395/COL781_Assignments/a3-main/build/CMakeFiles 0
+.PHONY : CMakeFiles/example2.5.dir/rule
+
+# Convenience name for target.
+example2.5: CMakeFiles/example2.5.dir/rule
+.PHONY : example2.5
+
+# clean rule for target.
+CMakeFiles/example2.5.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/example2.5.dir/build.make CMakeFiles/example2.5.dir/clean
+.PHONY : CMakeFiles/example2.5.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
