@@ -132,4 +132,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/example1.4.dir/DependInfo.cmake"
   "CMakeFiles/example2.1.dir/DependInfo.cmake"
   "CMakeFiles/example2.2.dir/DependInfo.cmake"
+  "CMakeFiles/example2.4.dir/DependInfo.cmake"
   )

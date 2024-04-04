@@ -212,14 +212,18 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         }
 
         if(scene->objects[obj_id]->material->isReflective && !scene->objects[obj_id]->material->isTransparent){
+            // cout << "Reflection\n";
             normal = normalize(normal);
             vec4 reflect = -2.0f * dot(-out_dir, normal) * normal - out_dir;
             
             pair<int, vec4> hit = incident_ray(position, reflect);
             if(hit.first == -1){
+                // cout << "sky\n";
                 F += scene->sky;
                 continue;
             }
+
+            // cout << hit.first << "\n";
 
             Ray *branch_ray = new Ray();
             branch_ray->o = position + 0.000001f * normal;
@@ -250,7 +254,14 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
 
         if(scene->objects[obj_id]->material->isTransparent){
             pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position, normal, scene->mu, scene->objects[obj_id]->material->mu);
-            cout << (refrac.first == -out_dir) << "\n";
+            // check refrac.first and -out.dir with some small error for floating error
+            // float eps = 0.00001f;
+            // if (abs(refrac.first.x + out_dir.x) > eps || abs(refrac.first.y + out_dir.y) > eps || abs(refrac.first.z + out_dir.z) > eps){
+            //     cout << "refrac.first => " << refrac.first.x << " " << refrac.first.y << " " << refrac.first.z << "\n";
+            //     cout << "out_dir => " << out_dir.x << " " << out_dir.y << " " << out_dir.z << "\n";
+            //     // continue;
+            // }
+            // cout << (refrac.first == -out_dir) << "\n";
             pair<int, vec4> refrac_hit = incident_ray(position, refrac.first);
 
             if(refrac_hit.first != obj_id && refrac.second != 1.0f){ // Another object inside volume

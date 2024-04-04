@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/wm0395/COL781_Assignments/a3-main/build"
+			"value" : "/home/kanav/COL781/COL781_Assignments/a3-main/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -595,7 +595,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/wm0395/COL781_Assignments/a3-main"
+			"value" : "/home/kanav/COL781/COL781_Assignments/a3-main"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1187,7 +1187,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/wm0395/COL781_Assignments/a3-main/build"
+			"value" : "/home/kanav/COL781/COL781_Assignments/a3-main/build"
 		},
 		{
 			"name" : "a3_IS_TOP_LEVEL",
@@ -1223,7 +1223,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/wm0395/COL781_Assignments/a3-main"
+			"value" : "/home/kanav/COL781/COL781_Assignments/a3-main"
 		},
 		{
 			"name" : "glm_DIR",
