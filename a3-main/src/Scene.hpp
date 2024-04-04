@@ -43,12 +43,16 @@ struct Ray{
     Camera* camera;
 };
 
+//Helper
+vec4 schlik_approximation(vec4 F0, vec4 v, vec4 n);
+
 class Material{
     public:
     vec4 albedo;
     vec4 (*emmission)(vec4 position, vec4 omega, vec4 normal);
     vec4 (*diffuse)(vec4 position, vec4 omega, vec4 normal);
     vec4 (*reflectance)(vec4 position, vec4 omega, vec4 normal);
+    vec4 (*transmitance)(vec4 position, vec4 omega, vec4 normal);
     bool isEmissive;
     bool isDiffuse;
     bool isReflective;
@@ -56,7 +60,9 @@ class Material{
     float ke;
     float kd;
     float ks;
+    float kt;
     float F;
+    float mu;
 };
 
 class Diffuse : public Material{
@@ -70,7 +76,8 @@ class Metal : public Material{
 };
 
 class Glass : public Material{
-
+    public:
+    Glass(vec4 color, float ks, float kt);
 };
 
 class Emmissive : public Material{
@@ -91,7 +98,7 @@ class Shape {
     void rotation(float radian, vec3 axis);
     void invert_transformation();
 
-    vec4 refracted_ray(vec4 incidence, vec4 position, float n1, float n2);
+    pair<vec4, float> refracted_ray(vec4 incidence, vec4 position, vec4 normal, float n1, float n2);
 };
 
 
@@ -161,6 +168,7 @@ struct Scene{
     vector<Light*> lights;
     float near_plane;
     float far_plane;
+    float mu;
 };
 
 class Renderer{

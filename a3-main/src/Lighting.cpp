@@ -166,6 +166,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
     vec4 D = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec4 R = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec4 T = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
     for(int i = 0; i < PATHS && depth <= MAX_BOUNCES; i++){
         // cout << depth << "\n";
 
@@ -210,8 +211,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             D += scene->objects[obj_id]->material->diffuse(out_dir, rand_dir, normal) * irradiance * scene->objects[obj_id]->material->kd;
         }
 
-        if(scene->objects[obj_id]->material->isReflective){
-            vec4 normal = scene->objects[obj_id]->normal_ray(position);
+        if(scene->objects[obj_id]->material->isReflective && !scene->objects[obj_id]->material->isTransparent){
             normal = normalize(normal);
             vec4 reflect = -2.0f * dot(-out_dir, normal) * normal - out_dir;
             
@@ -232,7 +232,7 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
             float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
             
             
-            vec4 irradiance = MC_Sampling(hit.first, hit.second, -reflect, depth+1);
+            vec4 irradiance = MC_Sampling(hit.first, hit.second, -reflect, depth);
             // Light Sampling
             if(scene->objects[hit.first]->material->isEmissive){
                 // irradiance += scene->objects[hit.first]->material->emmission(hit.second, reflect, reflect) * scene->objects[hit.first]->material->ke;
@@ -249,47 +249,116 @@ vec4 Renderer::MC_Sampling(int obj_id, vec4 position, vec4 out_dir, int depth){
         }
 
         if(scene->objects[obj_id]->material->isTransparent){
-            vec4 trans;
+            pair<vec4, float> refrac = scene->objects[obj_id]->refracted_ray(-out_dir, position, normal, scene->mu, scene->objects[obj_id]->material->mu);
+            cout << (refrac.first == -out_dir) << "\n";
+            pair<int, vec4> refrac_hit = incident_ray(position, refrac.first);
 
-            pair<int, vec4> refrac = incident_ray(position, trans);
+            if(refrac_hit.first != obj_id && refrac.second != 1.0f){ // Another object inside volume
+                // Ray *trans_ray = new Ray();
+                // trans_ray->o = position - 0.0000001f * normal;
+                // trans_ray->d = refrac.first;
+                // trans_ray->t = 0.0f;
+                // trans_ray->t_near = 0.0f;
+                // trans_ray->t_far = 1000.0f;
+                // pair<Ray*, vec4> hit_out = scene->objects[obj_id]->hit(trans_ray);
 
-            vec4 normal2 = scene->objects[obj_id]->normal_ray(refrac.second);
-            normal2 = normalize(normal2);
+                // float fall_off = 4.0f*(float)M_PI*glm::dot(refrac_hit.second - position, refrac_hit.second - position);
+                
+                
+                // vec4 irradiance = MC_Sampling(refrac_hit.first, refrac_hit.second, -refrac.first, depth+1);
+                // // Light Sampling
+                // if(scene->objects[refrac_hit.first]->material->isEmissive){
+                //     irradiance += scene->objects[refrac_hit.first]->material->albedo * scene->objects[refrac_hit.first]->material->emmission(refrac_hit.second, refrac.first, refrac.first) * scene->objects[refrac_hit.first]->material->ke;
+                // }
+                
+                // // Not needed for Cos sampling
+                // float out_norm = glm::length(refrac.first);
+                // float cos_theta = glm::dot(refrac.first, normal)/ (out_norm * normal_norm);
+                // irradiance *= (cos_theta/ fall_off);
+                // irradiance.w /= (cos_theta/ fall_off);
 
-            vec4 emerg;
-
-            pair<int, vec4> hit = incident_ray(position, emerg);
-            if(hit.first == -1){
-                F += scene->sky;
-                continue;
+                // T += (vec4(1.0f) - refrac_hit.second) * irradiance * scene->objects[obj_id]->material->kt;
             }
+            else if(refrac.second != 1.0f){ // Cohesive Volume
+                vec4 normal2 = -scene->objects[obj_id]->normal_ray(refrac_hit.second);
+                normal2 = normalize(normal2);
 
-            Ray *trans_ray = new Ray();
-            trans_ray->o = position + 0.0000001f * normal2;
-            trans_ray->d = trans;
-            trans_ray->t = 0.0f;
-            trans_ray->t_near = 0.0f;
-            trans_ray->t_far = 1000.0f;
-            pair<Ray*, vec4> hit_out = scene->objects[obj_id]->hit(trans_ray);
+                pair<vec4, float> emerg = scene->objects[obj_id]->refracted_ray(refrac.first, refrac_hit.second, normal2, scene->objects[obj_id]->material->mu, scene->mu);
 
-            float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - position, hit.second - position);
-            
-            
-            vec4 irradiance = MC_Sampling(hit.first, hit.second, -emerg, depth+1);
-            // Light Sampling
-            if(scene->objects[hit.first]->material->isEmissive){
-                // irradiance += scene->objects[hit.first]->material->emmission(hit.second, reflect, reflect) * scene->objects[hit.first]->material->ke;
-                irradiance += scene->objects[hit.first]->material->albedo * scene->objects[hit.first]->material->emmission(hit.second, emerg, emerg) * scene->objects[hit.first]->material->ke;
+                pair<int, vec4> hit = incident_ray(position, emerg.first);
+
+                vec4 irradiance = vec4(0.0f);
+                if(hit.first == -1){
+                    irradiance = scene->sky;
+                }
+                else{
+                    Ray *trans_ray = new Ray();
+                    trans_ray->o = refrac_hit.second + 0.00001f * normal2;
+                    trans_ray->d = refrac.first;
+                    trans_ray->t = 0.0f;
+                    trans_ray->t_near = 0.0f;
+                    trans_ray->t_far = 1000.0f;
+                    pair<Ray*, vec4> hit_out = scene->objects[obj_id]->hit(trans_ray);
+                    
+                    // ASSUMING NO FALL INSIDE THE MATERIAL
+                    float fall_off = 4.0f*(float)M_PI*glm::dot(hit.second - refrac_hit.second, hit.second - refrac_hit.second);
+                    //Assuming falloff inside material
+                    fall_off *= 4.0f*(float)M_PI*glm::dot(position - refrac_hit.second, position - refrac_hit.second);
+                    
+                    
+                    irradiance = MC_Sampling(hit.first, hit.second, -emerg.first, depth);
+                    // Light Sampling
+                    if(scene->objects[hit.first]->material->isEmissive){
+                        // irradiance += scene->objects[hit.first]->material->emmission(hit.second, reflect, reflect) * scene->objects[hit.first]->material->ke;
+                        irradiance += scene->objects[hit.first]->material->albedo * scene->objects[hit.first]->material->emmission(hit.second, emerg.first, emerg.first) * scene->objects[hit.first]->material->ke;
+                    }
+                    
+                    // Not needed for Cos sampling
+                    float out_norm = glm::length(emerg.first);
+                    float cos_theta = glm::dot(emerg.first, normal)/ (out_norm * normal_norm);
+                    irradiance *= (cos_theta/ fall_off);
+                    irradiance.w /= (cos_theta/ fall_off);
+                }
+
+                T += (vec4(1.0f) - refrac.second) * irradiance * scene->objects[obj_id]->material->kt;
             }
             
-            // Not needed for Cos sampling
-            float out_norm = glm::length(emerg);
-            float cos_theta = glm::dot(emerg, normal)/ (out_norm * normal_norm);
-            irradiance *= (cos_theta/ fall_off);
-            irradiance.w /= (cos_theta/ fall_off);
 
-            T += scene->objects[obj_id]->material->reflectance(out_dir, emerg, normal) * irradiance * scene->objects[obj_id]->material->ks;
+            // vec4 normal = scene->objects[obj_id]->normal_ray(position);
+            // normal = normalize(normal);
+            // vec4 reflect = -2.0f * dot(-out_dir, normal) * normal - out_dir;
+            
+            // pair<int, vec4> reflect_hit = incident_ray(position, reflect);
+            // vec4 irradiance = vec4(0.0f);
+            // if(reflect_hit.first == -1){
+            //     irradiance = scene->sky;
+            // }
+            // else{
+            //     Ray *branch_ray = new Ray();
+            //     branch_ray->o = position + 0.000001f * normal;
+            //     branch_ray->d = reflect;
+            //     branch_ray->t = 0.0f;
+            //     branch_ray->t_near = 0.0f;
+            //     branch_ray->t_far = 1000.0f;
+            //     pair<Ray*, vec4> hit_out = scene->objects[reflect_hit.first]->hit(branch_ray);
 
+            //     float fall_off = 4.0f*(float)M_PI*glm::dot(reflect_hit.second - position, reflect_hit.second - position);
+                
+                
+            //     irradiance = MC_Sampling(reflect_hit.first, reflect_hit.second, -reflect, depth+1);
+            //     // Light Sampling
+            //     if(scene->objects[reflect_hit.first]->material->isEmissive){
+            //         irradiance += scene->objects[reflect_hit.first]->material->albedo * scene->objects[reflect_hit.first]->material->emmission(reflect_hit.second, reflect, reflect) * scene->objects[reflect_hit.first]->material->ke;
+            //     }
+                
+            //     // Not needed for Cos sampling
+            //     float out_norm = glm::length(reflect);
+            //     float cos_theta = glm::dot(reflect, normal)/ (out_norm * normal_norm);
+            //     irradiance *= (cos_theta/ fall_off);
+            //     irradiance.w /= (cos_theta/ fall_off);
+            // }
+            // // cout << refrac_hit.second << "\n";
+            // R += refrac.second * irradiance * scene->objects[obj_id]->material->ks;
         }
         
     }

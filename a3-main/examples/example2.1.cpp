@@ -125,7 +125,7 @@ int main(){
     // sphere1->material->diffuse = schlik_reflectance;
     // // sphere1->material->diffuse = iso_reflectance;
     // // sphere1->material->emmission = iso_white;
-    sphere1->material = new Metal(vec4(1.0f, 1.0f, 1.0f, 1.0f), 5.0f);
+    sphere1->material = new Metal(vec4(1.0f, 0.9f, 0.75f, 1.0f), 1.0f);
     objects.push_back(sphere1);
 
     vec4 normal1 = vec4(0.0f, 1.0f, 0.0f, 0.0f);

@@ -93,13 +93,35 @@ void Shape::invert_transformation(){
     }
 }
 
-vec4 Shape::refracted_ray(vec4 incidence, vec4 position, float n1, float n2){
-    vec4 normal = normal_ray(position);
-    float cos_theta1 = dot(-incidence, normal);
+pair<vec4, float> Shape::refracted_ray(vec4 incidence, vec4 position, vec4 normal, float n1, float n2){
+    incidence = normalize(incidence);
+    // vec4 normal = normal_ray(position);
+    normal = normalize(normal);
+    float cos_theta1 = glm::max(dot(-incidence, normal), 0.0f);
+    // cout << cos_theta1 << "\n";
+    // cout << n1 << " " << n2 << "\n";
     float n = n1/n2;
-    float cos_theta2 = sqrt(1 - n*n*(1 - cos_theta1*cos_theta1));
-    vec4 ref_d = n * incidence + (n * cos_theta1 - cos_theta2) * normal;
-    return ref_d;
+    // cout << n << "\n";
+    float f = 1.0f - n*n*(1.0f - cos_theta1*cos_theta1);
+    // cout << f << "\n";
+    vec4 ref_d = vec4(0.0f);
+    if (f < 0){  // case of TIR
+        // return the reflected direction
+        ref_d = normal;
+        ref_d*= 2*dot(normal,incidence);
+        ref_d = incidence - ref_d;
+        return {ref_d, 1.0f};
+    }
+    // F = F0 + (1 - F0)(1 - cos_theta)^5
+    float ratio = (n1 - n2)/(n1 + n2);
+    float f0 = ratio * ratio;
+    float cos_theta2 = sqrt(f);
+    
+    // float F = (f0 + (1 - f0) * pow(1 - std::min(cos_theta1, cos_theta2), 5.0f));
+    float F = f0 + (1 - f0) * pow(1 - cos_theta1, 5);
+    // cout << F << "\n";
+    ref_d = n * incidence + (n * cos_theta1 - cos_theta2) * normal;
+    return {ref_d, F};
 }
 
 Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
