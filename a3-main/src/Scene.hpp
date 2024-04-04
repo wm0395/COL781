@@ -36,9 +36,9 @@ class Camera {
 struct Ray{
     vec4 o;
     vec4 d;
-    float t;
-    float t_near;
-    float t_far;
+    float t = 0.0f;
+    float t_near = 0.0001f;
+    float t_far = 1000.0f;
     
     Camera* camera;
 };

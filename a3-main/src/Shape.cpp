@@ -131,18 +131,22 @@ Sphere::Sphere(const float &r, const vec4 &c) : radius(r), centre(c) {
 pair<Ray*, vec4> Sphere::hit(Ray *ray) {
     
     mat4 world_to_object = transformation_mat;
-    ray->o = world_to_object * ray->o;
-    ray->d = world_to_object * ray->d;
+    Ray *hit_ray = new Ray();
+    hit_ray->o = world_to_object * ray->o;
+    hit_ray->d = world_to_object * ray->d;
+    hit_ray->t = ray->t;
+    hit_ray->t_near = 0.0f;
+    hit_ray->t_far = 1000.0f;
 
     // cout << radius << " " << centre.x << " " << centre.y << " " << centre.z << "\n";
     
-    float x1 = dot(ray->d, ray->o - centre);
+    float x1 = dot(hit_ray->d, hit_ray->o - centre);
     float norm_d_sq = length(ray->d);
     norm_d_sq *= norm_d_sq;
-    float x2 = dot(ray->o - centre, ray->o - centre) - radius * radius;
+    float x2 = dot(hit_ray->o - centre, hit_ray->o - centre) - radius * radius;
 
     if (x1 * x1 - norm_d_sq * x2 < 0){
-        ray->t = ray->t_far;
+        hit_ray->t = hit_ray->t_far;
         // cout << ray->t << "\n";
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
@@ -156,17 +160,17 @@ pair<Ray*, vec4> Sphere::hit(Ray *ray) {
 
     // cout << t1 << " " << t2 << "\n";
 
-    if(t2 <= ray->t_near){
+    if(t2 <= hit_ray->t_near){
         ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
-    else if(t1 <= ray->t_near){
+    else if(t1 <= hit_ray->t_near){
         ray->t = t2;
-        return reflected_ray(ray, t2);
+        return reflected_ray(hit_ray, t2);
     }
     else{
         ray->t = t1;
-        return reflected_ray(ray, t1);
+        return reflected_ray(hit_ray, t1);
     }
 }
 
@@ -201,18 +205,19 @@ Plane::Plane(const vec4 &normal, const vec4 &point_on_plane) : normal(normal), p
 pair<Ray*, vec4> Plane::hit(Ray *ray){
 
     mat4 world_to_object = transformation_mat;
-    ray->o = world_to_object * ray->o;
-    ray->d = world_to_object * ray->d;
+    Ray *hit_ray = new Ray();
+    hit_ray->o = world_to_object * ray->o;
+    hit_ray->d = world_to_object * ray->d;
 
     // t = (n · (p0 − o))/(n · d) 
-    float t = float(dot(normal, point_on_plane - ray->o)) / dot(normal, ray->d);
-    if (t <= ray->t_near){
+    float t = float(dot(normal, point_on_plane - hit_ray->o)) / dot(normal, hit_ray->d);
+    if (t <= hit_ray->t_near){
         ray->t = ray->t_far;
         return {nullptr, vec4(0.0f,0.0f,0.0f,0.0f)};
     }
     else{
         ray->t = t;
-        return reflected_ray(ray, t);
+        return reflected_ray(hit_ray, t);
     }
 }
 
