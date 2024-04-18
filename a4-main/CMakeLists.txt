@@ -13,3 +13,6 @@ target_link_libraries(col781 glm::glm OpenGL::GL SDL2::SDL2)
 
 add_executable(animation src/animation.cpp)
 target_link_libraries(animation col781)
+
+add_executable(cloth src/cloth.cpp)
+target_link_libraries(cloth col781)
