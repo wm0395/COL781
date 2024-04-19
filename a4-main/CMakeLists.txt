@@ -16,3 +16,6 @@ target_link_libraries(animation col781)
 
 add_executable(cloth src/cloth.cpp)
 target_link_libraries(cloth col781)
+
+add_executable(collision src/collision.cpp)
+target_link_libraries(collision col781)

@@ -35,20 +35,6 @@ void initializeScene() {
 	triangles[0] = ivec3(0, 1, 2);
 	triangles[1] = ivec3(0, 2, 3);
 	r.createTriangleIndices(object, nt, triangles);
-
-	// vertices[0] = vec3(-1, 1, -5);
-	// vertices[1] = vec3(-1, -1, -5);
-	// vertices[2] = vec3(1, -1, -5);
-	// vertices[3] = vec3(1, 1, -5);
-	// vertexBuf = r.createVertexAttribs(object, 0, nv, vertices);
-	// normals[0] = vec3(0, 0, 1);
-	// normals[1] = vec3(0, 0, 1);
-	// normals[2] = vec3(0, 0, 1);
-	// normals[3] = vec3(0, 0, 1);
-	// normalBuf = r.createVertexAttribs(object, 1, nv, normals);
-	// triangles[0] = ivec3(0, 1, 2);
-	// triangles[1] = ivec3(0, 2, 3);
-	// r.createTriangleIndices(object, nt, triangles);
 }
 
 void updateScene(float t) {
@@ -72,7 +58,6 @@ int main() {
 	}
 	camCtl.initialize(width, height);
 	camCtl.camera.setCameraView(vec3(0.5, -0.5, 1.5), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
-	// camCtl.camera.setCameraView(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0));
 	program = r.createShaderProgram(
 		r.vsBlinnPhong(),
 		r.fsBlinnPhong()
