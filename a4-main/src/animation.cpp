@@ -67,7 +67,7 @@ int main() {
 
 	while (!r.shouldQuit()) {
         float t = SDL_GetTicks64()*1e-3;
-		// updateScene(t);
+		updateScene(t);
 
 		camCtl.update();
 		Camera &camera = camCtl.camera;

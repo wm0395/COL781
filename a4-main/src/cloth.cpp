@@ -16,17 +16,18 @@ GL::ShaderProgram program;
 GL::Object object;
 GL::AttribBuf vertexBuf, normalBuf;
 
-const float cloth_length = 0.5;
+const float cloth_length = 1;
 const float cloth_width = 0.5;
-const int particles_along_length = 10;
-const int particles_along_width = 10;
-const float mass = 1.0f;
-const float ks_structural = 10000;
+const int particles_along_length = 20;
+const int particles_along_width = 20;
+const float cloth_mass = 25.0f;
+const float mass = cloth_mass / (particles_along_length * particles_along_width);
+const float ks_structural = 50000;
 const float kd_structural = 10;
 const float ks_shear = 300;
 const float kd_shear = 1;
-const float ks_bend = 50;
-const float kd_bend = 1;
+const float ks_bend = 3;
+const float kd_bend = 0.1;
 const float gravity = 10;
 
 const int nv = particles_along_length * particles_along_width;
@@ -41,13 +42,6 @@ vec3 vertices[nv];
 vec3 normals[nv];
 ivec3 triangles[nt];
 Particle* particles[nv];
-
-// float Mass_inverse[3*nv][3*nv];
-// float velocity[3*nv];
-// float position[3*nv];
-// float new_velocity[3*nv];
-// float new_position[3*nv];
-// float force[3*nv];
 
 vector<vector<float>> Mass_inverse(3*nv, vector<float>(3*nv, 0));
 vector<float> velocity(3*nv, 0);
@@ -157,13 +151,11 @@ void initializeScene() {
 void updateScene(float t) {
     float dt = 0.0005;
     for(int i = 0; i < nv; i++) {
-        // cout << "Particle : " << i << "\n";
         particles[i]->compute_force();
+        particles[i]->force.y -= gravity;
         for(int j = 0; j < 3; j++) {
             force[3*i+j] = particles[i]->force[j];
         }
-        // cout << "Force: " << particles[i]->force.x << " " << particles[i]->force.y << " " << particles[i]->force.z << "\n";
-        // cout << "\n";
     }
 
     new_velocity = product(Mass_inverse, force);
@@ -189,23 +181,41 @@ void updateScene(float t) {
     vertices[fixed2] = fixed_pos2;
 
     r.updateVertexAttribs(vertexBuf, nv, vertices);
-    // normals[0] = glm::normalize(glm::cross(vertices[1]-vertices[0], vertices[3]-vertices[0]));
-	// normals[1] = glm::normalize(glm::cross(vertices[2]-vertices[1], vertices[0]-vertices[1]));
-	// normals[2] = glm::normalize(glm::cross(vertices[3]-vertices[2], vertices[1]-vertices[2]));
-	// normals[3] = glm::normalize(glm::cross(vertices[0]-vertices[3], vertices[2]-vertices[3]));
 
-    //calculate normals
-    // for(int i = 0; i < particles_along_length; i++) {
-    //     for(int j = 0; j < particles_along_width; j++) {
-    //         vec3 normal(0, 0, 0);
-    //         for(Spring* s : particles[i*particles_along_width + j]->springs) {
-    //             vec3 diff = s->p1 < s->p2 ? particles[i*particles_along_width + j]->pos - s->p2->pos : particles[i*particles_along_width + j]->pos - s->p1->pos;
-    //             normal += glm::normalize(glm::cross(diff, vec3(0, 1, 0)));
-    //         }
-    //         normals[i*particles_along_width + j] = glm::normalize(normal);
-    //     }
-    // }
-    // r.updateVertexAttribs(normalBuf, nv, normals);
+    for(int i = 0; i < particles_along_length; i++) {
+        for(int j = 0; j < particles_along_width; j++) {
+            vec3 nv(0, 0, 0);
+            if(i > 0 && i < particles_along_length-1 && j > 0 && j < particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n3 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                vec3 n4 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n3, n1) + glm::cross(n4, n2));
+            }
+            else if (i == 0 && j == 0) {
+                vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n2, n1));
+            }
+            else if (i == 0 && j == particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n1, n2));
+            }
+            else if (i == particles_along_length-1 && j == 0) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n1, n2));
+            }
+            else if (i == particles_along_length-1 && j == particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n2, n1));
+            }
+            normals[i*particles_along_width + j] = nv;
+        }
+    }
+    r.updateVertexAttribs(normalBuf, nv, normals);
 }
 
 int main() {
@@ -225,7 +235,6 @@ int main() {
 
 	while (!r.shouldQuit()) {
         float t = SDL_GetTicks64()*1e-3;
-        // cout << t << "\n";
 		updateScene(t);
 
 		camCtl.update();

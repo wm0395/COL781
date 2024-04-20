@@ -46,8 +46,8 @@ Plane* plane = new Plane(plane_depth, vec3(0, 1, 0), plane_restitution, plane_fr
 float radius1 = 0.1;
 const int latitude = 20;
 const int longitude = 10;
-const vec3 sphere1_vel = vec3(2.0f, 0.0f, 0.0f); 
-const vec3 sphere1_ang_vel = vec3(0.0f, 0.0f, -20.0f);
+const vec3 sphere1_vel = vec3(1.0f, 1.0f, 0.0f); 
+const vec3 sphere1_ang_vel = vec3(1.0f, 1.0f, 0.0f);
 // Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel);
 Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth+radius1, 0.5), 0.5, 0.8, latitude, longitude, sphere1_vel, sphere1_ang_vel);
 const int sphere1_vert = latitude*(longitude - 1) + 2;
@@ -248,28 +248,45 @@ void updateScene(float t) {
                 position[3*i+2] = particles[i]->pos.z;
             }
         }
-        // float phix = plane->collision(particles[i]);
-        // vec3 normal = plane->collision_normal(particles[i]);
-        // if (phix < 0){
-        //     float vn = dot(particles[i]->vel, plane->normal);
-        //     if (vn < 0){
-        //         float jn = -(1 + coefficient_of_restitution)*vn*particles[i]->mass;
-        //         vec3 tangetial_vel = plane->tangetial_velocity(particles[i]);
-        //         vec3 jt = -std::min(friction_coeffecient*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
-        //         particles[i]->vel += (jn*plane->normal + jt)/particles[i]->mass;
-        //         velocity[3*i] = particles[i]->vel.x;
-        //         velocity[3*i+1] = particles[i]->vel.y;
-        //         velocity[3*i+2] = particles[i]->vel.z;
-        //     }
-        //     float del_xn = -phix;
-        //     particles[i]->pos += del_xn*plane->normal;
-        //     position[3*i] = particles[i]->pos.x;
-        //     position[3*i+1] = particles[i]->pos.y;
-        //     position[3*i+2] = particles[i]->pos.z;
-        // }
     }
 
     r.updateVertexAttribs(vertexBuf, num_of_particles+4+sphere1_vert, vertices);
+
+    for(int i = 0; i < particles_along_length; i++) {
+        for(int j = 0; j < particles_along_width; j++) {
+            vec3 nv(0, 0, 0);
+            if(i > 0 && i < particles_along_length-1 && j > 0 && j < particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n3 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                vec3 n4 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n3, n1) + glm::cross(n4, n2));
+            }
+            else if (i == 0 && j == 0) {
+                vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n2, n1));
+            }
+            else if (i == 0 && j == particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n1, n2));
+            }
+            else if (i == particles_along_length-1 && j == 0) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n1, n2));
+            }
+            else if (i == particles_along_length-1 && j == particles_along_width-1) {
+                vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
+                vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
+                nv = glm::normalize(glm::cross(n2, n1));
+            }
+            normals[i*particles_along_width + j] = nv;
+        }
+    }
+
+    r.updateVertexAttribs(normalBuf, num_of_particles+4+sphere1_vert, normals);
 }
 
 int main() {
