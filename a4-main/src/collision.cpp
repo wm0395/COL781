@@ -16,8 +16,8 @@ GL::ShaderProgram program;
 GL::Object object;
 GL::AttribBuf vertexBuf, normalBuf;
 
-const float cloth_length = 0.2;
-const float cloth_width = 0.2;
+const float cloth_length = 1;
+const float cloth_width = 1;
 const int particles_along_length = 20;
 const int particles_along_width = 20;
 const float cloth_mass = 25.0f;
@@ -46,10 +46,10 @@ Plane* plane = new Plane(plane_depth, vec3(0, 1, 0), plane_restitution, plane_fr
 float radius1 = 0.1;
 const int latitude = 20;
 const int longitude = 10;
-const vec3 sphere1_vel = vec3(0.0f, 0.0f, 0.0f); 
-const vec3 sphere1_ang_vel = vec3(0.0f, 0.0f, 1.0f);
+const vec3 sphere1_vel = vec3(2.0f, 0.0f, 0.0f); 
+const vec3 sphere1_ang_vel = vec3(0.0f, 0.0f, -20.0f);
 // Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel);
-Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel, sphere1_ang_vel);
+Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth+radius1, 0.5), 0.5, 0.8, latitude, longitude, sphere1_vel, sphere1_ang_vel);
 const int sphere1_vert = latitude*(longitude - 1) + 2;
 const int sphere1_tri = 2 * latitude * (longitude - 1);
 
@@ -72,7 +72,6 @@ CameraControl camCtl;
 void add_sphere(){
     for (int i = 0; i<sphere1_vert; i++){
         vertices[num_of_particles+4+i] = sphere1->vertices[i];
-        // cout << vertices[num_of_particles+4+i].x << " " << vertices[num_of_particles+4+i].y << " " << vertices[num_of_particles+4+i].z << "\n";
         normals[num_of_particles+4+i] = sphere1->normals[i];
     }
     for (int i = 0; i<sphere1_tri; i++){
@@ -191,12 +190,7 @@ void initializeScene() {
 }
 
 void updateScene(float t) {
-    // cout << t << "\n";
-    // if (t >= 1.4f){
-    //     return;
-    // }
     float dt = 0.0005;
-    // float dt = 1;
     for(int i = 0; i < num_of_particles; i++) {
         particles[i]->compute_force();
         particles[i]->force.y -= gravity;
@@ -275,21 +269,6 @@ void updateScene(float t) {
         // }
     }
 
-    //print the sphere vertices
-    // cout << "sphere vertices => \n";
-    // for (int i = 0; i<sphere1_vert; i++){
-    //     // vertices[num_of_particles+4+i] = sphere1->vertices[i];
-    //     cout << vertices[num_of_particles+4+i].x << " " << vertices[num_of_particles+4+i].y << " " << vertices[num_of_particles+4+i].z << "\n";
-    //     // normals[num_of_particles+4+i] = sphere1->normals[i];
-    // }
-
-    // //print sphere triangles
-    // cout << "sphere triangles => \n";
-    // for (int i = 0; i<sphere1_tri; i++){
-    //     // triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
-    //     cout << triangles[nt+2+i].x << " " << triangles[nt+2+i].y << " " << triangles[nt+2+i].z << "\n";
-    // }
-
     r.updateVertexAttribs(vertexBuf, num_of_particles+4+sphere1_vert, vertices);
 }
 
@@ -300,7 +279,6 @@ int main() {
 	}
 	camCtl.initialize(width, height);
 	camCtl.camera.setCameraView(vec3(0.5, -0.5, 1.5), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
-    // camCtl.camera.setCameraView(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0));
 	program = r.createShaderProgram(
 		r.vsBlinnPhong(),
 		r.fsBlinnPhong()
@@ -310,7 +288,7 @@ int main() {
 
 	while (!r.shouldQuit()) {
         float t = SDL_GetTicks64()*1e-3;
-		// updateScene(t);
+		updateScene(t);
 
 		camCtl.update();
 		Camera &camera = camCtl.camera;

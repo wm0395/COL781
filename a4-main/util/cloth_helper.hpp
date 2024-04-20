@@ -1,5 +1,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <iostream>
 
@@ -67,7 +68,6 @@ public:
     Sphere(float radius, vec3 center, float coefficient_of_restitution, float friction_coefficient, int latitude, int longitude, vec3 velocity, vec3 angular_velocity);
     float radius;
     vec3 center;
-    mat4 angular_matrix;
 
     float collision(Particle* particle);
     vec3 collision_normal(Particle* particle);
@@ -80,5 +80,8 @@ public:
     vec3 *vertices;
     vec3 *normals;
     ivec3 *triangles;
+
+    vec3* initial_vertices;
+    vec3* initial_normals;
     void sphere_grid();
 };

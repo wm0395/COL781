@@ -81,7 +81,7 @@ vec3 Plane::tangetial_velocity(Particle* particle){
 }
 
 void Plane::update(float dt, float t){
-    return;  // TODO: if you want it could be done later
+    return;
 }
 
 
@@ -97,6 +97,8 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
     this->vertices = new glm::vec3[num_vertices];
     this->normals = new glm::vec3[num_vertices];
     this->triangles = new glm::ivec3[num_triangles];
+    this->initial_vertices = new glm::vec3[num_vertices];
+    this->initial_normals = new glm::vec3[num_vertices];
     sphere_grid();
 }
 
@@ -112,12 +114,12 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
     this->vertices = new glm::vec3[num_vertices];
     this->normals = new glm::vec3[num_vertices];
     this->triangles = new glm::ivec3[num_triangles];
+    this->initial_vertices = new glm::vec3[num_vertices];
+    this->initial_normals = new glm::vec3[num_vertices];
     sphere_grid();
     this->velocity = velocity;
     this->angular_velocity = vec3(0, 0, 0);
     this->isMoving = true;
-    this->angular_matrix = mat4(0.0f);
-    angular_matrix[3][3] = 1.0f;
 }
 
 void print_mat4(mat4 m){
@@ -143,31 +145,20 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
     this->vertices = new glm::vec3[num_vertices];
     this->normals = new glm::vec3[num_vertices];
     this->triangles = new glm::ivec3[num_triangles];
+    this->initial_vertices = new glm::vec3[num_vertices];
+    this->initial_normals = new glm::vec3[num_vertices];
     sphere_grid();
 
     this->velocity = velocity;
     this->angular_velocity = angular_velocity;
     this->isMoving = true;
     this->isRotating = true;
-    // vec3 rotation_axis = normalize(angular_velocity);  //TODO: check if correct
-    // translate the axis so that it passes through center of the sphere
-    // this->rotation_mat = translate(rotation_mat, center);
-    // // // print_mat4(rotation_mat);
-    // this->rotation_mat = rotate(rotation_mat, radians(0.0f), rotation_axis);
-    // // // print_mat4(rotation_mat);
-    // this->rotation_mat = translate(rotation_mat, -center);
-    // cout << "Before any updation => \n";
-    // print_mat4(rotation_mat);
-    // print_mat4(rotation_mat);
-    // this->angular_matrix = mat4(vec4(0.0f, -angular_velocity.z, angular_velocity.y, 0.0f),
-    //                             vec4(angular_velocity.z, 0.0f, -angular_velocity.x, 0.0f),
-    //                             vec4(-angular_velocity.y, angular_velocity.x, 0.0f, 0.0f),
-    //                             vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    vec3 rotation_axis = normalize(angular_velocity);
 }
 
 
 void Sphere::sphere_grid(){
-    float r = this->radius - 0.01f; //TODO: check if we want to subtract a small value
+    float r = this->radius - 0.008f; //TODO: check if we want to subtract a small value
     int m = this->latitude;
     int n = this->longitude;
     vec3 c = this->center;
@@ -178,9 +169,13 @@ void Sphere::sphere_grid(){
     int pres_tri_cnt = latitude;
 
     this->vertices[0] = vec3(c.x+0.0, c.y+r, c.z+0.0);
+    this->initial_vertices[0] = vertices[0] - center;
     this->normals[0] = normalize(this->vertices[0] - c);
+    this->initial_normals[0] = normals[0];
     this->vertices[vert_cnt-1] = vec3(c.x+0.0, c.y-r, c.z+0.0);
+    this->initial_vertices[vert_cnt-1] = vertices[vert_cnt-1] - center;
     this->normals[vert_cnt-1] = normalize(this->vertices[vert_cnt-1] - c);
+    this->initial_normals[vert_cnt-1] = normals[vert_cnt-1];
 
     for (int i = 0; i<m; i++){
         this->triangles[i] = ivec3(0,i+1,((i+1)%m)+1);
@@ -189,7 +184,9 @@ void Sphere::sphere_grid(){
     for (int lat = 1; lat<=n-1; lat++){
         for (int log = 0; log<m; log++){
             this->vertices[cnt] = vec3(c.x + r * std::cos(2*M_PI*log/float(m)) * std::sin(M_PI*lat/float(n)), c.y+r * std::cos(M_PI*lat/float(n)), c.z+r * std::sin(2*M_PI*log/float(m)) * std::sin(M_PI*lat/float(n)));
+            this->initial_vertices[cnt] = vertices[cnt] - center;
             this->normals[cnt] = normalize(this->vertices[cnt] - c);
+            this->initial_normals[cnt] = normals[cnt];
             cnt++;
 
             if (lat != n-1){
@@ -247,49 +244,24 @@ vec3 Sphere::tangetial_velocity(Particle* particle){
 
 void Sphere::update(float dt, float t){
     if (isMoving){
-        // rotation_mat = translate(rotation_mat, -center);
-        // print_mat4(rotation_mat);
-        // mat4 new_rotation_mat = angular_matrix * rotation_mat;
-        // print_mat4(new_rotation_mat);
-        // new_rotation_mat *= dt;
-        // print_mat4(new_rotation_mat);
-        // new_rotation_mat += rotation_mat;
-        // // print_mat4(new_rotation_mat);
-        // rotation_mat = new_rotation_mat;
-        // print_mat4(rotation_mat);
-        // rotation_mat = translate(rotation_mat, center);
-        // print_mat4(rotation_mat);
-
-        // cout << "Center: " << center.x << " " << center.y << " " << center.z << endl;
         center += velocity * dt;
         if (isRotating){
-            rotation_mat = mat4(1.0f);
-            rotation_mat = translate(rotation_mat, center);
-            // print_mat4(rotation_mat);
-            rotation_mat = rotate(rotation_mat, radians(length(angular_velocity)*t), normalize(angular_velocity));
-            // print_mat4(rotation_mat);
-            rotation_mat = translate(rotation_mat, -center);
+            for (int i = 0; i<num_vertices; i++){
+                rotation_mat = rotate(mat4(1.0f), length(angular_velocity)*t, normalize(angular_velocity));
+                vec4 v = vec4(initial_vertices[i], 1.0f);
+                v = rotation_mat * v;
+                v /= v.w;
+                vertices[i] = vec3(v.x, v.y, v.z);
+                vertices[i] += center;
+
+                vec4 n = vec4(initial_normals[i], 0.0f);
+                n = rotation_mat * n;
+                normals[i] = vec3(n.x, n.y, n.z);
+            }
         }
 
-        //check if the rotation_mat is a valid rotation matrix
-        // print_mat4(transpose(rotation_mat) * rotation_mat);
-
-        // multiply each of the vertices and normals with the transformation matrix
         for (int i = 0; i<num_vertices; i++){
-            vec4 v = vec4(vertices[i], 1.0f);
-            v = rotation_mat * v;
-            vertices[i] /= v.w;
-            vertices[i] = vec3(v.x, v.y, v.z);
             vertices[i] += velocity*dt;
-            vec4 n = vec4(normals[i], 0.0f);
-            n = rotation_mat * n;
-            normals[i] = vec3(n.x, n.y, n.z);  // TODO: check normals wala case
         }
-        vec4 c = vec4(center, 1.0f);
-        c = rotation_mat * c;
-        c /= c.w;
-        center = vec3(c.x, c.y, c.z);
-        // center += velocity * dt;
     }
-    return;
 }
