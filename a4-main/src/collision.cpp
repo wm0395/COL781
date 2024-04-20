@@ -16,11 +16,11 @@ GL::ShaderProgram program;
 GL::Object object;
 GL::AttribBuf vertexBuf, normalBuf;
 
-const float cloth_length = 1;
-const float cloth_width = 1;
+const float cloth_length = 0.2;
+const float cloth_width = 0.2;
 const int particles_along_length = 20;
 const int particles_along_width = 20;
-const float cloth_mass = 50.0f;
+const float cloth_mass = 25.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
 const float ks_structural = 100000;
 const float kd_structural = 10;
@@ -29,8 +29,6 @@ const float kd_shear = 1;
 const float ks_bend = 30;
 const float kd_bend = 1;
 const float gravity = 10;
-// const float coefficient_of_restitution = 0.5;
-// const float friction_coeffecient = 0.7;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
@@ -48,26 +46,21 @@ Plane* plane = new Plane(plane_depth, vec3(0, 1, 0), plane_restitution, plane_fr
 float radius1 = 0.1;
 const int latitude = 20;
 const int longitude = 10;
-Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude);
+const vec3 sphere1_vel = vec3(0.0f, 0.0f, 0.0f); 
+const vec3 sphere1_ang_vel = vec3(0.0f, 0.0f, 1.0f);
+// Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel);
+Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel, sphere1_ang_vel);
 const int sphere1_vert = latitude*(longitude - 1) + 2;
 const int sphere1_tri = 2 * latitude * (longitude - 1);
 
 vector<Obstacles*> obstacles = {plane, sphere1};
 
-// float Mass_inum_of_particleserse[3*num_of_particles][3*num_of_particles];
-// float velocity[3*num_of_particles];
-// float position[3*num_of_particles];
-// float new_velocity[3*num_of_particles];
-// float new_position[3*num_of_particles];
-// float force[3*num_of_particles];
-
-vector<vector<float>> Mass_inum_of_particleserse(3*num_of_particles, vector<float>(3*num_of_particles, 0));
+vector<vector<float>> Mass_inverse(3*num_of_particles, vector<float>(3*num_of_particles, 0));
 vector<float> velocity(3*num_of_particles, 0);
 vector<float> position(3*num_of_particles, 0);
 vector<float> new_velocity(3*num_of_particles, 0);
 vector<float> new_position(3*num_of_particles, 0);
 vector<float> force(3*num_of_particles, 0);
-
 
 vec3 vertices[num_of_particles+ 4 + sphere1_vert];
 vec3 normals[num_of_particles + 4 + sphere1_vert];
@@ -75,6 +68,17 @@ ivec3 triangles[nt + 2 + sphere1_tri];
 Particle* particles[num_of_particles];
 
 CameraControl camCtl;
+
+void add_sphere(){
+    for (int i = 0; i<sphere1_vert; i++){
+        vertices[num_of_particles+4+i] = sphere1->vertices[i];
+        // cout << vertices[num_of_particles+4+i].x << " " << vertices[num_of_particles+4+i].y << " " << vertices[num_of_particles+4+i].z << "\n";
+        normals[num_of_particles+4+i] = sphere1->normals[i];
+    }
+    for (int i = 0; i<sphere1_tri; i++){
+        triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
+    }
+}
 
 void initializeScene() {
 	object = r.createObject();
@@ -161,13 +165,7 @@ void initializeScene() {
     triangles[nt] = ivec3(num_of_particles, num_of_particles+1, num_of_particles+2);
     triangles[nt+1] = ivec3(num_of_particles, num_of_particles+2, num_of_particles+3);
 
-    for (int i = 0; i<sphere1_vert; i++){
-        vertices[num_of_particles+4+i] = sphere1->vertices[i];
-        normals[num_of_particles+4+i] = sphere1->normals[i];
-    }
-    for (int i = 0; i<sphere1_tri; i++){
-        triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
-    }
+    add_sphere();
 
     vertexBuf = r.createVertexAttribs(object, 0, num_of_particles+4+sphere1_vert, vertices);
     normalBuf = r.createVertexAttribs(object, 1, num_of_particles+4+sphere1_vert, normals);
@@ -175,7 +173,7 @@ void initializeScene() {
 
     for(int i = 0; i < num_of_particles; i++) {
         for(int j = 0; j < 3; j++) {
-            Mass_inum_of_particleserse[3*i+j][3*i+j] = 1/particles[i]->mass;
+            Mass_inverse[3*i+j][3*i+j] = 1/particles[i]->mass;
         }
     }
 
@@ -193,7 +191,12 @@ void initializeScene() {
 }
 
 void updateScene(float t) {
+    // cout << t << "\n";
+    // if (t >= 1.4f){
+    //     return;
+    // }
     float dt = 0.0005;
+    // float dt = 1;
     for(int i = 0; i < num_of_particles; i++) {
         particles[i]->compute_force();
         particles[i]->force.y -= gravity;
@@ -202,7 +205,7 @@ void updateScene(float t) {
         }
     }
 
-    new_velocity = product(Mass_inum_of_particleserse, force);
+    new_velocity = product(Mass_inverse, force);
     new_velocity = scale(new_velocity, dt);
     new_velocity = sum(velocity, new_velocity);
     new_position = sum(position, scale(new_velocity, dt));
@@ -223,6 +226,11 @@ void updateScene(float t) {
     particles[fixed2]->pos = fixed_pos2;
     particles[fixed2]->vel = vec3(0, 0, 0);
     vertices[fixed2] = fixed_pos2;
+
+    for (auto obs : obstacles){
+        obs->update(dt, t);
+        add_sphere();
+    }
 
     for (int i = 0; i<num_of_particles; i++){
         for (auto obs : obstacles){
@@ -267,6 +275,21 @@ void updateScene(float t) {
         // }
     }
 
+    //print the sphere vertices
+    // cout << "sphere vertices => \n";
+    // for (int i = 0; i<sphere1_vert; i++){
+    //     // vertices[num_of_particles+4+i] = sphere1->vertices[i];
+    //     cout << vertices[num_of_particles+4+i].x << " " << vertices[num_of_particles+4+i].y << " " << vertices[num_of_particles+4+i].z << "\n";
+    //     // normals[num_of_particles+4+i] = sphere1->normals[i];
+    // }
+
+    // //print sphere triangles
+    // cout << "sphere triangles => \n";
+    // for (int i = 0; i<sphere1_tri; i++){
+    //     // triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
+    //     cout << triangles[nt+2+i].x << " " << triangles[nt+2+i].y << " " << triangles[nt+2+i].z << "\n";
+    // }
+
     r.updateVertexAttribs(vertexBuf, num_of_particles+4+sphere1_vert, vertices);
 }
 
@@ -287,8 +310,7 @@ int main() {
 
 	while (!r.shouldQuit()) {
         float t = SDL_GetTicks64()*1e-3;
-        // cout << t << "\n";
-		updateScene(t);
+		// updateScene(t);
 
 		camCtl.update();
 		Camera &camera = camCtl.camera;
@@ -322,6 +344,5 @@ int main() {
 		r.drawObject(object);
 
 		r.show();
-        // break;
 	}
 }
