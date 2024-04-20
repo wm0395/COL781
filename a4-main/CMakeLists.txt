@@ -16,5 +16,9 @@ target_link_libraries(animation col781)
 
 add_executable(bone_animation src/bone_animation.cpp)
 target_link_libraries(bone_animation col781)
+
+add_executable(bone_animation2 src/bone_animation2.cpp)
+target_link_libraries(bone_animation2 col781)
+
 add_executable(cloth src/cloth.cpp)
 target_link_libraries(cloth col781)
