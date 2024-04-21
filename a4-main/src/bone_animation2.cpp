@@ -361,7 +361,7 @@ int main() {
     int i = 0;
     vector<vector<float>> animation = interpolateVectors(keyFrames, numSamples);
     while (!r.shouldQuit()) {
-        float t = SDL_GetTicks64()*10e-2;
+        float t = SDL_GetTicks64()*3e-1;
         int i = (int)t % animation.size();
         // i = (i+1)% animation.size();
 
