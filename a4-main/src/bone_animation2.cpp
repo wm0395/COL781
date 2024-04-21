@@ -344,7 +344,7 @@ void updateScene() {
 }
 
 int main() {
-	int width = 1000, height = 800;
+	int width = 800, height = 600;
 	if (!r.initialize("Animation", width, height)) {
 		return EXIT_FAILURE;
 	}
@@ -361,7 +361,7 @@ int main() {
     int i = 0;
     vector<vector<float>> animation = interpolateVectors(keyFrames, numSamples);
     while (!r.shouldQuit()) {
-        float t = SDL_GetTicks64()*10e-2;
+        float t = SDL_GetTicks64()*3e-1;
         int i = (int)t % animation.size();
         // i = (i+1)% animation.size();
 

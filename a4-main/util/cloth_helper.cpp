@@ -38,6 +38,20 @@ void Particle::compute_force() {
     }
 }
 
+float Particle::collision(Particle* particle){
+    return length(pos - particle->pos);
+}
+
+vec3 Particle::collision_normal(Particle* particle){
+    return normalize(particle->pos - pos);   // TODO: check direction
+}
+
+vec3 Particle::tangetial_velocity(Particle* particle){
+    // vec3 normal = collision_normal(particle);   // TODO: use relative velocity and check if it is correct
+    // return vel - dot(vel, normal)*(normal);
+    return vec3(0.0f);
+}
+
 Plane::Plane(float depth, vec3 normal, float coefficient_of_restitution, float friction_coefficient){
     this->depth = depth;
     this->normal = normal;

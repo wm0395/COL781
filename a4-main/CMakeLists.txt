@@ -25,3 +25,6 @@ target_link_libraries(cloth col781)
 
 add_executable(collision src/collision.cpp)
 target_link_libraries(collision col781)
+
+add_executable(self_collision src/self_collision.cpp)
+target_link_libraries(self_collision col781)

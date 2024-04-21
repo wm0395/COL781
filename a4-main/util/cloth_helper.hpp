@@ -29,6 +29,9 @@ public:
     vector<Spring*> springs;
 
     void compute_force();
+    float collision(Particle* particle);
+    vec3 collision_normal(Particle* particle);
+    vec3 tangetial_velocity(Particle* particle);
 };
 
 class Obstacles {

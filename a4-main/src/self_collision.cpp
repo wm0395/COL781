@@ -18,19 +18,22 @@ GL::AttribBuf vertexBuf, normalBuf;
 
 const float cloth_length = 1;
 const float cloth_width = 0.5;
-const int particles_along_length = 20;
-const int particles_along_width = 20;
-const float cloth_mass = 50.0f;
+const int particles_along_length = 18;
+const int particles_along_width = 18;
+const float cloth_mass = 20.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
 const float ks_structural = 50000;
-const float kd_structural = 1;
-const float ks_shear = 100;
+const float kd_structural = 10;
+const float ks_shear = 300;
 const float kd_shear = 1;
-const float ks_bend = 1;
-const float kd_bend = 0.01;
-const float gravity = 10;
+const float ks_bend = 30;
+const float kd_bend = 1;
+const float gravity = 100;
 
-const int nv = particles_along_length * particles_along_width;
+bool self_collision = false;
+float delx = 0.0f;
+
+const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
 
 const int fixed1 = 0;
@@ -38,17 +41,24 @@ const int fixed2 = particles_along_width * (particles_along_length-1);
 vec3 fixed_pos1(0, 0, 0);
 vec3 fixed_pos2(0, 0, 0);
 
-vec3 vertices[nv];
-vec3 normals[nv];
-ivec3 triangles[nt];
-Particle* particles[nv];
+const float plane_depth = -0.6;
+const float plane_restitution = 0.2;
+const float plane_friction = 0.7;
+Plane* plane = new Plane(plane_depth, vec3(0, 1, 0), plane_restitution, plane_friction);
 
-vector<vector<float>> Mass_inverse(3*nv, vector<float>(3*nv, 0));
-vector<float> velocity(3*nv, 0);
-vector<float> position(3*nv, 0);
-vector<float> new_velocity(3*nv, 0);
-vector<float> new_position(3*nv, 0);
-vector<float> force(3*nv, 0);
+vector<Obstacles*> obstacles = {plane};
+
+vector<vector<float>> Mass_inverse(3*num_of_particles, vector<float>(3*num_of_particles, 0));
+vector<float> velocity(3*num_of_particles, 0);
+vector<float> position(3*num_of_particles, 0);
+vector<float> new_velocity(3*num_of_particles, 0);
+vector<float> new_position(3*num_of_particles, 0);
+vector<float> force(3*num_of_particles, 0);
+
+vec3 vertices[num_of_particles+ 4];
+vec3 normals[num_of_particles + 4];
+ivec3 triangles[nt + 2];
+Particle* particles[num_of_particles];
 
 CameraControl camCtl;
 
@@ -57,16 +67,18 @@ void initializeScene() {
 
     float l = cloth_length / (particles_along_length-1);
     float w = cloth_width / (particles_along_width-1);
+    delx = std::min(w,l);
 
     for(int i = 0; i < particles_along_length; i++) {
         for(int j = 0; j < particles_along_width; j++) {
-            glm::vec3 pos(l*i, 0.0f, w*j);
+            // glm::vec3 pos(l*i, 0.0f, w*j);
+            glm::vec3 pos(l*i, j*w-0.5, 0.0f);
             glm::vec3 vel(0.0f, 0.0f, 0.0f);
             glm::vec3 force(0.0f, -gravity, 0.0f);
             Particle* p = new Particle(i*particles_along_width + j, mass, pos, vel, force);
             particles[i*particles_along_width + j] = p;
             vertices[i*particles_along_width + j] = pos;
-            normals[i*particles_along_width + j] = vec3(0, 1, 0);
+            normals[i*particles_along_width + j] = vec3(0, 0, 1);
         }
     }
 
@@ -125,18 +137,30 @@ void initializeScene() {
         }
     }
 
-    vertexBuf = r.createVertexAttribs(object, 0, nv, vertices);
-    normalBuf = r.createVertexAttribs(object, 1, nv, normals);
-    r.createTriangleIndices(object, nt, triangles);
+    // add a big square below the above cloth
+    vertices[num_of_particles] = vec3(-100, plane_depth, 100);
+    vertices[num_of_particles+1] = vec3(100, plane_depth, 100);
+    vertices[num_of_particles+2] = vec3(100, plane_depth, -100);
+    vertices[num_of_particles+3] = vec3(-100, plane_depth, -100);
+    normals[num_of_particles] = vec3(0, 1, 0);
+    normals[num_of_particles+1] = vec3(0, 1, 0);
+    normals[num_of_particles+2] = vec3(0, 1, 0);
+    normals[num_of_particles+3] = vec3(0, 1, 0);
+    triangles[nt] = ivec3(num_of_particles, num_of_particles+1, num_of_particles+2);
+    triangles[nt+1] = ivec3(num_of_particles, num_of_particles+2, num_of_particles+3);
 
-    for(int i = 0; i < nv; i++) {
+    vertexBuf = r.createVertexAttribs(object, 0, num_of_particles+4, vertices);
+    normalBuf = r.createVertexAttribs(object, 1, num_of_particles+4, normals);
+    r.createTriangleIndices(object, nt+2, triangles);
+
+    for(int i = 0; i < num_of_particles; i++) {
         for(int j = 0; j < 3; j++) {
             Mass_inverse[3*i+j][3*i+j] = 1/particles[i]->mass;
         }
     }
 
     // fill the velocity and position arrays
-    for(int i = 0; i < nv; i++) {
+    for(int i = 0; i < num_of_particles; i++) {
         for(int j = 0; j < 3; j++) {
             velocity[3*i+j] = particles[i]->vel[j];
             position[3*i+j] = particles[i]->pos[j];
@@ -150,7 +174,7 @@ void initializeScene() {
 
 void updateScene(float t) {
     float dt = 0.0005;
-    for(int i = 0; i < nv; i++) {
+    for(int i = 0; i < num_of_particles; i++) {
         particles[i]->compute_force();
         particles[i]->force.y -= gravity;
         for(int j = 0; j < 3; j++) {
@@ -166,21 +190,99 @@ void updateScene(float t) {
     velocity = new_velocity;
     position = new_position;
 
-    for(int i = 0; i < nv; i++) {
+    for(int i = 0; i < num_of_particles; i++) {
         particles[i]->pos = vec3(position[3*i], position[3*i+1], position[3*i+2]);
         particles[i]->vel = vec3(velocity[3*i], velocity[3*i+1], velocity[3*i+2]);
         particles[i]->force = vec3(force[3*i], force[3*i+1], force[3*i+2]);
         vertices[i] = particles[i]->pos;
     }
 
-    particles[fixed1]->pos = fixed_pos1;
-    particles[fixed1]->vel = vec3(0, 0, 0);
-    vertices[fixed1] = fixed_pos1;
-    particles[fixed2]->pos = fixed_pos2;
-    particles[fixed2]->vel = vec3(0, 0, 0);
-    vertices[fixed2] = fixed_pos2;
+    if (self_collision){
+        for (int i = 0; i<num_of_particles; i++){
+            for (int j = 0; j<num_of_particles; j++){
+                if (j != i){
+                    float phix = particles[i]->collision(particles[j]);
+                    vec3 normal = particles[i]->collision_normal(particles[j]);
+                    if (phix < delx - 1e-6){
+                        float vn = dot(particles[i]->vel - particles[j]->vel, normal);
+                        if (vn < 0){
+                            float jn = -(1 + 0.001)*vn*(particles[i]->mass);
+                            vec3 jt = vec3(0, 0, 0);
+                            particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
+                            // particles[j]->vel -= (jn*normal + jt)/particles[j]->mass;
+                            velocity[3*i] = particles[i]->vel.x;
+                            velocity[3*i+1] = particles[i]->vel.y;
+                            velocity[3*i+2] = particles[i]->vel.z;
+                            // velocity[3*j] = particles[j]->vel.x;
+                            // velocity[3*j+1] = particles[j]->vel.y;
+                            // velocity[3*j+2] = particles[j]->vel.z;
+                        }
+                        float del_xn = -phix;
+                        particles[i]->pos += del_xn*normal;
+                        // particles[j]->pos -= del_xn*normal;
+                        position[3*i] = particles[i]->pos.x;
+                        position[3*i+1] = particles[i]->pos.y;
+                        position[3*i+2] = particles[i]->pos.z;
+                        // position[3*j] = particles[j]->pos.x;
+                        // position[3*j+1] = particles[j]->pos.y;
+                        // position[3*j+2] = particles[j]->pos.z;
+                    }
+                }
+                // float phix = particles[i]->collision(particles[j]);
+                // vec3 normal = particles[i]->collision_normal(particles[j]);
+                // if (phix < delx){
+                //     float vn = dot(particles[i]->vel - particles[j]->vel, normal);
+                //     if (vn < 0){
+                //         float jn = -(1 + 0.2)*vn*(particles[i]->mass + particles[j]->mass);
+                //         vec3 jt = vec3(0, 0, 0);
+                //         particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
+                //         particles[j]->vel -= (jn*normal + jt)/particles[j]->mass;
+                //         velocity[3*i] = particles[i]->vel.x;
+                //         velocity[3*i+1] = particles[i]->vel.y;
+                //         velocity[3*i+2] = particles[i]->vel.z;
+                //         velocity[3*j] = particles[j]->vel.x;
+                //         velocity[3*j+1] = particles[j]->vel.y;
+                //         velocity[3*j+2] = particles[j]->vel.z;
+                //     }
+                //     float del_xn = -phix/2;
+                //     particles[i]->pos += del_xn*normal;
+                //     particles[j]->pos -= del_xn*normal;
+                //     position[3*i] = particles[i]->pos.x;
+                //     position[3*i+1] = particles[i]->pos.y;
+                //     position[3*i+2] = particles[i]->pos.z;
+                //     position[3*j] = particles[j]->pos.x;
+                //     position[3*j+1] = particles[j]->pos.y;
+                //     position[3*j+2] = particles[j]->pos.z;
+                // }
+            }
+        }
+    }
 
-    r.updateVertexAttribs(vertexBuf, nv, vertices);
+    for (int i = 0; i<num_of_particles; i++){
+        for (auto obs : obstacles){
+            float phix = obs->collision(particles[i]);
+            vec3 normal = obs->collision_normal(particles[i]);
+            if (phix < 0){
+                float vn = dot(particles[i]->vel, normal);
+                if (vn < 0){
+                    float jn = -(1 + obs->coefficient_of_restitution)*vn*particles[i]->mass;
+                    vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
+                    vec3 jt = -std::min(obs->friction_coefficient*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
+                    particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
+                    velocity[3*i] = particles[i]->vel.x;
+                    velocity[3*i+1] = particles[i]->vel.y;
+                    velocity[3*i+2] = particles[i]->vel.z;
+                }
+                float del_xn = -phix;
+                particles[i]->pos += del_xn*normal;
+                position[3*i] = particles[i]->pos.x;
+                position[3*i+1] = particles[i]->pos.y;
+                position[3*i+2] = particles[i]->pos.z;
+            }
+        }
+    }
+
+    r.updateVertexAttribs(vertexBuf, num_of_particles+4, vertices);
 
     for(int i = 0; i < particles_along_length; i++) {
         for(int j = 0; j < particles_along_width; j++) {
@@ -190,32 +292,33 @@ void updateScene(float t) {
                 vec3 n2 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
                 vec3 n3 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
                 vec3 n4 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
-                nv = glm::normalize(glm::cross(n3, n1) + glm::cross(n4, n2));
+                nv = glm::normalize(glm::cross(n1, n3) + glm::cross(n2, n4));
             }
             else if (i == 0 && j == 0) {
                 vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
                 vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
-                nv = glm::normalize(glm::cross(n2, n1));
+                nv = glm::normalize(glm::cross(n1, n2));
             }
             else if (i == 0 && j == particles_along_width-1) {
                 vec3 n1 = glm::normalize(vertices[(i+1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
                 vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
-                nv = glm::normalize(glm::cross(n1, n2));
+                nv = glm::normalize(glm::cross(n2, n1));
             }
             else if (i == particles_along_length-1 && j == 0) {
                 vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
                 vec3 n2 = glm::normalize(vertices[i*particles_along_width + j+1] - vertices[i*particles_along_width + j]);
-                nv = glm::normalize(glm::cross(n1, n2));
+                nv = glm::normalize(glm::cross(n2, n1));
             }
             else if (i == particles_along_length-1 && j == particles_along_width-1) {
                 vec3 n1 = glm::normalize(vertices[(i-1)*particles_along_width + j] - vertices[i*particles_along_width + j]);
                 vec3 n2 = glm::normalize(vertices[i*particles_along_width + j-1] - vertices[i*particles_along_width + j]);
-                nv = glm::normalize(glm::cross(n2, n1));
+                nv = glm::normalize(glm::cross(n1, n2));
             }
             normals[i*particles_along_width + j] = nv;
         }
     }
-    r.updateVertexAttribs(normalBuf, nv, normals);
+
+    r.updateVertexAttribs(normalBuf, num_of_particles+4, normals);
 }
 
 int main() {
