@@ -25,7 +25,7 @@ Bone *hip, *chest, *head,
 
 
 const int frames = 12;
-const int numSamples = 12*50;
+const int numSamples = 12*10;
 vector<Keyframe> keyFrames =  vector<Keyframe>(frames, Keyframe());
 
 GL::Object object;

@@ -56,6 +56,29 @@ vec3 transformPoint(const vec3& point, const mat4& transformationMatrix) {
 //     return result;
 // }
 
+// std::vector<float> interpolateCatmullRom(float t, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3) {
+//     std::vector<float> result;
+
+//     // Catmull-Rom spline interpolation formula
+//     float t2 = t * t;
+//     float t3 = t2 * t;
+
+//     // Compute tangent values
+//     float m0 = -0.5f * t3 + t2 - 0.5f * t;
+//     float m1 = 1.5f * t3 - 2.5f * t2 + 1.0f;
+//     float m2 = -1.5f * t3 + 2.0f * t2 + 0.5f * t;
+//     float m3 = 0.5f * t3 - 0.5f * t2;
+
+//     // Interpolate for each value in the keyframes
+//     for (size_t i = 0; i < k0.values.size(); ++i) {
+//         float interpolatedValue = k0.values[i] * m0 + k1.values[i] * m1 + k2.values[i] * m2 + k3.values[i] * m3;
+//         result.push_back(interpolatedValue);
+//     }
+
+//     return result;
+// }
+
+
 // Interpolate a vector of floats between keyframes using Catmull-Rom spline
 // std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& keyframes, int numSamples) {
 //     std::vector<std::vector<float>> result;
@@ -101,78 +124,120 @@ vec3 transformPoint(const vec3& point, const mat4& transformationMatrix) {
 //     return result;
 // }
 
+// std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& keyframes, int numSamples) {
+//     std::vector<std::vector<float>> result;
 
-std::vector<float> interpolateCubicHermiteSpline(float t, const Keyframe& k0, const Keyframe& k1) {
-    std::vector<float> result;
+//     if (keyframes.size() < 4) {
+//         // Cannot interpolate with less than 4 keyframes
+//         return result;
+//     }
 
-    // Calculate interpolation parameter
-    float dt = k1.time - k0.time;
-    // float t01 = (t - k0.time) / dt;
-    float t01 = t;
+//     for (size_t i = 1; i < keyframes.size() - 2; i+=2) {
+//         // Calculate time steps between adjacent keyframes
+//         float dt1 = keyframes[i].time - keyframes[i - 1].time;
+//         float dt2 = keyframes[i + 1].time - keyframes[i].time;
+//         float dt3 = keyframes[i + 2].time - keyframes[i + 1].time;
 
-    // Cubic Hermite spline interpolation formula
-    float h00 = 2.0f * t01 * t01 * t01 - 3.0f * t01 * t01 + 1.0f;
-    float h10 = t01 * t01 * t01 - 2.0f * t01 * t01 + t01;
-    float h01 = -2.0f * t01 * t01 * t01 + 3.0f * t01 * t01;
-    float h11 = t01 * t01 * t01 - t01 * t01;
+//         // Calculate the number of samples between keyframes based on time differences
+//         int samples1 = static_cast<int>((dt1 / (dt1 + dt2)) * numSamples);
+//         int samples2 = static_cast<int>((dt2 / (dt2 + dt3)) * numSamples);
 
-    // Interpolate values for each component
-    for (size_t i = 0; i < k0.values.size(); ++i) {
-        float interpolatedValue = k0.values[i] * h00 + k1.values[i] * h01 +
-                                   (k1.values[i] - k0.values[i]) * h10 * dt +
-                                   (k1.values[i] - k0.values[i]) * h11 * dt;
-        result.push_back(interpolatedValue);
-    }
+//         // Interpolate between keyframes with the appropriate number of samples
+//         for (int j = 0; j < numSamples; ++j) {
+//             float t;
+//             if (j < samples1) {
+//                 t = static_cast<float>(j) / samples1;
+//             } else {
+//                 t = static_cast<float>(j - samples1) / samples2;
+//             }
 
-    return result;
-}
+//             // Ensure interpolation doesn't exceed keyframe boundaries
+//             size_t index0 = std::max(0, static_cast<int>(i) - 1);
+//             size_t index1 = i;
+//             size_t index2 = std::min(keyframes.size() - 2, i + 1); // Changed to -2
+//             size_t index3 = std::min(keyframes.size() - 1, i + 2);
 
-std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& keyframes, int numSamples) {
-    std::vector<std::vector<float>> result;
+//             // Use the last keyframe of the first segment and the first keyframe of the second segment to calculate tangents
+//             std::vector<float> interpolatedValues = interpolateCatmullRom(t, keyframes[index0], keyframes[index1], keyframes[index2], keyframes[index3]);
+//             result.push_back(interpolatedValues);
+//         }
+//     }
 
-    if (keyframes.size() < 4) {
-        // Cannot interpolate with less than 4 keyframes
-        return result;
-    }
+//     return result;
+// }
 
-    // Calculate total duration of the animation
-    float totalDuration = keyframes.back().time - keyframes.front().time;
 
-    // Calculate the total number of segments between keyframes
-    size_t numSegments = keyframes.size() - 1;
+// std::vector<float> interpolateCubicHermiteSpline(float t, const Keyframe& k0, const Keyframe& k1) {
+//     std::vector<float> result;
 
-    // Calculate the number of samples per segment based on time differences
-    std::vector<int> segmentSamples;
-    int totalSegmentSamples = 0;
-    for (size_t i = 0; i < numSegments; ++i) {
-        float segmentDuration = keyframes[i + 1].time - keyframes[i].time;
-        int segmentSampleCount = static_cast<int>((segmentDuration / totalDuration) * numSamples);
-        segmentSamples.push_back(segmentSampleCount);
-        totalSegmentSamples += segmentSampleCount;
-    }
+//     // Calculate interpolation parameter
+//     float dt = k1.time - k0.time;
+//     // float t01 = (t - k0.time) / dt;
+//     float t01 = t;
 
-    // Adjust the sample count for rounding errors
-    int remainingSamples = numSamples - totalSegmentSamples;
-    for (size_t i = 0; i < numSegments && remainingSamples > 0; ++i) {
-        segmentSamples[i]++;
-        remainingSamples--;
-    }
+//     // Cubic Hermite spline interpolation formula
+//     float h00 = 2.0f * t01 * t01 * t01 - 3.0f * t01 * t01 + 1.0f;
+//     float h10 = t01 * t01 * t01 - 2.0f * t01 * t01 + t01;
+//     float h01 = -2.0f * t01 * t01 * t01 + 3.0f * t01 * t01;
+//     float h11 = t01 * t01 * t01 - t01 * t01;
 
-    // Interpolate between keyframes with the appropriate number of samples for each segment
-    for (size_t i = 0; i < numSegments; ++i) {
-        const Keyframe& k0 = keyframes[i];
-        const Keyframe& k1 = keyframes[i + 1];
-        int segmentSampleCount = segmentSamples[i];
+//     // Interpolate values for each component
+//     for (size_t i = 0; i < k0.values.size(); ++i) {
+//         float interpolatedValue = k0.values[i] * h00 + k1.values[i] * h01 +
+//                                    (k1.values[i] - k0.values[i]) * h10 * dt +
+//                                    (k1.values[i] - k0.values[i]) * h11 * dt;
+//         result.push_back(interpolatedValue);
+//     }
+
+//     return result;
+// }
+
+// std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& keyframes, int numSamples) {
+//     std::vector<std::vector<float>> result;
+
+//     if (keyframes.size() < 4) {
+//         // Cannot interpolate with less than 4 keyframes
+//         return result;
+//     }
+
+//     // Calculate total duration of the animation
+//     float totalDuration = keyframes.back().time - keyframes.front().time;
+
+//     // Calculate the total number of segments between keyframes
+//     size_t numSegments = keyframes.size() - 1;
+
+//     // Calculate the number of samples per segment based on time differences
+//     std::vector<int> segmentSamples;
+//     int totalSegmentSamples = 0;
+//     for (size_t i = 0; i < numSegments; ++i) {
+//         float segmentDuration = keyframes[i + 1].time - keyframes[i].time;
+//         int segmentSampleCount = static_cast<int>((segmentDuration / totalDuration) * numSamples);
+//         segmentSamples.push_back(segmentSampleCount);
+//         totalSegmentSamples += segmentSampleCount;
+//     }
+
+//     // Adjust the sample count for rounding errors
+//     int remainingSamples = numSamples - totalSegmentSamples;
+//     for (size_t i = 0; i < numSegments && remainingSamples > 0; ++i) {
+//         segmentSamples[i]++;
+//         remainingSamples--;
+//     }
+
+//     // Interpolate between keyframes with the appropriate number of samples for each segment
+//     for (size_t i = 0; i < numSegments; ++i) {
+//         const Keyframe& k0 = keyframes[i];
+//         const Keyframe& k1 = keyframes[i + 1];
+//         int segmentSampleCount = segmentSamples[i];
         
-        for (int j = 0; j < segmentSampleCount; ++j) {
-            float t = static_cast<float>(j) / (segmentSampleCount - 1);
-            std::vector<float> interpolatedValues = interpolateCubicHermiteSpline(t, k0, k1);
-            result.push_back(interpolatedValues);
-        }
-    }
+//         for (int j = 0; j < segmentSampleCount; ++j) {
+//             float t = static_cast<float>(j) / (segmentSampleCount - 1);
+//             std::vector<float> interpolatedValues = interpolateCubicHermiteSpline(t, k0, k1);
+//             result.push_back(interpolatedValues);
+//         }
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 
 // std::vector<float> interpolateCubicHermiteSpline(float t, const Keyframe& k0, const Keyframe& k1) {
@@ -265,3 +330,57 @@ std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& 
 
 //     return result;
 // }
+
+float CatmullRomInterpolation(float t, float p0, float p1, float p2, float p3) {
+    float t2 = t * t;
+    float t3 = t2 * t;
+    return 0.5f * ((2 * p1) +
+                   (-p0 + p2) * t +
+                   (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+                   (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+}
+
+std::vector<float> interpolateCatmullRomSpline(float t, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3) {
+    std::vector<float> result;
+
+    float t0 = k0.time;
+    float t1 = k1.time;
+    float t2 = k2.time;
+    float t3 = k3.time;
+
+    float t01 = (t - t1) / (t2 - t1);
+    float t12 = (t - t0) / (t2 - t0);
+    float t23 = (t - t1) / (t3 - t1);
+
+    for (size_t i = 0; i < k0.values.size(); ++i) {
+        float interpolatedValue = CatmullRomInterpolation(t01, k0.values[i], k1.values[i], k2.values[i], k3.values[i]);
+        result.push_back(interpolatedValue);
+    }
+
+    return result;
+}
+
+std::vector<std::vector<float>> interpolateVectors(const std::vector<Keyframe>& keyframes, int numSamples) {
+    std::vector<std::vector<float>> result;
+
+    if (keyframes.size() < 4) {
+        // Cannot interpolate with less than 4 keyframes
+        return result;
+    }
+
+    // Interpolate between keyframes with the appropriate number of samples for each segment
+    for (size_t i = 1; i < keyframes.size() - 2; ++i) {
+        const Keyframe& k0 = keyframes[i - 1];
+        const Keyframe& k1 = keyframes[i];
+        const Keyframe& k2 = keyframes[i + 1];
+        const Keyframe& k3 = keyframes[i + 2];
+
+        for (int j = 0; j < numSamples; ++j) {
+            float t = k1.time + (static_cast<float>(j) / (numSamples - 1)) * (k2.time - k1.time);
+            std::vector<float> interpolatedValues = interpolateCatmullRomSpline(t, k0, k1, k2, k3);
+            result.push_back(interpolatedValues);
+        }
+    }
+
+    return result;
+}
