@@ -25,7 +25,7 @@ Bone *hip, *chest, *head,
 
 
 const int frames = 12;
-const int numSamples = 12*5;
+const int numSamples = 12*50;
 vector<Keyframe> keyFrames =  vector<Keyframe>(frames, Keyframe());
 
 GL::Object object;
@@ -191,6 +191,9 @@ void initializeScene() {
     r_foot->verIndex = {56,57,58,59};
     r_foot->parent = r_lower_leg;
 
+}
+
+void initializeAnimation(){
     // Animation frames
     //                                   hip  chest  head     lua      lla        lh    rua        rla         rh     lul        lll           lf    rul        rll            rf    hipx  hipy   hipz
     keyFrames[0] = *new Keyframe();
@@ -208,19 +211,26 @@ void initializeScene() {
     keyFrames[4] = *new Keyframe();
     keyFrames[4].time = 0.333f;
     keyFrames[4].values = vector<float>{-0.4f, 0.0f, 0.3f, M_PI-0.3, M_PI-1.5f, 0.0f, M_PI+0.3,   M_PI-0.15f, 0.0f, 0.9f,      M_PI-1.2f, 0.0f, 0.9f,       M_PI-1.2f, 0.0f, 0.0f, 0.4, -0.1 };
+    keyFrames[5] = *new Keyframe();
     keyFrames[5].time = 0.366f;
     keyFrames[5].values = vector<float>{-0.2f, 0.0f, 0.3f, M_PI-0.4, M_PI-1.5f, 0.0f, M_PI+0.4,   M_PI-0.15f, 0.0f, 1.3f,      M_PI-1.4f, 0.0f, 1.3f,       M_PI-1.4f, 0.0f, 0.0f, 0.8, -0.1 };
+    keyFrames[6] = *new Keyframe();
     keyFrames[6].time = 0.4f;
     keyFrames[6].values = vector<float>{0.0f, 0.0f, 0.4f, M_PI-0.3, M_PI-1.5f, 0.0f, M_PI+0.3   , M_PI-0.15f, 0.0f, 1.8f,      M_PI-1.8f, 0.0f, 1.8f,       M_PI-1.8f, 0.0f, 0.0f, 1.0, -0.1 };
+    keyFrames[7] = *new Keyframe();
     keyFrames[7].time = 0.433f;
     keyFrames[7].values = vector<float>{0.3f, 0.0f, 0.45f, M_PI-0.2, M_PI-1.5f, 0.0f, M_PI+0.2  , M_PI-0.15f, 0.0f, 2.2f,      M_PI-2.0f, 0.0f, 2.2f,       M_PI-2.0f, 0.0f, 0.0f, 1.5, -0.1 };
+    keyFrames[8] = *new Keyframe();
     keyFrames[8].time = 0.466f;
     keyFrames[8].values = vector<float>{0.6f, 0.0f, 0.4f, M_PI-0.1, M_PI-1.5f, 0.0f, M_PI+ 0.1,   M_PI-0.15f, 0.0f, 2.8f,      M_PI-2.2f, 0.0f, 2.8f,       M_PI-2.2f, 0.0f, 0.0f, 2.0, -0.1 };
+    keyFrames[9] = *new Keyframe();
     keyFrames[9].time = 0.5f;
     keyFrames[9].values = vector<float>{1.0f, 0.0f, 0.2f, M_PI,     M_PI-1.5f, 0.0f, M_PI,       M_PI-0.15f, 0.0f, M_PI-0.3f,  M_PI-2.4f, 0.0f, M_PI-0.3f,  M_PI-2.4f, 0.0f, 0.0f, 3.0, -0.1 };
-    keyFrames[10].time = 1.5f;
+    keyFrames[10] = *new Keyframe();
+    keyFrames[10].time = 0.75f;
     keyFrames[10].values = vector<float>{2.0f, 0.0f, 0.1f, M_PI,     M_PI-1.5f, 0.0f, M_PI,       M_PI-0.15f, 0.0f, M_PI-0.1f,  M_PI-2.4f, 0.0f, M_PI-0.1f,  M_PI-2.4f, 0.0f, 0.0f, 1.5, -0.1 };
-    keyFrames[11].time = 3.0f;
+    keyFrames[11] = *new Keyframe();
+    keyFrames[11].time = 1.0f;
     keyFrames[11].values = vector<float>{3.0f, 0.0f, 0.0f, M_PI,     M_PI-1.5f, 0.0f, M_PI,       M_PI-0.15f, 0.0f, M_PI-0.1f,  M_PI-2.4f, 0.0f, M_PI-0.1f,  M_PI-2.4f, 0.0f, 0.0f, 0.4, -0.1 };
     
 
@@ -339,20 +349,21 @@ int main() {
 		return EXIT_FAILURE;
 	}
 	camCtl.initialize(width, height);
-	camCtl.camera.setCameraView(vec3(0.5, 3, 5.0), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
+	camCtl.camera.setCameraView(vec3(1.5, 4.0, 5.0), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
 	program = r.createShaderProgram(
 		r.vsBlinnPhong(),
 		r.fsBlinnPhong()
 	);
 
 	initializeScene();
+    initializeAnimation();
 
     int i = 0;
     vector<vector<float>> animation = interpolateVectors(keyFrames, numSamples);
     while (!r.shouldQuit()) {
-        // float t = SDL_GetTicks64()*10e-1;
-        // int i = (int)t % animation.size();
-        i = (i+1)% animation.size();
+        float t = SDL_GetTicks64()*10e-2;
+        int i = (int)t % animation.size();
+        // i = (i+1)% animation.size();
 
         hip->theta = animation[i][0];
         chest->theta = animation[i][1];
