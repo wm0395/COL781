@@ -158,7 +158,7 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
 
 
 void Sphere::sphere_grid(){
-    float r = this->radius - 0.008f; //TODO: check if we want to subtract a small value
+    float r = this->radius - 0.01f; //TODO: check if we want to subtract a small value
     int m = this->latitude;
     int n = this->longitude;
     vec3 c = this->center;

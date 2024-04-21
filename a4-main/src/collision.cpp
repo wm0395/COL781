@@ -18,8 +18,8 @@ GL::AttribBuf vertexBuf, normalBuf;
 
 const float cloth_length = 1;
 const float cloth_width = 1;
-const int particles_along_length = 20;
-const int particles_along_width = 20;
+const int particles_along_length = 18;
+const int particles_along_width = 18;
 const float cloth_mass = 25.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
 const float ks_structural = 100000;
