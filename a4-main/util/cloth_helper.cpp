@@ -47,9 +47,10 @@ vec3 Particle::collision_normal(Particle* particle){
 }
 
 vec3 Particle::tangetial_velocity(Particle* particle){
-    // vec3 normal = collision_normal(particle);   // TODO: use relative velocity and check if it is correct
-    // return vel - dot(vel, normal)*(normal);
-    return vec3(0.0f);
+    vec3 rel_vel = vel - particle->vel;
+    vec3 normal = collision_normal(particle);   // TODO: use relative velocity and check if it is correct
+    return rel_vel - dot(rel_vel, normal)*(normal);
+    // return vec3(0.0f);
 }
 
 Plane::Plane(float depth, vec3 normal, float coefficient_of_restitution, float friction_coefficient){
@@ -96,6 +97,10 @@ vec3 Plane::tangetial_velocity(Particle* particle){
 
 void Plane::update(float dt, float t){
     return;
+}
+
+vec3 Plane::relative_velcity(Particle* particle){
+    return particle->vel - velocity;
 }
 
 
@@ -254,6 +259,11 @@ vec3 Sphere::tangetial_velocity(Particle* particle){
     vec3 rel_vel = particle->vel - sph_vel;
     // return particle->vel - dot(particle->vel, normal)*(normal);
     return rel_vel - dot(rel_vel, normal)*(normal);
+}
+
+vec3 Sphere::relative_velcity(Particle* particle){
+    vec3 sph_vel = velocity + cross(angular_velocity, particle->pos - center);
+    return particle->vel - sph_vel;
 }
 
 void Sphere::update(float dt, float t){

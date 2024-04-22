@@ -48,6 +48,7 @@ public:
     virtual vec3 collision_normal(Particle* particle) = 0;
     virtual vec3 tangetial_velocity(Particle* particle) = 0;
     virtual void update(float dt, float t) = 0;
+    virtual vec3 relative_velcity(Particle* particle) = 0;
 };
 
 class Plane : public Obstacles {
@@ -62,6 +63,7 @@ public:
     vec3 collision_normal(Particle* particle);
     vec3 tangetial_velocity(Particle* particle);
     void update(float dt, float t);
+    vec3 relative_velcity(Particle* particle);
 };
 
 class Sphere : public Obstacles {
@@ -76,6 +78,7 @@ public:
     vec3 collision_normal(Particle* particle);
     vec3 tangetial_velocity(Particle* particle);
     void update(float dt, float t);
+    vec3 relative_velcity(Particle* particle);
 
     int latitude, longitude;
     int num_vertices;

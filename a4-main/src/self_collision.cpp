@@ -1,6 +1,7 @@
 #include "camera.hpp"
 #include "../util/cloth_helper.cpp"
 #include "../util/math.cpp"
+#include "../util/uniform_grid.cpp"
 
 #include <iostream>
 #include <vector>
@@ -18,20 +19,23 @@ GL::AttribBuf vertexBuf, normalBuf;
 
 const float cloth_length = 1;
 const float cloth_width = 0.5;
-const int particles_along_length = 18;
-const int particles_along_width = 18;
+const int particles_along_length = 15;
+const int particles_along_width = 15;
 const float cloth_mass = 20.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
+float l = cloth_length / (particles_along_length-1);
+float w = cloth_width / (particles_along_width-1);
+const float delx = std::min(w,l) / 1.8f;
+
 const float ks_structural = 50000;
 const float kd_structural = 10;
 const float ks_shear = 300;
 const float kd_shear = 1;
-const float ks_bend = 30;
+const float ks_bend = 3;
 const float kd_bend = 1;
 const float gravity = 100;
 
 bool self_collision = false;
-float delx = 0.0f;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
@@ -58,21 +62,20 @@ vector<float> force(3*num_of_particles, 0);
 vec3 vertices[num_of_particles+ 4];
 vec3 normals[num_of_particles + 4];
 ivec3 triangles[nt + 2];
-Particle* particles[num_of_particles];
+vector<Particle*> particles(num_of_particles, nullptr);
+vector<Particle*> updated_particles(num_of_particles, nullptr);
 
 CameraControl camCtl;
 
 void initializeScene() {
 	object = r.createObject();
 
-    float l = cloth_length / (particles_along_length-1);
-    float w = cloth_width / (particles_along_width-1);
-    delx = std::min(w,l);
-
     for(int i = 0; i < particles_along_length; i++) {
         for(int j = 0; j < particles_along_width; j++) {
             // glm::vec3 pos(l*i, 0.0f, w*j);
-            glm::vec3 pos(l*i, j*w-0.5, 0.0f);
+            // glm::vec3 pos(l*i, j*w-0.5, 0.0f);
+            // change the z coordinate also so that the cloth falls at a small angle
+            glm::vec3 pos(l*i, w*j - 0.5, w*j/50.0f);  
             glm::vec3 vel(0.0f, 0.0f, 0.0f);
             glm::vec3 force(0.0f, -gravity, 0.0f);
             Particle* p = new Particle(i*particles_along_width + j, mass, pos, vel, force);
@@ -170,6 +173,11 @@ void initializeScene() {
 
     fixed_pos1 = particles[fixed1]->pos;
     fixed_pos2 = particles[fixed2]->pos;
+
+    // copy the data from particles to updated_particles
+    for(int i = 0; i < num_of_particles; i++) {
+        updated_particles[i] = new Particle(particles[i]->identity, particles[i]->mass, particles[i]->pos, particles[i]->vel, particles[i]->force);
+    }
 }
 
 void updateScene(float t) {
@@ -194,6 +202,9 @@ void updateScene(float t) {
         particles[i]->pos = vec3(position[3*i], position[3*i+1], position[3*i+2]);
         particles[i]->vel = vec3(velocity[3*i], velocity[3*i+1], velocity[3*i+2]);
         particles[i]->force = vec3(force[3*i], force[3*i+1], force[3*i+2]);
+        updated_particles[i]->pos = particles[i]->pos;
+        updated_particles[i]->vel = particles[i]->vel;
+        updated_particles[i]->force = particles[i]->force;
         vertices[i] = particles[i]->pos;
     }
 
@@ -201,62 +212,38 @@ void updateScene(float t) {
         for (int i = 0; i<num_of_particles; i++){
             for (int j = 0; j<num_of_particles; j++){
                 if (j != i){
-                    float phix = particles[i]->collision(particles[j]);
-                    vec3 normal = particles[i]->collision_normal(particles[j]);
-                    if (phix < delx - 1e-6){
-                        float vn = dot(particles[i]->vel - particles[j]->vel, normal);
+                    Particle* obs = particles[j];
+                    float phix = obs->collision(particles[i]);
+                    phix = phix - delx;
+                    vec3 normal = obs->collision_normal(particles[i]);
+                    if (phix < 0){
+                        float vn = dot(particles[i]->vel - obs->vel, normal);
                         if (vn < 0){
-                            float jn = -(1 + 0.001)*vn*(particles[i]->mass);
-                            vec3 jt = vec3(0, 0, 0);
-                            particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
-                            // particles[j]->vel -= (jn*normal + jt)/particles[j]->mass;
-                            velocity[3*i] = particles[i]->vel.x;
-                            velocity[3*i+1] = particles[i]->vel.y;
-                            velocity[3*i+2] = particles[i]->vel.z;
-                            // velocity[3*j] = particles[j]->vel.x;
-                            // velocity[3*j+1] = particles[j]->vel.y;
-                            // velocity[3*j+2] = particles[j]->vel.z;
+                            float jn = -(1 + 0.02)*vn*(particles[i]->mass);
+                            vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
+                            vec3 jt = -std::min(0.5f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
+                            updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
                         }
                         float del_xn = -phix;
-                        particles[i]->pos += del_xn*normal;
-                        // particles[j]->pos -= del_xn*normal;
-                        position[3*i] = particles[i]->pos.x;
-                        position[3*i+1] = particles[i]->pos.y;
-                        position[3*i+2] = particles[i]->pos.z;
-                        // position[3*j] = particles[j]->pos.x;
-                        // position[3*j+1] = particles[j]->pos.y;
-                        // position[3*j+2] = particles[j]->pos.z;
+                        updated_particles[i]->pos += del_xn*normal;
                     }
                 }
-                // float phix = particles[i]->collision(particles[j]);
-                // vec3 normal = particles[i]->collision_normal(particles[j]);
-                // if (phix < delx){
-                //     float vn = dot(particles[i]->vel - particles[j]->vel, normal);
-                //     if (vn < 0){
-                //         float jn = -(1 + 0.2)*vn*(particles[i]->mass + particles[j]->mass);
-                //         vec3 jt = vec3(0, 0, 0);
-                //         particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
-                //         particles[j]->vel -= (jn*normal + jt)/particles[j]->mass;
-                //         velocity[3*i] = particles[i]->vel.x;
-                //         velocity[3*i+1] = particles[i]->vel.y;
-                //         velocity[3*i+2] = particles[i]->vel.z;
-                //         velocity[3*j] = particles[j]->vel.x;
-                //         velocity[3*j+1] = particles[j]->vel.y;
-                //         velocity[3*j+2] = particles[j]->vel.z;
-                //     }
-                //     float del_xn = -phix/2;
-                //     particles[i]->pos += del_xn*normal;
-                //     particles[j]->pos -= del_xn*normal;
-                //     position[3*i] = particles[i]->pos.x;
-                //     position[3*i+1] = particles[i]->pos.y;
-                //     position[3*i+2] = particles[i]->pos.z;
-                //     position[3*j] = particles[j]->pos.x;
-                //     position[3*j+1] = particles[j]->pos.y;
-                //     position[3*j+2] = particles[j]->pos.z;
-                // }
             }
         }
+
+        for (int i = 0; i<num_of_particles; i++){          
+            new_position[3*i] = updated_particles[i]->pos.x; 
+            new_position[3*i+1] = updated_particles[i]->pos.y;
+            new_position[3*i+2] = updated_particles[i]->pos.z;
+            new_velocity[3*i] = updated_particles[i]->vel.x;
+            new_velocity[3*i+1] = updated_particles[i]->vel.y;
+            new_velocity[3*i+2] = updated_particles[i]->vel.z;
+            particles[i]->pos = updated_particles[i]->pos;
+            particles[i]->vel = updated_particles[i]->vel;
+        }
     }
+
+    // collision_update(particles, delx);
 
     for (int i = 0; i<num_of_particles; i++){
         for (auto obs : obstacles){
@@ -280,6 +267,12 @@ void updateScene(float t) {
                 position[3*i+2] = particles[i]->pos.z;
             }
         }
+    }
+
+    for (int i = 0; i<num_of_particles; i++){
+        updated_particles[i]->pos = particles[i]->pos;
+        updated_particles[i]->vel = particles[i]->vel;
+        updated_particles[i]->force = particles[i]->force;
     }
 
     r.updateVertexAttribs(vertexBuf, num_of_particles+4, vertices);

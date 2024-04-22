@@ -231,7 +231,7 @@ void updateScene(float t) {
             float phix = obs->collision(particles[i]);
             vec3 normal = obs->collision_normal(particles[i]);
             if (phix < 0){
-                float vn = dot(particles[i]->vel, normal);
+                float vn = dot(obs->relative_velcity(particles[i]), normal);  // TODO: use relative velocity
                 if (vn < 0){
                     float jn = -(1 + obs->coefficient_of_restitution)*vn*particles[i]->mass;
                     vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);

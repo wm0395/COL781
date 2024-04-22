@@ -1,23 +1,24 @@
-#include "./../sw.hpp"
+#include "./../src/sw.hpp"
+#include <unordered_map>
 
 
-const float del_x = 0.01f;
+// const float del_x = 0.01f;
 unordered_map<unsigned long long, vector<int>> uniform_grid;
-vector<int> indices;
-vector<vec3> position;
 
 unsigned long long uni_hash(ivec3 pos){
-    unsigned long long temp = (unsigned long long)(1e12*pos.x) + (unsigned long long)(1e6*pos.y) + pos.z; 
+    unsigned long long temp = (unsigned long long)(1e12*pos.x) + (unsigned long long)(1e6*pos.y) + pos.z;
+    return temp;
 }
 
 ivec3 uni_hash_inv(unsigned long long N){
-    return ivec3(floor((N%1e18)/1e12), floor((N%1e12)/1e6), (N%1E6));
+    return ivec3(floor((N%(unsigned long long)1e18)/1e12), floor((N%(unsigned long long)1e12)/1e6), (N%(unsigned long long)1e6));
 }
 
-vector<vector<int>> collision_detect(){
+vector<vector<int>> collision_detect(vector<Particle*> particles, float del_x){
     vector<vector<int>> collision;
-    for(auto id : indices){
-        ivec3 cell = ivec3(position[id].x/del_x - 500, position[id].y/del_x - 500, position[id].z/del_x - 500);
+    for(auto p : particles){
+        int id = p->identity;
+        ivec3 cell = ivec3(p->pos.x/del_x - 5e5, p->pos.y/del_x - 5e5, p->pos.z/del_x - 5e5);
         unsigned long long hash = uni_hash(cell);
         bool col = false;
         vector<int> temp_col;
@@ -32,23 +33,25 @@ vector<vector<int>> collision_detect(){
                     col = true;
                     temp_col.push_back(id);
                 }
-                temp_col.insert(temp_col.end(), uniform_grid[temp_h].begin(), uniform_grid[temp_h].end());
+                // temp_col.insert(temp_col.end(), uniform_grid[temp_h].begin(), uniform_grid[temp_h].end());
+                temp_col.push_back(i);
             }
         }
-        collision.push_back(temp_col);
+        if(col){
+            collision.push_back(temp_col);
+        }
     }
     return collision;
 }
 
-void collision_update(){
-
+void collision_update(vector<Particle*> particles, float del_x){
     uniform_grid = unordered_map<unsigned long long, vector<int>> ();
-    for(int i = 0; i < position.size(); i++){
-        ivec3 cell = ivec3(position[i].x/del_x - 500, position[i].y/del_x - 500, position[i].z/del_x - 500);
+    for(auto p : particles){
+        ivec3 cell = ivec3(p->pos.x/del_x - 5e5, p->pos.y/del_x - 5e5, p->pos.z/del_x - 5e5);
         unsigned long long hash = uni_hash(cell);
-        if(uniform_grid[hash] == nullptr){
+        if(uniform_grid.find(hash) == uniform_grid.end()){
             uniform_grid[hash] = vector<int>();
         }
-        uniform_grid[hash].push_back(position[i]);
+        uniform_grid[hash].push_back(p->identity);
     }
 }
