@@ -19,8 +19,8 @@ GL::AttribBuf vertexBuf, normalBuf;
 
 const float cloth_length = 1;
 const float cloth_width = 0.7;
-const int particles_along_length = 7;
-const int particles_along_width = 7;
+const int particles_along_length = 15;
+const int particles_along_width = 15;
 const float cloth_mass = 20.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
 float l = cloth_length / (particles_along_length-1);
@@ -35,8 +35,8 @@ const float ks_bend = 10;
 const float kd_bend = 1;
 const float gravity = 10;
 
-bool self_collision = true;
-// bool self_collision = false;
+// bool self_collision = true;
+bool self_collision = false;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
@@ -65,6 +65,8 @@ vec3 normals[num_of_particles + 4];
 ivec3 triangles[nt + 2];
 vector<Particle*> particles(num_of_particles, nullptr);
 vector<Particle*> updated_particles(num_of_particles, nullptr);
+
+unordered_map<unsigned long long, vector<int>> uniform_grid;
 
 vector<vector<vec3>> verticeFrames;
 vector<vector<vec3>> normalFrames;
@@ -182,6 +184,10 @@ void initializeScene() {
     for(int i = 0; i < num_of_particles; i++) {
         updated_particles[i] = new Particle(particles[i]->identity, particles[i]->mass, particles[i]->pos, particles[i]->vel, particles[i]->force);
     }
+
+    if (self_collision){
+        collision_update(uniform_grid, particles, delx);
+    }
 }
 
 void updateScene(float t) {
@@ -212,31 +218,54 @@ void updateScene(float t) {
         vertices[i] = particles[i]->pos;
     }
 
+    // if (self_collision){
+    //     for (int i = 0; i<num_of_particles; i++){
+    //         for (int j = 0; j<num_of_particles; j++){
+    //             if (j != i){
+    //                 Particle* obs = particles[j];
+    //                 float phix = obs->collision(particles[i]);
+    //                 phix = phix - delx;
+    //                 vec3 normal = obs->collision_normal(particles[i]);
+    //                 if (phix < 0){
+    //                     float vn = dot(particles[i]->vel - obs->vel, normal);
+    //                     if (vn < 0){
+    //                         float jn = -(1 + 0.05)*vn*(particles[i]->mass);
+    //                         vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
+    //                         vec3 jt = -std::min(0.1f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
+    //                         updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
+    //                     }
+    //                     float del_xn = -phix;
+    //                     updated_particles[i]->pos += del_xn*normal;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
     if (self_collision){
-        for (int i = 0; i<num_of_particles; i++){
-            for (int j = 0; j<num_of_particles; j++){
-                if (j != i){
-                    Particle* obs = particles[j];
-                    float phix = obs->collision(particles[i]);
-                    phix = phix - delx;
-                    vec3 normal = obs->collision_normal(particles[i]);
-                    if (phix < 0){
-                        float vn = dot(particles[i]->vel - obs->vel, normal);
-                        if (vn < 0){
-                            float jn = -(1 + 0.05)*vn*(particles[i]->mass);
-                            vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
-                            vec3 jt = -std::min(0.1f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
-                            updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
-                        }
-                        float del_xn = -phix;
-                        updated_particles[i]->pos += del_xn*normal;
+        vector<vector<int>> self_collisions = collision_detect(uniform_grid, particles, delx);
+        for (auto col : self_collisions){
+            int i = col[0];       
+            for(int j = 1; j < col.size(); j++){
+                Particle* obs = particles[col[j]];
+                float phix = obs->collision(particles[i]);
+                phix = phix - delx;
+                vec3 normal = obs->collision_normal(particles[i]);
+                if (phix < 0){
+                    float vn = dot(particles[i]->vel - obs->vel, normal);
+                    if (vn < 0){
+                        float jn = -(1 + 0.05)*vn*(particles[i]->mass);
+                        vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
+                        vec3 jt = -std::min(0.1f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
+                        updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
                     }
+                    float del_xn = -phix;
+                    updated_particles[i]->pos += del_xn*normal;
                 }
             }
         }
+        collision_update(uniform_grid, updated_particles, delx);
     }
-
-    // collision_update(particles, delx);
 
     for (int i = 0; i<num_of_particles; i++){
         for (auto obs : obstacles){
@@ -249,15 +278,9 @@ void updateScene(float t) {
                     vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
                     vec3 jt = -std::min(obs->friction_coefficient*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
                     updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
-                    // velocity[3*i] = particles[i]->vel.x;
-                    // velocity[3*i+1] = particles[i]->vel.y;
-                    // velocity[3*i+2] = particles[i]->vel.z;
                 }
                 float del_xn = -phix;
                 updated_particles[i]->pos += del_xn*normal;
-                // position[3*i] = particles[i]->pos.x;
-                // position[3*i+1] = particles[i]->pos.y;
-                // position[3*i+2] = particles[i]->pos.z;
             }
         }
     }
@@ -313,96 +336,6 @@ void updateScene(float t) {
 
     r.updateVertexAttribs(normalBuf, num_of_particles+4, normals);
 }
-
-// int main() {
-// 	int width = 1000, height = 900;
-// 	if (!r.initialize("Cloth", width, height)) {
-// 		return EXIT_FAILURE;
-// 	}
-// 	camCtl.initialize(width, height);
-// 	camCtl.camera.setCameraView(vec3(0.5, -0.5, 1.5), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
-// 	program = r.createShaderProgram(
-// 		r.vsBlinnPhong(),
-// 		r.fsBlinnPhong()
-// 	);
-
-// 	initializeScene();
-//     cout << delx << "\n";
-
-
-//     for(int it = 0; it < 10000; it++){
-//         // for(int j = 0; j < 10; j++){
-//             float t = SDL_GetTicks64()*1e-3;
-//             updateScene(t);
-//             for (int i = 0; i<num_of_particles; i++){
-//                 for (int j = 0; j<num_of_particles; j++){
-//                     if (i != j){
-//                         float phix = particles[j]->collision(particles[i]);
-//                         phix -= delx;
-//                         if (phix < -1e-5){
-//                             cout << "Time : " << t << " Iter : " << it << " Particle i : " << i << " Particle j : " << j << " phix : " << phix << endl;
-//                             // cout << phix << endl;
-//                         }
-//                         // cout << phix << endl;
-//                     }
-//                 }
-//             }
-//         // }
-//         vector<vec3> t_vert(num_of_particles+4), t_norm(num_of_particles+4);
-//         for(int j = 0; j < num_of_particles+4; j++){
-//             t_vert[j] = vertices[j];
-//         }
-//         verticeFrames.push_back(t_vert);
-//         normalFrames.push_back(t_norm);
-//     }
-
-//     int i = 0;
-// 	while (!r.shouldQuit()) {
-//         float t = SDL_GetTicks64()*1e-1;
-//         int i = (int)t % verticeFrames.size();
-
-//         for(int j = 0; j < num_of_particles; j++){
-//             vertices[j] = verticeFrames[i][j];
-//             normals[j] = normalFrames[i][j];
-//         }
-//         r.updateVertexAttribs(vertexBuf, num_of_particles+4, vertices);
-//         r.updateVertexAttribs(normalBuf, num_of_particles+4, normals);
-
-        
-// 		camCtl.update();
-// 		Camera &camera = camCtl.camera;
-
-// 		r.clear(vec4(1.0, 1.0, 1.0, 1.0));
-// 		r.enableDepthTest();
-// 		r.useShaderProgram(program);
-
-// 		r.setUniform(program, "model", glm::mat4(1.0));
-// 		r.setUniform(program, "view", camera.getViewMatrix());
-// 		r.setUniform(program, "projection", camera.getProjectionMatrix());
-// 		r.setUniform(program, "lightPos", camera.position);
-// 		r.setUniform(program, "viewPos", camera.position);
-// 		r.setUniform(program, "lightColor", vec3(1.0f, 1.0f, 1.0f));
-
-// 		r.setupFilledFaces();
-//         glm::vec3 orange(1.0f, 0.6f, 0.2f);
-//         glm::vec3 white(1.0f, 1.0f, 1.0f);
-//         r.setUniform(program, "ambientColor", 0.4f*orange);
-//         r.setUniform(program, "diffuseColor", 0.9f*orange);
-//         r.setUniform(program, "specularColor", 0.8f*white);
-//         r.setUniform(program, "phongExponent", 100.f);
-// 		r.drawObject(object);
-
-// 		r.setupWireFrame();
-//         glm::vec3 black(0.0f, 0.0f, 0.0f);
-//         r.setUniform(program, "ambientColor", black);
-//         r.setUniform(program, "diffuseColor", black);
-//         r.setUniform(program, "specularColor", black);
-//         r.setUniform(program, "phongExponent", 0.f);
-// 		r.drawObject(object);
-
-// 		r.show();
-// 	}
-// }
 
 int main() {
 	int width = 1000, height = 900;

@@ -363,7 +363,6 @@ int main() {
     while (!r.shouldQuit()) {
         float t = SDL_GetTicks64()*3e-1;
         int i = (int)t % animation.size();
-        // i = (i+1)% animation.size();
 
         hip->theta = animation[i][0];
         chest->theta = animation[i][1];

@@ -135,14 +135,7 @@ void updateScene(float t) {
         TfVertices[i] = transformPoint(vertices[i], tf);
     }
 
-	// vertices[0] = vec3(0, -cos(theta0), sin(theta0));
-	// vertices[1] = vec3(1, -cos(theta1), sin(theta1));
 	r.updateVertexAttribs(vertexBuf, nv, TfVertices);
-	// normals[0] = glm::normalize(glm::cross(vertices[1]-vertices[0], vertices[3]-vertices[0]));
-	// normals[1] = glm::normalize(glm::cross(vertices[2]-vertices[1], vertices[0]-vertices[1]));
-	// normals[2] = glm::normalize(glm::cross(vertices[3]-vertices[2], vertices[1]-vertices[2]));
-	// normals[3] = glm::normalize(glm::cross(vertices[0]-vertices[3], vertices[2]-vertices[3]));
-	// r.updateVertexAttribs(normalBuf, nv, normals);
 }
 
 int main() {

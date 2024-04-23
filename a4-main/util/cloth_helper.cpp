@@ -43,12 +43,12 @@ float Particle::collision(Particle* particle){
 }
 
 vec3 Particle::collision_normal(Particle* particle){
-    return normalize(particle->pos - pos);   // TODO: check direction
+    return normalize(particle->pos - pos);
 }
 
 vec3 Particle::tangetial_velocity(Particle* particle){
-    vec3 rel_vel = -(vel - particle->vel);   // TODO: check direction
-    vec3 normal = collision_normal(particle);   // TODO: use relative velocity and check if it is correct
+    vec3 rel_vel = -(vel - particle->vel);
+    vec3 normal = collision_normal(particle);
     return rel_vel - dot(rel_vel, normal)*(normal);
     // return vec3(0.0f);
 }
@@ -167,7 +167,7 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
 
 
 void Sphere::sphere_grid(){
-    float r = this->radius - 0.015f; //TODO: check if we want to subtract a small value
+    float r = this->radius - 0.015f;
     int m = this->latitude;
     int n = this->longitude;
     vec3 c = this->center;
@@ -240,11 +240,11 @@ float Sphere::collision(Particle* particle){
 }
 
 vec3 Sphere::collision_normal(Particle* particle){
-    return normalize(particle->pos - center);  //TODO: check if we want to normalize or not
+    return normalize(particle->pos - center);
 }
 
 vec3 Sphere::tangetial_velocity(Particle* particle){
-    vec3 normal = collision_normal(particle);   // TODO: use relative velocity
+    vec3 normal = collision_normal(particle);
     vec3 sph_vel = velocity + cross(angular_velocity, particle->pos - center);
     vec3 rel_vel = particle->vel - sph_vel;
     // return particle->vel - dot(particle->vel, normal)*(normal);
