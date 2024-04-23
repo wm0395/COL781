@@ -47,7 +47,7 @@ vec3 Particle::collision_normal(Particle* particle){
 }
 
 vec3 Particle::tangetial_velocity(Particle* particle){
-    vec3 rel_vel = vel - particle->vel;
+    vec3 rel_vel = -(vel - particle->vel);   // TODO: check direction
     vec3 normal = collision_normal(particle);   // TODO: use relative velocity and check if it is correct
     return rel_vel - dot(rel_vel, normal)*(normal);
     // return vec3(0.0f);
@@ -141,16 +141,6 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
     this->isMoving = true;
 }
 
-void print_mat4(mat4 m){
-    for (int i = 0; i<4; i++){
-        for (int j = 0; j<4; j++){
-            cout<<m[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout << endl;
-}
-
 Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, float friction_coefficient, int latitude, int longitude, vec3 velocity, vec3 angular_velocity){
     this->radius = radius;
     this->center = center;
@@ -177,7 +167,7 @@ Sphere::Sphere(float radius, vec3 center, float coefficient_of_restitution, floa
 
 
 void Sphere::sphere_grid(){
-    float r = this->radius - 0.01f; //TODO: check if we want to subtract a small value
+    float r = this->radius - 0.015f; //TODO: check if we want to subtract a small value
     int m = this->latitude;
     int n = this->longitude;
     vec3 c = this->center;

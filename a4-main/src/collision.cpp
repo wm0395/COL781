@@ -28,7 +28,7 @@ const float ks_shear = 300;
 const float kd_shear = 1;
 const float ks_bend = 30;
 const float kd_bend = 1;
-const float gravity = 10;
+const float gravity = 20;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
@@ -44,16 +44,25 @@ const float plane_friction = 0.7;
 Plane* plane = new Plane(plane_depth, vec3(0, 1, 0), plane_restitution, plane_friction);
 
 float radius1 = 0.1;
-const int latitude = 20;
-const int longitude = 10;
+const int latitude1 = 20;
+const int longitude1 = 10;
 const vec3 sphere1_vel = vec3(1.0f, 1.0f, 0.0f); 
 const vec3 sphere1_ang_vel = vec3(1.0f, 1.0f, 0.0f);
-// Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude, longitude, sphere1_vel);
-Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth+radius1, 0.5), 0.5, 0.8, latitude, longitude, sphere1_vel, sphere1_ang_vel);
-const int sphere1_vert = latitude*(longitude - 1) + 2;
-const int sphere1_tri = 2 * latitude * (longitude - 1);
+// Sphere* sphere1 = new Sphere(radius1, vec3(0.5, plane_depth + radius1, 0.5), 0.5, 0.7, latitude1, longitude1, sphere1_vel);
+Sphere* sphere1 = new Sphere(radius1, vec3(0.6, plane_depth+radius1, 0.5), 0.5, 0.8, latitude1, longitude1, sphere1_vel, sphere1_ang_vel);
+const int sphere1_vert = latitude1*(longitude1 - 1) + 2;
+const int sphere1_tri = 2 * latitude1 * (longitude1 - 1);
 
-vector<Obstacles*> obstacles = {plane, sphere1};
+float radius2 = 0.1;
+const int latitude2 = 20;
+const int longitude2 = 10;
+Sphere* sphere2 = new Sphere(radius2, vec3(0.3, plane_depth+radius2+0.2, 0.5), 0.5, 0.8, latitude2, longitude2);
+const int sphere2_vert = latitude2*(longitude2 - 1) + 2;
+const int sphere2_tri = 2 * latitude2 * (longitude2 - 1);
+
+vector<Obstacles*> obstacles = {plane, sphere1, sphere2};
+const int num_of_vertices = num_of_particles + 4 + sphere1_vert + sphere2_vert;
+const int num_of_triangles = nt + 2 + sphere1_tri + sphere2_tri;
 
 vector<vector<float>> Mass_inverse(3*num_of_particles, vector<float>(3*num_of_particles, 0));
 vector<float> velocity(3*num_of_particles, 0);
@@ -62,20 +71,31 @@ vector<float> new_velocity(3*num_of_particles, 0);
 vector<float> new_position(3*num_of_particles, 0);
 vector<float> force(3*num_of_particles, 0);
 
-vec3 vertices[num_of_particles+ 4 + sphere1_vert];
-vec3 normals[num_of_particles + 4 + sphere1_vert];
-ivec3 triangles[nt + 2 + sphere1_tri];
+vec3 vertices[num_of_vertices];
+vec3 normals[num_of_vertices];
+ivec3 triangles[num_of_triangles];
 Particle* particles[num_of_particles];
 
 CameraControl camCtl;
 
-void add_sphere(){
-    for (int i = 0; i<sphere1_vert; i++){
-        vertices[num_of_particles+4+i] = sphere1->vertices[i];
-        normals[num_of_particles+4+i] = sphere1->normals[i];
+void add_sphere(int sphere_num = 1){
+    if (sphere_num == 1){
+        for (int i = 0; i<sphere1_vert; i++){
+            vertices[num_of_particles+4+i] = sphere1->vertices[i];
+            normals[num_of_particles+4+i] = sphere1->normals[i];
+        }
+        for (int i = 0; i<sphere1_tri; i++){
+            triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
+        }
     }
-    for (int i = 0; i<sphere1_tri; i++){
-        triangles[nt+2+i] = sphere1->triangles[i] + ivec3(num_of_particles+4, num_of_particles+4, num_of_particles+4);
+    else if (sphere_num == 2){
+        for (int i = 0; i<sphere2_vert; i++){
+            vertices[num_of_particles+4+sphere1_vert+i] = sphere2->vertices[i];
+            normals[num_of_particles+4+sphere1_vert+i] = sphere2->normals[i];
+        }
+        for (int i = 0; i<sphere2_tri; i++){
+            triangles[nt+2+sphere1_tri+i] = sphere2->triangles[i] + ivec3(num_of_particles+4+sphere1_vert, num_of_particles+4+sphere1_vert, num_of_particles+4+sphere1_vert);
+        }
     }
 }
 
@@ -164,11 +184,12 @@ void initializeScene() {
     triangles[nt] = ivec3(num_of_particles, num_of_particles+1, num_of_particles+2);
     triangles[nt+1] = ivec3(num_of_particles, num_of_particles+2, num_of_particles+3);
 
-    add_sphere();
+    add_sphere(1);
+    add_sphere(2);
 
-    vertexBuf = r.createVertexAttribs(object, 0, num_of_particles+4+sphere1_vert, vertices);
-    normalBuf = r.createVertexAttribs(object, 1, num_of_particles+4+sphere1_vert, normals);
-    r.createTriangleIndices(object, nt+2+sphere1_tri, triangles);
+    vertexBuf = r.createVertexAttribs(object, 0, num_of_vertices, vertices);
+    normalBuf = r.createVertexAttribs(object, 1, num_of_vertices, normals);
+    r.createTriangleIndices(object, num_of_triangles, triangles);
 
     for(int i = 0; i < num_of_particles; i++) {
         for(int j = 0; j < 3; j++) {
@@ -214,16 +235,17 @@ void updateScene(float t) {
         vertices[i] = particles[i]->pos;
     }
 
-    particles[fixed1]->pos = fixed_pos1;
-    particles[fixed1]->vel = vec3(0, 0, 0);
-    vertices[fixed1] = fixed_pos1;
-    particles[fixed2]->pos = fixed_pos2;
-    particles[fixed2]->vel = vec3(0, 0, 0);
-    vertices[fixed2] = fixed_pos2;
+    // particles[fixed1]->pos = fixed_pos1;
+    // particles[fixed1]->vel = vec3(0, 0, 0);
+    // vertices[fixed1] = fixed_pos1;
+    // particles[fixed2]->pos = fixed_pos2;
+    // particles[fixed2]->vel = vec3(0, 0, 0);
+    // vertices[fixed2] = fixed_pos2;
 
     for (auto obs : obstacles){
         obs->update(dt, t);
-        add_sphere();
+        add_sphere(1);
+        add_sphere(2);
     }
 
     for (int i = 0; i<num_of_particles; i++){
@@ -250,7 +272,7 @@ void updateScene(float t) {
         }
     }
 
-    r.updateVertexAttribs(vertexBuf, num_of_particles+4+sphere1_vert, vertices);
+    r.updateVertexAttribs(vertexBuf, num_of_vertices, vertices);
 
     for(int i = 0; i < particles_along_length; i++) {
         for(int j = 0; j < particles_along_width; j++) {
@@ -286,7 +308,7 @@ void updateScene(float t) {
         }
     }
 
-    r.updateVertexAttribs(normalBuf, num_of_particles+4+sphere1_vert, normals);
+    r.updateVertexAttribs(normalBuf, num_of_vertices, normals);
 }
 
 int main() {

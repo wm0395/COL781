@@ -18,24 +18,25 @@ GL::Object object;
 GL::AttribBuf vertexBuf, normalBuf;
 
 const float cloth_length = 1;
-const float cloth_width = 0.5;
-const int particles_along_length = 15;
-const int particles_along_width = 15;
+const float cloth_width = 0.7;
+const int particles_along_length = 7;
+const int particles_along_width = 7;
 const float cloth_mass = 20.0f;
 const float mass = cloth_mass / (particles_along_length * particles_along_width);
 float l = cloth_length / (particles_along_length-1);
 float w = cloth_width / (particles_along_width-1);
-const float delx = std::min(w,l) / 1.8f;
+const float delx = std::min(w,l) / 1.5f;
 
-const float ks_structural = 50000;
-const float kd_structural = 10;
-const float ks_shear = 300;
+const float ks_structural = 10000;
+const float kd_structural = 1;
+const float ks_shear = 100;
 const float kd_shear = 1;
-const float ks_bend = 3;
+const float ks_bend = 10;
 const float kd_bend = 1;
-const float gravity = 100;
+const float gravity = 10;
 
-bool self_collision = false;
+bool self_collision = true;
+// bool self_collision = false;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
@@ -64,6 +65,9 @@ vec3 normals[num_of_particles + 4];
 ivec3 triangles[nt + 2];
 vector<Particle*> particles(num_of_particles, nullptr);
 vector<Particle*> updated_particles(num_of_particles, nullptr);
+
+vector<vector<vec3>> verticeFrames;
+vector<vector<vec3>> normalFrames;
 
 CameraControl camCtl;
 
@@ -219,9 +223,9 @@ void updateScene(float t) {
                     if (phix < 0){
                         float vn = dot(particles[i]->vel - obs->vel, normal);
                         if (vn < 0){
-                            float jn = -(1 + 0.02)*vn*(particles[i]->mass);
+                            float jn = -(1 + 0.05)*vn*(particles[i]->mass);
                             vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
-                            vec3 jt = -std::min(0.5f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
+                            vec3 jt = -std::min(0.1f*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
                             updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
                         }
                         float del_xn = -phix;
@@ -229,17 +233,6 @@ void updateScene(float t) {
                     }
                 }
             }
-        }
-
-        for (int i = 0; i<num_of_particles; i++){          
-            new_position[3*i] = updated_particles[i]->pos.x; 
-            new_position[3*i+1] = updated_particles[i]->pos.y;
-            new_position[3*i+2] = updated_particles[i]->pos.z;
-            new_velocity[3*i] = updated_particles[i]->vel.x;
-            new_velocity[3*i+1] = updated_particles[i]->vel.y;
-            new_velocity[3*i+2] = updated_particles[i]->vel.z;
-            particles[i]->pos = updated_particles[i]->pos;
-            particles[i]->vel = updated_particles[i]->vel;
         }
     }
 
@@ -255,28 +248,35 @@ void updateScene(float t) {
                     float jn = -(1 + obs->coefficient_of_restitution)*vn*particles[i]->mass;
                     vec3 tangetial_vel = obs->tangetial_velocity(particles[i]);
                     vec3 jt = -std::min(obs->friction_coefficient*jn, particles[i]->mass*length(tangetial_vel))*normalize(tangetial_vel);
-                    particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
-                    velocity[3*i] = particles[i]->vel.x;
-                    velocity[3*i+1] = particles[i]->vel.y;
-                    velocity[3*i+2] = particles[i]->vel.z;
+                    updated_particles[i]->vel += (jn*normal + jt)/particles[i]->mass;
+                    // velocity[3*i] = particles[i]->vel.x;
+                    // velocity[3*i+1] = particles[i]->vel.y;
+                    // velocity[3*i+2] = particles[i]->vel.z;
                 }
                 float del_xn = -phix;
-                particles[i]->pos += del_xn*normal;
-                position[3*i] = particles[i]->pos.x;
-                position[3*i+1] = particles[i]->pos.y;
-                position[3*i+2] = particles[i]->pos.z;
+                updated_particles[i]->pos += del_xn*normal;
+                // position[3*i] = particles[i]->pos.x;
+                // position[3*i+1] = particles[i]->pos.y;
+                // position[3*i+2] = particles[i]->pos.z;
             }
         }
     }
 
-    for (int i = 0; i<num_of_particles; i++){
-        updated_particles[i]->pos = particles[i]->pos;
-        updated_particles[i]->vel = particles[i]->vel;
-        updated_particles[i]->force = particles[i]->force;
+
+    for (int i = 0; i<num_of_particles; i++){          
+        position[3*i] = updated_particles[i]->pos.x; 
+        position[3*i+1] = updated_particles[i]->pos.y;
+        position[3*i+2] = updated_particles[i]->pos.z;
+        velocity[3*i] = updated_particles[i]->vel.x;
+        velocity[3*i+1] = updated_particles[i]->vel.y;
+        velocity[3*i+2] = updated_particles[i]->vel.z;
+        particles[i]->pos = updated_particles[i]->pos;
+        particles[i]->vel = updated_particles[i]->vel;
     }
 
+    
     r.updateVertexAttribs(vertexBuf, num_of_particles+4, vertices);
-
+    
     for(int i = 0; i < particles_along_length; i++) {
         for(int j = 0; j < particles_along_width; j++) {
             vec3 nv(0, 0, 0);
@@ -313,6 +313,96 @@ void updateScene(float t) {
 
     r.updateVertexAttribs(normalBuf, num_of_particles+4, normals);
 }
+
+// int main() {
+// 	int width = 1000, height = 900;
+// 	if (!r.initialize("Cloth", width, height)) {
+// 		return EXIT_FAILURE;
+// 	}
+// 	camCtl.initialize(width, height);
+// 	camCtl.camera.setCameraView(vec3(0.5, -0.5, 1.5), vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0));
+// 	program = r.createShaderProgram(
+// 		r.vsBlinnPhong(),
+// 		r.fsBlinnPhong()
+// 	);
+
+// 	initializeScene();
+//     cout << delx << "\n";
+
+
+//     for(int it = 0; it < 10000; it++){
+//         // for(int j = 0; j < 10; j++){
+//             float t = SDL_GetTicks64()*1e-3;
+//             updateScene(t);
+//             for (int i = 0; i<num_of_particles; i++){
+//                 for (int j = 0; j<num_of_particles; j++){
+//                     if (i != j){
+//                         float phix = particles[j]->collision(particles[i]);
+//                         phix -= delx;
+//                         if (phix < -1e-5){
+//                             cout << "Time : " << t << " Iter : " << it << " Particle i : " << i << " Particle j : " << j << " phix : " << phix << endl;
+//                             // cout << phix << endl;
+//                         }
+//                         // cout << phix << endl;
+//                     }
+//                 }
+//             }
+//         // }
+//         vector<vec3> t_vert(num_of_particles+4), t_norm(num_of_particles+4);
+//         for(int j = 0; j < num_of_particles+4; j++){
+//             t_vert[j] = vertices[j];
+//         }
+//         verticeFrames.push_back(t_vert);
+//         normalFrames.push_back(t_norm);
+//     }
+
+//     int i = 0;
+// 	while (!r.shouldQuit()) {
+//         float t = SDL_GetTicks64()*1e-1;
+//         int i = (int)t % verticeFrames.size();
+
+//         for(int j = 0; j < num_of_particles; j++){
+//             vertices[j] = verticeFrames[i][j];
+//             normals[j] = normalFrames[i][j];
+//         }
+//         r.updateVertexAttribs(vertexBuf, num_of_particles+4, vertices);
+//         r.updateVertexAttribs(normalBuf, num_of_particles+4, normals);
+
+        
+// 		camCtl.update();
+// 		Camera &camera = camCtl.camera;
+
+// 		r.clear(vec4(1.0, 1.0, 1.0, 1.0));
+// 		r.enableDepthTest();
+// 		r.useShaderProgram(program);
+
+// 		r.setUniform(program, "model", glm::mat4(1.0));
+// 		r.setUniform(program, "view", camera.getViewMatrix());
+// 		r.setUniform(program, "projection", camera.getProjectionMatrix());
+// 		r.setUniform(program, "lightPos", camera.position);
+// 		r.setUniform(program, "viewPos", camera.position);
+// 		r.setUniform(program, "lightColor", vec3(1.0f, 1.0f, 1.0f));
+
+// 		r.setupFilledFaces();
+//         glm::vec3 orange(1.0f, 0.6f, 0.2f);
+//         glm::vec3 white(1.0f, 1.0f, 1.0f);
+//         r.setUniform(program, "ambientColor", 0.4f*orange);
+//         r.setUniform(program, "diffuseColor", 0.9f*orange);
+//         r.setUniform(program, "specularColor", 0.8f*white);
+//         r.setUniform(program, "phongExponent", 100.f);
+// 		r.drawObject(object);
+
+// 		r.setupWireFrame();
+//         glm::vec3 black(0.0f, 0.0f, 0.0f);
+//         r.setUniform(program, "ambientColor", black);
+//         r.setUniform(program, "diffuseColor", black);
+//         r.setUniform(program, "specularColor", black);
+//         r.setUniform(program, "phongExponent", 0.f);
+// 		r.drawObject(object);
+
+// 		r.show();
+// 	}
+// }
 
 int main() {
 	int width = 1000, height = 900;
