@@ -35,8 +35,8 @@ const float ks_bend = 10;
 const float kd_bend = 1;
 const float gravity = 10;
 
-// bool self_collision = true;
-bool self_collision = false;
+bool self_collision = true;
+// bool self_collision = false;
 
 const int num_of_particles = particles_along_length * particles_along_width;
 const int nt = 2*(particles_along_length-1)*(particles_along_width-1);
